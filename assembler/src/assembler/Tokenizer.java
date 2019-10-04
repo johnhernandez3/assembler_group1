@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 public class Tokenizer {
 
 	enum TokenType {
-		COMMENT, CONST, ORIGIN, OPCODE, NAME, LABEL, REGISTER, COMMA, ADDRESS, HEX
+		COMMENT, CONST, ORIGIN, JMP, LABEL, NAME, OPCODE, REGISTER, COMMA, ADDRESS, HEX
 	}
 	
 	class Token {
@@ -51,28 +51,16 @@ public class Tokenizer {
 	
 	private ArrayList<TokenRegex> tokenPatterns;
 	
-	
-//	patterns.add(new TokenRegex("^[ \t]+", null));  // Whitespace
-//	patterns.add(new TokenRegex("^[A-Za-z_][A-Za-z0-9_]*:"));
-//	patterns.add(new TokenRegex("^[A-Za-z_][A-Za-z0-9_]*"));
-//	patterns.add(new TokenRegex("^%[A-Za-z][A-Za-z0-9_]*"));
-//	patterns.add(new TokenRegex("^0[xX][0-9a-fA-F]+"));
-//	patterns.add(new TokenRegex("^-?[0-9]+"));
-//	patterns.add(new TokenRegex("^\\$"));
-//	patterns.add(new TokenRegex("^,"));
-//	patterns.add(new TokenRegex("^\\+"));
-//	patterns.add(new TokenRegex("^-"));
-//	patterns.add(new TokenRegex("^\\("));
-//	patterns.add(new TokenRegex("^\\)"));
-//	patterns.add(new TokenRegex("^[\n\r]+"));
-//	patterns.add(new TokenRegex(TokenType.COMMENT, "^//[^\n\r]*"));  // Comment
 	public Tokenizer() {
 		this.tokenPatterns.add(new TokenRegex(TokenType.COMMENT, "\\/\\/[^\\n\\r]*"));
-		this.tokenPatterns.add(new TokenRegex(TokenType.CONST, "const"));
-		this.tokenPatterns.add(new TokenRegex(TokenType.ORIGIN, "(org) ([0-9]+)")); 
-		this.tokenPatterns.add(new TokenRegex(TokenType.OPCODE, "(load)|(loadim)|(pop)|(store)|(push)|(loadrind)|(storerind)|(add)|(sub)|(addim)|(subim)|(and)|(or)|(xor)|(not)|(neg)|(shiftr)|(shiftl)|(rotar)|(rotal)|(jmprind)|(jmpaddr)|(jcondrind)|(jcondaddr)|(loop)|(grt)|(grteq)|(eq)|(neq)|(nop)|(call)|(return)"));
+		this.tokenPatterns.add(new TokenRegex(TokenType.CONST, "(const)\\s+([A-Za-z0-9]+)\\s+([A-Fa-f0-9]+)"));
+		this.tokenPatterns.add(new TokenRegex(TokenType.ORIGIN, "(org)\\s+([0-9]+)"));
+		this.tokenPatterns.add(new TokenRegex(TokenType.JMP, "(jmp)\\s+([A-Za-z0-9]+)"));
 		this.tokenPatterns.add(new TokenRegex(TokenType.LABEL, "[A-Za-z][A-Za-z0-9]*:"));
-		
+		this.tokenPatterns.add(new TokenRegex(TokenType.NAME, "([A-Za-z0-9]+)\\s+(db)\\s+([A-Fa-f0-9]+)"));
+		this.tokenPatterns.add(new TokenRegex(TokenType.OPCODE, "(?:\\s)(loadim|loadrind|load|pop|storerind|push|store|addim|subim|add|sub|and|or|xor|not|neg|shiftr|shiftl|rotar|rotal|jmprind|jmpaddr|jcondrind|jcondaddr|loop|grteq|grt|eq|neq|nop|call|return)(?:\\s)"));
+		this.tokenPatterns.add(new TokenRegex(TokenType.REGISTER, "(?:,|\\s+)(?:,?)\\s*(r[0-7])"));
+		this.tokenPatterns.add(new TokenRegex(TokenType.COMMA, ","));
 	}
 	
 	

@@ -158,10 +158,8 @@ public class GUI {
                 			sb.append(buffer, 0, read);
                 		}
                 		
-                		sb.toString();
-                		
 						try {
-							textEditorDoc.insertString(0, sb.toString(), attrWHITE);
+							textEditorDoc.insertString(0, sb.toString().toLowerCase(), attrWHITE);
 						} catch (BadLocationException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
