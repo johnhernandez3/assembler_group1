@@ -1,16 +1,41 @@
+
 package assembler;
 
-public class Register {
+import java.util.HashMap;
 
-	public final String r0 = "00";
-	public String r1 = "";
-	public String r2 = "";
-	public String r3 = "";
-	public String r4 = "";
-	public String r5 = "";
-	public String r6 = "";
-	public String r7 = "";
+public class Register {
 	
+//	Initialize opcode, register map and map register values, initializes r0 with 00(bytes)
+	private InstructionSet opcodes = new InstructionSet();
+	
+	private HashMap<String, String> regs = new HashMap<String, String>();
+
 	public String sp = "";
 	public String pc = "";
+
+	public Register() {
+		regs.put("r0", "00");
+		regs.put("r1", "");
+		regs.put("r2", "");
+		regs.put("r3", "");
+		regs.put("r4", "");
+		regs.put("r5", "");
+		regs.put("r6", "");
+		regs.put("r7", "");
+	}
+	
+//	Arithmetic Logic
+	public String add(String a, String b) {
+		return a + b;
+	}
+	
+//	End Arithmetic Logic
+	
+//	Logic Operators
+	public String and(String a, String b) {
+		return a;
+	}
+	
+//	End Logic Operators
+	
 }
