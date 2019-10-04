@@ -32,7 +32,7 @@ public class Register {
 	
 //	Logic Operators
 	public String and(String a, String b) {
-		return a & b;
+		return a;
 	}
 	
 //	End Logic Operators
