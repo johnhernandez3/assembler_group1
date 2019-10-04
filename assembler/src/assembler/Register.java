@@ -1,6 +1,7 @@
 
 package assembler;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Register {
@@ -8,13 +9,14 @@ public class Register {
 //	Initialize opcode, register map and map register values, initializes r0 with 00(bytes)
 	private InstructionSet opcodes = new InstructionSet();
 	private Converter conv = new Converter("");
+	private String[] mem = new String[2048];
 	
 	private HashMap<String, String> regs = new HashMap<String, String>();
 
-	public String sp = "0";
-	public String pc = "0";
+	public String sp, pc;
 
 	public Register() {
+		sp = "0"; pc = "0";
 		regs.put("r0", "00");
 		regs.put("r1", "");
 		regs.put("r2", "");
@@ -26,13 +28,41 @@ public class Register {
 	}
 	
 //	Set Regs
-	public String load(String a, String b) {
+	public String load(String a, String b) { //F2
 		if(zeroerr(a)) return null;
+		regs.put(a, b);
 		return a;
 	}
 	
-	public String store(String a, String b) {
+	public String pop(String a) { //F2
 		if(zeroerr(a)) return null;
+		regs.put(a, mem[Integer.parseInt(sp)]);
+		sp = Integer.toString(Integer.parseInt(sp) + 1);
+		return a;
+	}
+	
+	public String store(String a, String b) { //F2
+		if(zeroerr(b)) return null;
+		regs.put(mem[Integer.parseInt(sp)], b);
+		return b;
+	}
+	
+	public String push(String a) {
+		if(zeroerr(a)) return null;
+		sp = Integer.toString(Integer.parseInt(sp) - 1);
+		regs.put(mem[Integer.parseInt(sp)], a);
+		return a;
+	}
+	
+	public String loadrind(String a, String b) {
+		if(doublezerr(a, b)) return null;
+		regs.replace(b, regs.get(a));
+		return a;
+	}
+	
+	public String storerind(String a, String b) {
+		if(doublezerr(a, b)) return null;
+		regs.replace(a, regs.get(b));
 		return a;
 	}
 	
@@ -142,6 +172,67 @@ public class Register {
 	}
 	
 //	End Logic Operators
+	
+//	Flow Control
+	public String jmprind(String a) {
+		if(zeroerr(a)) return null;
+		pc = regs.get(a);
+		return a;
+	}
+	
+	public String jmpaddr(String a) {
+		pc = a;
+		return a;
+	}
+	
+	public String jcondrind(boolean b, String a) {
+		if(zeroerr(a)) return null;
+		if(b) pc = regs.get(a);
+		return a;
+	}
+	
+	public String jcondaddr(boolean b, String a) {
+		if(b) pc = a;
+		return a;
+	}
+	
+	public String loop(String a, String b) {
+		if(zeroerr(a)) return null;
+		regs.put(a, Integer.toString(Integer.parseInt(regs.get(a), 16) - 1));
+		if(Integer.parseInt(regs.get(a), 16) != 0) {
+			pc = b;
+		}
+		return a;
+	}
+	
+	public boolean grt(String a, String b) {
+		return Integer.parseInt(regs.get(a)) > Integer.parseInt(regs.get(b));
+	}
+	
+	public boolean grteq(String a, String b) {
+		return Integer.parseInt(regs.get(a)) >= Integer.parseInt(regs.get(b));
+	}
+	
+	public boolean eq(String a, String b) {
+		return Integer.parseInt(regs.get(a)) == Integer.parseInt(regs.get(b));
+	}
+	
+	public boolean neq(String a, String b) {
+		return Integer.parseInt(regs.get(a)) != Integer.parseInt(regs.get(b));
+	}
+	
+	public void call(String a) {
+		sp = Integer.toString(Integer.parseInt(sp) - 2);
+		mem[Integer.parseInt(sp)] = pc;
+		pc = a;
+	}
+	
+	public void ret() {
+		pc = mem[Integer.parseInt(sp)];
+		sp = Integer.toString(Integer.parseInt(sp) + 2);
+	}
+	
+//	End Flow
 	
 //	r0 Error Handler and helpers
 	public boolean zeroerr(String a) {
