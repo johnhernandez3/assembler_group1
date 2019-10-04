@@ -129,6 +129,30 @@ public class Main {
 	    
 	    f.setVisible(true);
 	    
+//	    String str = "1111111111111111";
+//	  
+//	    System.out.println(str.substring(0,4));
+//	    int dec1 = Integer.parseInt(str.substring(0,4),2);
+//	    System.out.println(Integer.toHexString(dec1));
+//	    
+//	    int dec2 = Integer.parseInt(str.substring(4,8),2);
+//	    System.out.println(Integer.toHexString(dec2));
+//	    int dec3 = Integer.parseInt(str.substring(8,12),2);
+//	    System.out.println(Integer.toHexString(dec3));
+//	    int dec4 = Integer.parseInt(str.substring(12,16),2);
+//	    System.out.println(Integer.toHexString(dec4));
+	    int dec1 = 3;
+	    System.out.println(String.format("%04d",(Integer.parseInt(Integer.toBinaryString(dec1)))));
+		
+//	    str.substring(4,7);
+//	    System.out.println(str);
+//	    str.substring(8,11);
+//	    System.out.println(str);
+//	    str.substring(12, 15);
+//	    System.out.println(str);
+//	    str.substring(16);
+//	    System.out.println(str);
+	   
 	    
 	}
 	public static void buildPanel() {
