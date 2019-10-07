@@ -1,5 +1,5 @@
 package assembler;
 
-public class ErrorHandler {
+public final class ErrorHandler {
 
 }
