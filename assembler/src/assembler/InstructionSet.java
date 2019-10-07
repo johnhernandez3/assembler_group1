@@ -8,7 +8,7 @@ public class InstructionSet {
 	private HashMap<String, String> map = new HashMap<String, String>();
 	
 	public InstructionSet() {
-		map.put("load", "00000");
+		map.put("load", "00000"); // new Instruction(1, "load", null)
 		map.put("loadim", "00001");
 		map.put("pop", "00010");
 		map.put("store", "00011");

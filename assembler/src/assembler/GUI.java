@@ -13,15 +13,8 @@ import java.awt.event.ActionEvent;
 //import java.util.Random;
 //import java.awt.MenuBar;
 import java.awt.event.ActionListener;
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.FileInputStream;
-import java.io.Reader;
-import java.util.Scanner;
 
 import javax.swing.JFileChooser;
 //import javax.swing.JButton;
@@ -130,36 +123,21 @@ public class GUI {
                     case JFileChooser.APPROVE_OPTION:
                     	File f = fileChooser.getSelectedFile();
                     	
-                    	if (f == null) {
-                			throw new NullPointerException();
-                    	}
-                    	
-						Reader in = null;
+                    	FileManager fm = new FileManager();
+						String fileContent = null;
 						try {
-							in = new InputStreamReader(new BufferedInputStream(new FileInputStream(f)));
-						} catch (FileNotFoundException e2) {
+							fileContent = fm.read(f);
+						} catch (IOException e2) {
 							// TODO Auto-generated catch block
 							e2.printStackTrace();
 						}
                 		
-                		StringBuilder sb = new StringBuilder();
-                		char[] buffer = new char[32 * 1024];
-                		while (true) {
-                			int read = 0;
-							try {
-								read = in.read(buffer);
-							} catch (IOException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
-                			if (read == -1) {
-                				break;
-                			}
-                			sb.append(buffer, 0, read);
-                		}
-                		
 						try {
-							textEditorDoc.insertString(0, sb.toString().toLowerCase(), attrWHITE);
+							textEditorDoc.remove(0, textEditorDoc.getLength());
+							textEditorDoc.insertString(0, fileContent, attrWHITE);
+							Parser p = new Parser();
+							Tokenizer tokenizer = new Tokenizer(fileContent);
+							p.parseLine(tokenizer);
 						} catch (BadLocationException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
