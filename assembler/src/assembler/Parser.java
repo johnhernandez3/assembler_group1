@@ -6,12 +6,6 @@ public class Parser {
 	
 	public void parseLine(Tokenizer tokenizer) {
 		
-//		while (tokenizer.next().type == TokenType.LABEL) {
-//			String name = tokenizer.next().value;
-//			name = name.substring(0, name.length() - 1);
-//			program.addStatement(new LabelStatement(name));
-//		}
-		
 		Token prevToken = null;
 		Token currentToken = tokenizer.next();
 		while (currentToken != null) {
@@ -37,20 +31,10 @@ public class Parser {
 				currentToken.setType(TokenType.ORIGINADDRESS);
 			} else if (currentToken.value.equals("org")) {
 				currentToken.setType(TokenType.ORIGIN);
-			} 
-//			if (nextToken.type == TokenType.INSTRUCTION) {
-//				System.out.println(nextToken.toString());
-//			} else if (nextToken.type == TokenType.COMMENT) {
-//				System.out.println(nextToken.toString());
-//			}
+			}
 			System.out.println(currentToken.toString());
 			prevToken = currentToken;
 			currentToken = tokenizer.next();
 		}
-		
-//		if (tokenizer.check(TokenType.NEWLINE))
-//			tokenizer.next();
-//		else
-//			throw new RuntimeException("Expected newline");
 	}
 }
