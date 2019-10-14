@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class InstructionFormat {
 	
 	private InstructionSet opcodes = new InstructionSet();
+	private Register regloc = new Register();
 	
 	private ArrayList<Instruction> instructions;
 	
