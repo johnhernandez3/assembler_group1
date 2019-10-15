@@ -6,11 +6,12 @@ import java.util.HashMap;
 public class Register {
 	
 //	Initialize opcode, register map and map register values, initializes r0 with 00(bytes)
-	private InstructionSet opcodes = new InstructionSet();
+//	private InstructionSet opcodes = new InstructionSet();
 	private Converter conv = new Converter("");
 	private String[] mem = new String[2048];
 	
 	private HashMap<String, String> regs = new HashMap<String, String>();
+	private HashMap<String, String> regloc = new HashMap<String, String>();
 
 	public String sp, pc;
 
@@ -24,10 +25,28 @@ public class Register {
 		regs.put("r5", "");
 		regs.put("r6", "");
 		regs.put("r7", "");
+		regloc.put("r0", "000");
+		regloc.put("r1", "001");
+		regloc.put("r2", "010");
+		regloc.put("r3", "011");
+		regloc.put("r4", "100");
+		regloc.put("r5", "101");
+		regloc.put("r6", "110");
+		regloc.put("r7", "111");
+	}
+	
+//	Allows access to regs
+	public HashMap<String, String> getregs() {
+		return regs;
+	}
+	
+//	Allows access to reg location(for memory use)
+	public HashMap<String, String> getregloc() {
+		return regloc;
 	}
 	
 //	Set Regs
-	public String load(String a, String b) { //F2
+	public String load(String a, String b) { //F2 y loadim
 		if(zeroerr(a)) return null;
 		regs.put(a, b);
 		return a;
@@ -73,26 +92,29 @@ public class Register {
 		String tok2 = regs.get(b), tok3 = regs.get(c);
 		int add1 = Integer.parseInt(tok2, 16);
 		int add2 = Integer.parseInt(tok3, 16);
-		regs.put(a, Integer.toHexString(add1 + add2));
+		regs.put(a, String.format("%02x", add1 + add2));
 		return regs.get(a);
 	}
 	
 	public String sub(String a, String b, String c) {
 		if(triplezerr(a, b, c))	return null;
-		regs.put(a, add(a, b, neg(c, c)));
+		String tok2 = regs.get(b), tok3 = regs.get(c);
+		int add1 = Integer.parseInt(tok2, 16);
+		int add2 = Integer.parseInt(tok3, 16);
+		regs.put(a, String.format("%02x", add1 - add2));
 		return regs.get(a);
 	}
 	
 //	Needs error handler for addr
 	public String addim(String a, String b) {
 		if(zeroerr(a)) return null;
-		regs.put(a, Integer.toHexString(Integer.parseInt(a, 16) + Integer.parseInt(b)));
+		regs.put(a, Integer.toHexString(Integer.parseInt(a, 16) + Integer.parseInt(b, 2)));
 		return a;
 	}
 	
 	public String subim(String a, String b) {
 		if(zeroerr(a)) return null;
-		regs.put(a, Integer.toHexString(Integer.parseInt(a, 16) - Integer.parseInt(b)));
+		regs.put(a, Integer.toHexString(Integer.parseInt(a, 16) - Integer.parseInt(b, 2)));
 		return a;
 	}
 	
@@ -100,29 +122,61 @@ public class Register {
 	
 //	Logic Operators
 	public String and(String a, String b, String c) {
-		if(triplezerr(a, b, c)) return null;
-		regs.put(a, Integer.toHexString(Integer.parseInt(regs.get(b), 16) &
-				Integer.parseInt(regs.get(c), 16)));
+		if(triplezerr(a, b, c)) return null; String str = "";
+		String d = String.format("%04d", (Integer.parseInt(regs.get(c), 16)));
+		String e = String.format("%04d", (Integer.parseInt(regs.get(b), 16)));
+		for(int i = 0; i < d.length(); i++) {
+			if(d.substring(i, i + 1).equals("1") && 
+					e.substring(i, i + 1).equals("1")) {
+				str += "1";
+			}
+			else {
+				str += "0";
+			}
+		}
+		regs.put(a, String.format("%02x", Integer.parseInt(str, 2)));
 		return a;
 	}
 	
 	public String or(String a, String b, String c) {
-		if(triplezerr(a, b, c)) return null;
-		regs.put(a, Integer.toHexString(Integer.parseInt(regs.get(b), 16) |
-				Integer.parseInt(regs.get(c), 16)));
+		if(triplezerr(a, b, c)) return null; String str = "";
+		String d = String.format("%04d", (Integer.parseInt(regs.get(c), 16)));
+		String e = String.format("%04d", (Integer.parseInt(regs.get(b), 16)));
+		for(int i = 0; i < d.length(); i++) {
+			if(d.substring(i, i + 1).equals("0") && 
+					e.substring(i, i + 1).equals("0")) {
+				str += "1";
+			}
+			else {
+				str += "0";
+			}
+		}
+		regs.put(a, String.format("%02x", Integer.parseInt(str, 2)));
 		return regs.get(a);
 	}
 	
 	public String xor(String a, String b, String c) {
-		if(triplezerr(a, b, c)) return null;
-		regs.put(a, or(a, and(b, b, not(c, c)), and(c, c, not(b, b))));
+		if(triplezerr(a, b, c)) return null; String str = "";
+		String d = String.format("%04d", (Integer.parseInt(regs.get(c), 16)));
+		String e = String.format("%04d", (Integer.parseInt(regs.get(b), 16)));
+		for(int i = 0; i < d.length(); i++) {
+			if((d.substring(i, i + 1).equals("1") && e.substring(i, i + 1).equals("1")) ||
+			(d.substring(i, i + 1).equals("0") && e.substring(i, i + 1).equals("0"))) {
+				str += "0";
+			}
+			else {
+				str += "1";
+			}
+		}
+		regs.put(a, String.format("%02x", Integer.parseInt(str, 2)));
 		return regs.get(a);
 	}
 	
 	public String not(String a, String b) {
 		if(doublezerr(a, b)) return null;
+		regs.put(b, conv.hextoBin(regs.get(b)));
 		char[] ch = regs.get(b).toCharArray();
-		String s = new String();
+		String s = new String("");
 		for(int i = 0; i < ch.length; i++) {
 			if(ch[i] == '0') {
 				s += '1';
@@ -131,42 +185,38 @@ public class Register {
 				s += '0';
 			}
 		}
-		regs.put(a, s);
-		return a;
+		regs.put(a, String.format("%02x", Integer.parseInt(s, 2)));
+		return regs.get(a);
 	}
 	
 	public String neg(String a, String b) {
 		if(doublezerr(a, b)) return null;
-		regs.put(a, Integer.toHexString(~Integer.parseInt(regs.get(b), 16)));
+		String s = String.format("%x", ~(Integer.parseInt(regs.get(b), 16)));
+		regs.put(a, s.substring(s.length() - 2, s.length()));
 		return a;
 	}
 	
 	public String shiftr(String a, String b, String c) {
 		if(triplezerr(a, b, c)) return null;
-		regs.put(a, Integer.toHexString(Integer.parseInt(regs.get(b) + 
-														regs.get(c), 16)>>> 1));
+		regs.put(a, String.format("%04x", Integer.parseInt(regs.get(b) + regs.get(c), 16)>>> 1));
 		return a;
 	}
 	
 	public String shiftl(String a, String b, String c) {
 		if(triplezerr(a, b, c)) return null;
-		regs.put(a, Integer.toHexString(Integer.parseInt(regs.get(b) + 
-													regs.get(c), 16)<<1));
-
+		regs.put(a, String.format("%04x", Integer.parseInt(regs.get(b) + regs.get(c), 16)<<1));
 		return a;
 	}
 	
 	public String rotar(String a, String b, String c) {
 		if(triplezerr(a, b, c)) return null;
-		regs.put(a, Integer.toHexString(Integer.rotateRight(Integer.parseInt(regs.get(b)
-				 + regs.get(c)), 1)));
+		regs.put(a, Integer.toHexString(Integer.rotateRight(Integer.parseInt(regs.get(b) + regs.get(c), 16), 4)));
 		return a;
 	}
 	
 	public String rotal(String a, String b, String c) {
 		if(triplezerr(a, b, c)) return null;
-		regs.put(a, Integer.toHexString(Integer.rotateLeft(Integer.parseInt(regs.get(b)
-				 + regs.get(c)), 1)));
+		regs.put(a, Integer.toHexString(Integer.rotateLeft(Integer.parseInt(regs.get(b) + regs.get(c), 16), 4)));
 		return a;
 	}
 	
@@ -205,19 +255,19 @@ public class Register {
 	}
 	
 	public boolean grt(String a, String b) {
-		return Integer.parseInt(regs.get(a)) > Integer.parseInt(regs.get(b));
+		return Integer.parseInt(regs.get(a), 16) > Integer.parseInt(regs.get(b), 16);
 	}
 	
 	public boolean grteq(String a, String b) {
-		return Integer.parseInt(regs.get(a)) >= Integer.parseInt(regs.get(b));
+		return Integer.parseInt(regs.get(a), 16) >= Integer.parseInt(regs.get(b), 16);
 	}
 	
 	public boolean eq(String a, String b) {
-		return Integer.parseInt(regs.get(a)) == Integer.parseInt(regs.get(b));
+		return Integer.parseInt(regs.get(a), 16) == Integer.parseInt(regs.get(b), 16);
 	}
 	
 	public boolean neq(String a, String b) {
-		return Integer.parseInt(regs.get(a)) != Integer.parseInt(regs.get(b));
+		return Integer.parseInt(regs.get(a), 16) != Integer.parseInt(regs.get(b), 16);
 	}
 	
 	public void call(String a) {
@@ -238,9 +288,9 @@ public class Register {
 		boolean t = false;
 		if(a.equals("r0")) {
 			System.out.println("Error can't reference r0");
-			return t;
+			return !t;
 		}
-		return !t;
+		return t;
 	}
 	
 	public boolean triplezerr(String a, String b, String c) {
