@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public class InstructionFormat {
 	
 	private InstructionSet opcodes = new InstructionSet();
-	
 	private ArrayList<Instruction> instructions;
 	
 	public InstructionFormat() {
@@ -21,22 +20,11 @@ public class InstructionFormat {
 	}
 	
 	public void addInstruction(ArrayList<Token> t) {
+		// Create method to verify each token's type and classify the instruction (f1,f2,f3)
 		
+		// Inside that method also verify the token order to
+		// throw the necessary warnings and/or error messages
 	}
-	
-	
-	
-	
-//	private Instruction checkIfInstruction(ArrayList<Token> t) {
-//		
-//	}
-	
-	
-	
-	
-	
-	
-	
 
 	public String Formatted1(String op, String rega, String regb, String regc) {
 		return opcodes.BinaryReturn(op) + rega + "," + regb + "," + regc;

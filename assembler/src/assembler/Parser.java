@@ -4,7 +4,7 @@ public class Parser {
 	
 	InstructionSet instructionSet = new InstructionSet();
 	
-	public void parseLine(Tokenizer tokenizer) {
+	public void parse(Tokenizer tokenizer) {
 		
 		Token prevToken = null;
 		Token currentToken = tokenizer.next();
@@ -19,6 +19,8 @@ public class Parser {
 				currentToken.setType(TokenType.REGISTER);
 			} else if (currentToken.value.equals("const")) {
 				currentToken.setType(TokenType.CONST);
+			} else if (currentToken.value.equals("jmp")) {
+				currentToken.setType(TokenType.JMP);
 			} else if (currentToken.value.equals("db")) {
 				currentToken.setType(TokenType.DB);
 			} else if (prevToken != null && prevToken.value.equals("jmpaddr")) {

@@ -42,4 +42,10 @@ public class FileManager {
 		
 		return sb.toString().toLowerCase();
 	}
+	
+//	method to save file
+	
+//	handling file type acceptance
+	
+//	creation of object file (data to file is managed elsewhere
 }

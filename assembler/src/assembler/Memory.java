@@ -8,6 +8,11 @@ public class Memory extends Converter {
 	String address; 
 	String setter = "0000000000000000";
 	ArrayList<String> Mem = new ArrayList<String>();
+	
+	// Create new memory location object which will act as the storage and control unit of the bits 
+	// each location has. This idea was to implement the 'const' functionality.
+	
+	
 	public Memory(String inst) {
 		super(inst);
 //		Address (String name, int id) { 

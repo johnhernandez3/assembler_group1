@@ -42,7 +42,7 @@ public class Tokenizer {
 				}
 			}
 		}
-		throw new RuntimeException("No token pattern match");
+		return null;
 	}
 	
 	
