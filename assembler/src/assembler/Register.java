@@ -16,7 +16,7 @@ public class Register {
 	public String sp, pc;
 
 	public Register() {
-		sp = "0"; pc = "0";
+		sp = "00"; pc = "00";
 		regs.put("r0", "00");
 		regs.put("r1", "");
 		regs.put("r2", "");
