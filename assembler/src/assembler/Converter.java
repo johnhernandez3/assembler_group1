@@ -5,8 +5,7 @@ public class Converter {
 	String inst = "";
 	String hex = "0123456789ABCDEF";
 	
-	public Converter(String inst){
-		this.inst = inst;
+	public Converter() {
 	}
 	
 	public String binToHex(String str){

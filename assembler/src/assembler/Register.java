@@ -6,7 +6,7 @@ public class Register {
 	
 //	Initialize opcode, register map and map register values, initializes r0 with 00(bytes)
 //	private InstructionSet opcodes = new InstructionSet();
-	private Converter conv = new Converter("");
+	private Converter conv = new Converter();
 	private String[] mem = new String[2048];
 	
 	private HashMap<String, String> regs = new HashMap<String, String>();

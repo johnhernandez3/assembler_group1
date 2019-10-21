@@ -231,7 +231,7 @@ public class GUI extends javax.swing.JFrame {
 //	    }
 //	};
 	String[] columnNames = { "Direction", "Content" };
-	Object[][] rowData = this.initiateMemoryData(new Object[2048][2048]);
+	Object[][] rowData = new Memory().memData();
 	//Added Model to JTable & add JTable to ScrollPane
 	memoryTable = new JTable(rowData, columnNames);
 	JScrollPane memoryScrollPane2 = new JScrollPane(memoryTable);

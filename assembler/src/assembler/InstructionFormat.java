@@ -7,7 +7,7 @@ public class InstructionFormat {
 	private InstructionSet opcodes = new InstructionSet();
 	private Register regloc = new Register();
 	private ArrayList<Instruction> instructions;
-	private Converter conv = new Converter("");
+	private Converter conv = new Converter();
 	
 	public InstructionFormat() {
 		this.instructions = new ArrayList<>();
