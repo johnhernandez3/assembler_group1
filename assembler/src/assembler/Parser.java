@@ -1,11 +1,14 @@
 package assembler;
 
+import java.util.ArrayList;
+
 public class Parser {
 	
 	InstructionSet instructionSet = new InstructionSet();
 	
-	public void parse(Tokenizer tokenizer) {
+	public String parse(Tokenizer tokenizer) {
 		
+		String result = "";
 		Token prevToken = null;
 		Token currentToken = tokenizer.next();
 		while (currentToken != null) {
@@ -35,8 +38,10 @@ public class Parser {
 				currentToken.setType(TokenType.ORIGIN);
 			}
 			System.out.println(currentToken.toString());
+			result += currentToken.toString() + "\n";
 			prevToken = currentToken;
 			currentToken = tokenizer.next();
 		}
+		return result;
 	}
 }

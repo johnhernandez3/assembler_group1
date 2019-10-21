@@ -171,13 +171,17 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -190,6 +194,8 @@ import javax.swing.JTable;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.Border;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
@@ -212,9 +218,10 @@ public class GUI extends javax.swing.JFrame {
 	private SimpleAttributeSet attrWHITE;
 	private JMenuBar menu;
 	private JMenu fileDropdown;
+	private JButton genObjectFile;
+	private JButton loadMemoryFile;
 	private JMenuItem openFileOpt;
 	private JMenuItem saveFileOpt;
-	private JMenuItem genObjectFileOpt;
 	private JTable registerTable;
     private static DefaultTableModel tableModel;
 	private static int columnNumber = 1;
@@ -224,32 +231,32 @@ public class GUI extends javax.swing.JFrame {
 	
 	
 	public StyledDocument getTextEditorDoc() {
-	return textEditorDoc;
+		return textEditorDoc;
 	}
 
 	public void setTextEditorDoc(StyledDocument textEditorDoc) {
-	this.textEditorDoc = textEditorDoc;
+		this.textEditorDoc = textEditorDoc;
 	}
 	
 	public StyledDocument getOutputDoc() {
-	return outputDoc;
+		return outputDoc;
 	}
 
 	public void setOutputDoc(StyledDocument outputDoc) {
-	this.outputDoc = outputDoc;
+		this.outputDoc = outputDoc;
 	}
 	
 	public StyledDocument getConsoleDoc() {
-	return consoleDoc;
+		return consoleDoc;
 	}
 	
 	public void buildGUI() {
 	
-	f = new JFrame("IDE TextBox");
-	textEditor = new JTextPane();
-	output = new JTextPane();
-	console = new JTextPane();
-	registers = new JTextPane();
+		f = new JFrame("IDE TextBox");
+		textEditor = new JTextPane();
+		output = new JTextPane();
+		console = new JTextPane();
+		registers = new JTextPane();
 	    attrWHITE = new SimpleAttributeSet();
 	    menu = new JMenuBar();
 	    
@@ -262,19 +269,45 @@ public class GUI extends javax.swing.JFrame {
 	    StyleConstants.setForeground(attrWHITE, Color.WHITE);
 	    
 	    fileDropdown = new JMenu("File");
+	    genObjectFile = new JButton("Generate Object File");
+	    loadMemoryFile = new JButton("Upload Memory File");
 	    openFileOpt = new JMenuItem("Open");
 	    saveFileOpt = new JMenuItem("Save");
-	    genObjectFileOpt = new JMenuItem("Generate Object File");
 	    fileDropdown.add(openFileOpt);
 	    fileDropdown.add(saveFileOpt);
-	    fileDropdown.add(genObjectFileOpt);
 	    menu.add(fileDropdown);
+	    menu.add(genObjectFile);
+	    menu.add(loadMemoryFile);
 	    
+	    genObjectFile.addActionListener(new ActionListener() {
 
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				try {
+					console.getStyledDocument().insertString(console.getStyledDocument().getLength(), "Generate Object File Pressed.", attrWHITE);
+				} catch (BadLocationException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
 
-     
-
+	    });
 	    
+	    loadMemoryFile.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				try {
+					console.getStyledDocument().insertString(console.getStyledDocument().getLength(), "Upload Memory File Pressed.", attrWHITE);
+				} catch (BadLocationException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+	    	
+	    });
 	    
 	    openFileOpt.addActionListener(new ActionListener() {
             @Override
@@ -285,24 +318,25 @@ public class GUI extends javax.swing.JFrame {
                     	File f = fileChooser.getSelectedFile();
                     	
                     	FileManager fm = new FileManager();
-	String fileContent = null;
-	try {
-	fileContent = fm.read(f);
-	} catch (IOException e2) {
-	// TODO Auto-generated catch block
-	e2.printStackTrace();
-	}
+                    	String fileContent = null;
+                    	try {
+                    		fileContent = fm.read(f);
+                    	} catch (IOException e2) {
+                    		// TODO Auto-generated catch block
+                    		e2.printStackTrace();
+                    	}
                 	
-	try {
-	textEditorDoc.remove(0, textEditorDoc.getLength());
-	textEditorDoc.insertString(0, fileContent, attrWHITE);
-	Parser p = new Parser();
-	Tokenizer tokenizer = new Tokenizer(fileContent);
-	p.parse(tokenizer);
-	} catch (BadLocationException e1) {
-	// TODO Auto-generated catch block
-	e1.printStackTrace();
-	}
+                    	try {
+                    		textEditorDoc.remove(0, textEditorDoc.getLength());
+                    		textEditorDoc.insertString(0, fileContent, attrWHITE);
+                    		Parser p = new Parser();
+                    		Tokenizer tokenizer = new Tokenizer(fileContent);
+                    		String parsed = p.parse(tokenizer);
+                    		console.getStyledDocument().insertString(0, parsed, attrWHITE);
+                    	} catch (BadLocationException e1) {
+                    		// TODO Auto-generated catch block
+                    		e1.printStackTrace();
+                    	}
                         break;
                 }
             }
@@ -341,7 +375,7 @@ public class GUI extends javax.swing.JFrame {
 	    memoryScrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Memory"));
 	    
 	    JScrollPane consoleScrollPane = new JScrollPane(console);
-	    consoleScrollPane.setBounds(0, 480,1275,900);
+	    consoleScrollPane.setBounds(0, 480,1275,450);
 	    consoleScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 	    consoleScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 	    consoleScrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Console"));
@@ -355,13 +389,13 @@ public class GUI extends javax.swing.JFrame {
 	  
 	    
 	    JPanel registerPanel = new JPanel(new GridBagLayout());
-	    JTable table=new JTable(regs.size(),2);
+	    JTable table = new JTable(regs.size(),2);
 	    table.setBackground(Color.gray);
 	    table.setBounds(5,20, 200, 150);
 	    table.setFont(new Font("Tahome",Font.ITALIC,14));
 	   
-	    int row=0;
-	    for(Map.Entry<String,String> entry: regs.entrySet()){
+	    int row = 0;
+	    for (Map.Entry<String,String> entry : regs.entrySet()) {
 	         table.setValueAt(entry.getKey(),row,0);
 	         table.setValueAt(entry.getValue(),row,1);
 	         row++;
