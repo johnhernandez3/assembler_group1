@@ -18,16 +18,13 @@ public class Tokenizer {
 		this.offset = 0;
 		this.tokenPatterns = new ArrayList<>();
 		this.tokenPatterns.add(new TokenRegex(TokenType.COMMENT, "\\/\\/[^\\n\\r]*"));
-//		this.tokenPatterns.add(new TokenRegex(TokenType.COMMA, ","));
-//		this.tokenPatterns.add(new TokenRegex(TokenType.LABEL, "[A-Za-z][A-Za-z0-9]*:"));
-		this.tokenPatterns.add(new TokenRegex(TokenType.INSTRUCTION, "#?[A-Za-z0-9]+:?"));
+		this.tokenPatterns.add(new TokenRegex(TokenType.ADDRESS, "[A-Za-z0-9]+:?"));
 		this.tokenPatterns.add(new TokenRegex(TokenType.CONST, "(const)\\s+([A-Za-z0-9]+)\\s+([A-Fa-f0-9]+)"));
 		this.tokenPatterns.add(new TokenRegex(TokenType.ORIGIN, "(org)\\s+([0-9]+)"));
 		this.tokenPatterns.add(new TokenRegex(TokenType.JMP, "(jmp)\\s+([A-Za-z0-9]+)"));
 		this.tokenPatterns.add(new TokenRegex(TokenType.OPCODE, "(?:\\s)(loadim|loadrind|load|pop|storerind|push|store|addim|subim|add|sub|and|or|xor|not|neg|shiftr|shiftl|rotar|rotal|jmprind|jmpaddr|jcondrind|jcondaddr|loop|grteq|grt|eq|neq|nop|call|return)(?:\\s)"));
 		this.tokenPatterns.add(new TokenRegex(TokenType.REGISTER, "(?:,|\\s+)(?:,?)\\s*(r[0-7])"));
 		
-//		patterns.add(new TokenPattern("^[\n\r]+", TokenType.NEWLINE));
 	}
 	
 	public Token next() {

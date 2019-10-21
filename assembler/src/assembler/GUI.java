@@ -54,7 +54,7 @@ public class GUI extends javax.swing.JFrame {
 	private JMenuItem saveFileOpt;
 	private JTable registerTable;
 	private JTable memoryTable;
-	private static DefaultTableModel tableModel;
+	private DefaultTableModel tableModel;
 	private JTable headerTable;
 
 
@@ -62,6 +62,9 @@ public class GUI extends javax.swing.JFrame {
 
 	Register reg = new Register();
 	HashMap<String,String> regs = reg.getregs();
+	
+	Object[] columnNames = { "Direction", "Content" };
+	Object[][] rowData;
 
 	
 	/****************************************************************************************************************************
@@ -213,17 +216,24 @@ public class GUI extends javax.swing.JFrame {
 	 * 	Memory 
 	 *************************************************************************************************************************** */
 	
-	TableModel memoryDataModel = new AbstractTableModel() {
-
-	private static final long serialVersionUID = 1L;
-	String [] columnNames = {"Direction","Content"};
-	public int getColumnCount() { return columnNames.length; }
-	public String getColumnName(int index){return columnNames[index];}
-	public int getRowCount() { return 2047;}
-	public Object getValueAt(int row, int col) { return new Integer(row*col); }
-	};
+//	TableModel memoryDataModel = new AbstractTableModel() {
+//		private static final long serialVersionUID = 1L;
+//		String[] columnNames = { "Direction", "Content" };
+//		Object[][] rowData;
+//		public int getColumnCount() { return columnNames.length; }
+//		public boolean isCellEditable(int row, int col) { return true; }
+//		public String getColumnName(int index) { return columnNames[index]; }
+//		public int getRowCount() { return 2048; }
+//		public Object getValueAt(int row, int col) { return new Integer(row*col); }
+//		public void setValueAt(Object value, int row, int col) {
+//			rowData[row][col] = value;
+//	        fireTableCellUpdated(row, col);
+//	    }
+//	};
+	String[] columnNames = { "Direction", "Content" };
+	Object[][] rowData = this.initiateMemoryData(new Object[2048][2048]);
 	//Added Model to JTable & add JTable to ScrollPane
-	memoryTable = new JTable(memoryDataModel);
+	memoryTable = new JTable(rowData, columnNames);
 	JScrollPane memoryScrollPane2 = new JScrollPane(memoryTable);
 	memoryScrollPane2.setBounds(800, 0, 480, 480);
 	memoryScrollPane2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -310,6 +320,13 @@ public class GUI extends javax.swing.JFrame {
 	f.setLayout(null);
 	f.setVisible(true);
 
+	}
+	
+	private Object[][] initiateMemoryData(Object[][] rowData) {
+		for (int i = 0; i < 2048; i++) {
+			rowData[i][i] = i;
+		}
+		return rowData;
 	}
 }
 

@@ -1,7 +1,5 @@
 package assembler;
 
-import java.util.ArrayList;
-
 public class Parser {
 	
 	InstructionSet instructionSet = new InstructionSet();
@@ -34,6 +32,8 @@ public class Parser {
 				currentToken.setType(TokenType.ADDRESS);
 			} else if (prevToken != null && prevToken.value.equals("org")) {
 				currentToken.setType(TokenType.ORIGINADDRESS);
+			} else if (prevToken != null && prevToken.value.equals("jmp")) {
+				currentToken.setType(TokenType.ADDRESS);
 			} else if (currentToken.value.equals("org")) {
 				currentToken.setType(TokenType.ORIGIN);
 			}
