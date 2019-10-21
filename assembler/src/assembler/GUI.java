@@ -35,6 +35,7 @@ public class GUI extends javax.swing.JFrame {
 	/****************************************************************************************************************************
 	 * 	Declarations
 	 *************************************************************************************************************************** */
+	
 	private JFrame f;
 	private JTextPane textEditor;
 	private JTextPane output;
@@ -152,40 +153,42 @@ public class GUI extends javax.swing.JFrame {
     });
 
 	openFileOpt.addActionListener(new ActionListener() {
-	@Override
-	public void actionPerformed(ActionEvent e) {
-	JFileChooser fileChooser = new JFileChooser();
-	switch (fileChooser.showOpenDialog(f)) {
-	case JFileChooser.APPROVE_OPTION:
-	File f = fileChooser.getSelectedFile();
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JFileChooser fileChooser = new JFileChooser();
+			switch (fileChooser.showOpenDialog(f)) {
+				case JFileChooser.APPROVE_OPTION:
+					File f = fileChooser.getSelectedFile();
 
-	FileManager fm = new FileManager();
-	String fileContent = null;
-	try {
-	fileContent = fm.read(f);
-	} catch (IOException e2) {
-	// TODO Auto-generated catch block
-	e2.printStackTrace();
-	}
+					FileManager fm = new FileManager();
+					String fileContent = null;
+					try {
+						fileContent = fm.read(f);
+					} catch (IOException e2) {
+						// TODO Auto-generated catch block
+						e2.printStackTrace();
+					}
 
-	try {
-	textEditorDoc.remove(0, textEditorDoc.getLength());
-	textEditorDoc.insertString(0, fileContent, attrWHITE);
-	Parser p = new Parser();
-	Tokenizer tokenizer = new Tokenizer(fileContent);
-	p.parse(tokenizer);
-	} catch (BadLocationException e1) {
-	// TODO Auto-generated catch block
-	e1.printStackTrace();
-	}
-	break;
-	}
-	}
+					try {
+						textEditorDoc.remove(0, textEditorDoc.getLength());
+						textEditorDoc.insertString(0, fileContent, attrWHITE);
+						Parser p = new Parser();
+						Tokenizer tokenizer = new Tokenizer(fileContent);
+						p.parse(tokenizer);
+					} catch (BadLocationException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					break;
+			}	
+		}
 
 	});
+	
 	/****************************************************************************************************************************
 	 * 	TextEditor, Output, Console SetUp
 	 *************************************************************************************************************************** */
+	
 	f.setJMenuBar(menu);
 
 	textEditor.setBackground(Color.DARK_GRAY);
@@ -209,6 +212,7 @@ public class GUI extends javax.swing.JFrame {
 	/****************************************************************************************************************************
 	 * 	Memory 
 	 *************************************************************************************************************************** */
+	
 	TableModel memoryDataModel = new AbstractTableModel() {
 
 	private static final long serialVersionUID = 1L;
@@ -228,16 +232,18 @@ public class GUI extends javax.swing.JFrame {
 
 	/****************************************************************************************************************************
 	 * 	TextEditor
-	 *************************************************************************************************************************** */
+	 **************************************************************************************************************************** */
 	
 	JScrollPane textEditorScrollPane = new JScrollPane(textEditor);
 	textEditorScrollPane.setBounds(300, 0, 500, 480);
 	textEditorScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 	textEditorScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 	textEditorScrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Text Editor"));
+	
 	/****************************************************************************************************************************
 	 * 	Memory Scrollpane(Not Used)
 	 *************************************************************************************************************************** */
+	
 	JScrollPane memoryScrollPane = new JScrollPane(output);
 	memoryScrollPane.setBounds(800, 0, 480, 480);
 	memoryScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -247,6 +253,7 @@ public class GUI extends javax.swing.JFrame {
 	/****************************************************************************************************************************
 	 * 	ConsoleScrollPane
 	 *************************************************************************************************************************** */
+	
 	JScrollPane consoleScrollPane = new JScrollPane(console);
 	consoleScrollPane.setBounds(0, 480,1275,900);
 	consoleScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);

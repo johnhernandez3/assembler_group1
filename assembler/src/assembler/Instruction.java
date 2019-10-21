@@ -1,29 +1,27 @@
 package assembler;
 
-import java.util.ArrayList;
-
 public class Instruction {
 	
+//	format = 1 = {F1}, format = 2 = {F2}, format = 3 = {F3}, format = 0 = NO FORMAT e.j. RETURN
 	public int format;
-	public String name;
 	public String opcode;
-	public ArrayList<Token> tokens;
 	
 	
-	public Instruction(int format, ArrayList<Token> tokens) {
-		if (tokens == null) {
-			throw new NullPointerException();
-		}
+	public Instruction(int format, String opcode) {
 		this.format = format;
-		this.tokens = tokens;
+		this.opcode = opcode;
+	}
+	
+	public int getFormat() {
+		return format;
+	}
+
+	public String getOpcode() {
+		return opcode;
 	}
 	
 	@Override
 	public String toString() {
-		String result = String.format("Instruction: \nFormat: %s", format);
-		for (Token t : tokens) {
-			result += " " + t.toString();
-		}
-		return result;
+		return String.format("Format: %s, Opcode: %s", format, opcode);
 	}
 }
