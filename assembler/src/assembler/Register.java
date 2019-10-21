@@ -1,4 +1,3 @@
-
 package assembler;
 
 import java.util.HashMap;
@@ -74,13 +73,13 @@ public class Register {
 	
 	public String loadrind(String a, String b) {
 		if(doublezerr(a, b)) return null;
-		regs.replace(b, regs.get(a));
+		regs.put(b, regs.get(a));
 		return a;
 	}
 	
 	public String storerind(String a, String b) {
 		if(doublezerr(a, b)) return null;
-		regs.replace(a, regs.get(b));
+		regs.put(a, regs.get(b));
 		return a;
 	}
 	
@@ -198,25 +197,25 @@ public class Register {
 	
 	public String shiftr(String a, String b, String c) {
 		if(triplezerr(a, b, c)) return null;
-		regs.put(a, String.format("%04x", Integer.parseInt(regs.get(b) + regs.get(c), 16)>>> 1));
+		regs.put(a, String.format("%04x", Integer.parseInt(regs.get(b), 16)>>> Integer.parseInt(regs.get(c), 16)));
 		return a;
 	}
 	
 	public String shiftl(String a, String b, String c) {
 		if(triplezerr(a, b, c)) return null;
-		regs.put(a, String.format("%04x", Integer.parseInt(regs.get(b) + regs.get(c), 16)<<1));
+		regs.put(a, String.format("%04x", Integer.parseInt(regs.get(b), 16)<< Integer.parseInt(regs.get(c), 16)));
 		return a;
 	}
 	
 	public String rotar(String a, String b, String c) {
 		if(triplezerr(a, b, c)) return null;
-		regs.put(a, Integer.toHexString(Integer.rotateRight(Integer.parseInt(regs.get(b) + regs.get(c), 16), 4)));
+		regs.put(a, Integer.toHexString(Integer.rotateRight(Integer.parseInt(regs.get(b), 16), Integer.parseInt(regs.get(c), 16))));
 		return a;
 	}
 	
 	public String rotal(String a, String b, String c) {
 		if(triplezerr(a, b, c)) return null;
-		regs.put(a, Integer.toHexString(Integer.rotateLeft(Integer.parseInt(regs.get(b) + regs.get(c), 16), 4)));
+		regs.put(a, Integer.toHexString(Integer.rotateLeft(Integer.parseInt(regs.get(b), 16), Integer.parseInt(regs.get(c), 16))));
 		return a;
 	}
 	
@@ -247,9 +246,11 @@ public class Register {
 	
 	public String loop(String a, String b) {
 		if(zeroerr(a)) return null;
+		int bool = Integer.parseInt(regs.get(a), 16);
 		regs.put(a, Integer.toString(Integer.parseInt(regs.get(a), 16) - 1));
-		if(Integer.parseInt(regs.get(a), 16) != 0) {
+		if(bool != 0) {
 			pc = b;
+			bool--;
 		}
 		return a;
 	}
