@@ -63,8 +63,8 @@ public class GUI extends javax.swing.JFrame {
 	Register reg = new Register();
 	HashMap<String,String> regs = reg.getregs();
 	
-	Object[] columnNames = { "Direction", "Content" };
-	Object[][] rowData;
+	String[] columnNames = { "Direction", "Content" };
+	Object[][] rowData = new Memory().memData();
 
 	
 	/****************************************************************************************************************************
@@ -141,16 +141,36 @@ public class GUI extends javax.swing.JFrame {
     });
     
     loadMemoryFile.addActionListener(new ActionListener() {
-
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
-			try {
-				console.getStyledDocument().insertString(console.getStyledDocument().getLength(), "Upload Memory File Pressed.", attrWHITE);
-			} catch (BadLocationException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			JFileChooser fileChooser = new JFileChooser();
+			switch (fileChooser.showOpenDialog(f)) {
+				case JFileChooser.APPROVE_OPTION:
+					File f = fileChooser.getSelectedFile();
+
+					FileManager fm = new FileManager();
+					String fileContent = null;
+					try {
+						fileContent = fm.read(f);
+					} catch (IOException e2) {
+						// TODO Auto-generated catch block
+						e2.printStackTrace();
+					}
+
+					try {
+						// load memory with fileContent String here
+						console.getStyledDocument().insertString(console.getStyledDocument().getLength(), "Upload Memory File Uploaded.", attrWHITE);
+						Memory mem = new Memory();
+						mem.loadMemoryFromFile(fileContent);
+						DefaultTableModel model = new DefaultTableModel(mem.memData(), columnNames);
+						memoryTable.setModel(model);
+						memoryTable.repaint();
+					} catch (BadLocationException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					break;
+			}	
 		}
     	
     });
@@ -230,8 +250,6 @@ public class GUI extends javax.swing.JFrame {
 //	        fireTableCellUpdated(row, col);
 //	    }
 //	};
-	String[] columnNames = { "Direction", "Content" };
-	Object[][] rowData = new Memory().memData();
 	//Added Model to JTable & add JTable to ScrollPane
 	memoryTable = new JTable(rowData, columnNames);
 	JScrollPane memoryScrollPane2 = new JScrollPane(memoryTable);
@@ -320,13 +338,6 @@ public class GUI extends javax.swing.JFrame {
 	f.setLayout(null);
 	f.setVisible(true);
 
-	}
-	
-	private Object[][] initiateMemoryData(Object[][] rowData) {
-		for (int i = 0; i < 2048; i++) {
-			rowData[i][i] = i;
-		}
-		return rowData;
 	}
 }
 

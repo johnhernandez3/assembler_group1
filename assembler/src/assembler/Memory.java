@@ -45,26 +45,18 @@ public class Memory {
 	// each location has. This idea was to implement the 'const' functionality.
 	
 	public Memory() {
-		for (int i = 0; i < 2048; i++) {
-	    	if (i < 10) {
-	    		memory.add(new MemoryLocation("0" + i, "00"));
-	    	} else {
-	    		memory.add(new MemoryLocation("" + i, "00"));
-	    	}
-	    }
-	}
-	
-	public Memory(String inst) {
-    
-	    for(String s : Mem) {
-	    	if(s.isEmpty()) {
-	    		s = setter;
-	    	}
-	    }
+//		for (int i = 0; i < 2048; i++) {
+//	    	if (i < 10) {
+//	    		memory.add(new MemoryLocation("0" + i, "00"));
+//	    	} else {
+//	    		memory.add(new MemoryLocation("" + i, "00"));
+//	    	}
+//	    }
 	}
 	
 	public Object[][] memData() {
 		Object[][] data = new Object[2048][2];
+		
 		int l = 0;
 		for (MemoryLocation d : this.memory) {
 			data[l][0] = d.getDirection();
@@ -77,6 +69,26 @@ public class Memory {
 		}
 		
 		return data;
+	}
+	
+	public void loadMemoryFromFile(String fileContent) {
+		String nextDirectionContent = "";
+		fileContent = fileContent.trim().replaceAll("\n||\t||\r", "");
+		for (int i = 0; i < (fileContent.length() - 2); i+=2) {
+			nextDirectionContent = fileContent.substring(i, i+2);
+			if (!this.memory.isEmpty()) {
+				if (this.memory.size() < 10) {
+		    		memory.add(new MemoryLocation("0" + (this.memory.size() + ""), nextDirectionContent));
+		    		System.out.println("Added: " + nextDirectionContent);
+		    	} else {
+		    		memory.add(new MemoryLocation("" + (this.memory.size() + ""), nextDirectionContent));
+		    		System.out.println("Added: " + nextDirectionContent);
+		    	}
+			} else {
+				memory.add(new MemoryLocation("00", nextDirectionContent));
+	    		System.out.println("Added: " + nextDirectionContent);
+			}
+		}
 	}
 
 	public String MemtoHex() {
