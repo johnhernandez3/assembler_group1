@@ -22,10 +22,8 @@ public class InstructionFormat {
 	}
 	
 	public void addInstruction(ArrayList<Token> t) {
-		// Create method to verify each token's type and classify the instruction (f1,f2,f3)
-		
-		// Inside that method also verify the token order to
-		// throw the necessary warnings and/or error messages
+//		If token = origin, next token = originaddress if not error
+//		If token = jmp, next token = address if not error store address variable in table
 	}
 
 	private String Formatted1(String op, String rega, String regb, String regc) {

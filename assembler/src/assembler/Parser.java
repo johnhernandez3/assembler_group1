@@ -1,8 +1,12 @@
 package assembler;
 
+import java.util.ArrayList;
+
 public class Parser {
 	
 	InstructionSet instructionSet = new InstructionSet();
+	InstructionFormat instructionFormat = new InstructionFormat();
+	ArrayList<Token> tokens = new ArrayList<>();
 	
 	public String parse(Tokenizer tokenizer) {
 		
@@ -34,14 +38,22 @@ public class Parser {
 				currentToken.setType(TokenType.ORIGINADDRESS);
 			} else if (prevToken != null && prevToken.value.equals("jmp")) {
 				currentToken.setType(TokenType.ADDRESS);
+			} else if (prevToken != null && prevToken.type.equals(TokenType.ADDRESS)) {
+				currentToken.setType(TokenType.HEX);
 			} else if (currentToken.value.equals("org")) {
 				currentToken.setType(TokenType.ORIGIN);
 			}
 			System.out.println(currentToken.toString());
+			tokens.add(currentToken);
 			result += currentToken.toString() + "\n";
 			prevToken = currentToken;
 			currentToken = tokenizer.next();
 		}
+		instructionFormat.addInstruction(tokens);
 		return result;
+	}
+	
+	public ArrayList<Token> getAllTokens() {
+		return this.tokens;
 	}
 }
