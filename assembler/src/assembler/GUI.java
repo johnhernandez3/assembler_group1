@@ -132,6 +132,7 @@ public class GUI extends javax.swing.JFrame {
 			// TODO Auto-generated method stub
 			try {
 				console.getStyledDocument().insertString(console.getStyledDocument().getLength(), "Generate Object File Pressed.", attrWHITE);
+				
 			} catch (BadLocationException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -195,9 +196,9 @@ public class GUI extends javax.swing.JFrame {
 					try {
 						textEditorDoc.remove(0, textEditorDoc.getLength());
 						textEditorDoc.insertString(0, fileContent, attrWHITE);
-						Parser p = new Parser();
-						Tokenizer tokenizer = new Tokenizer(fileContent);
-						p.parse(tokenizer);
+						Parser p = new Parser(fileContent);
+						String parsed = p.parse();
+						System.out.println(parsed);
 					} catch (BadLocationException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
