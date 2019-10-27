@@ -57,6 +57,7 @@ public class Register {
 	public String load(String a, String b) { //F2 y loadim
 		if(zeroerr(a)) return null;
 		regs.put(a, b);
+		checkr7(a);
 		return a;
 	}
 	
@@ -64,12 +65,14 @@ public class Register {
 		if(zeroerr(a)) return null;
 		regs.put(a, mem[Integer.parseInt(sp)]);
 		sp = Integer.toString(Integer.parseInt(sp) + 1);
+		checkr7(a);
 		return a;
 	}
 	
 	public String store(String a, String b) { //F2
 		if(zeroerr(b)) return null;
 		regs.put(mem[Integer.parseInt(sp)], b);
+		checkr7(a);
 		return b;
 	}
 	
@@ -83,12 +86,14 @@ public class Register {
 	public String loadrind(String a, String b) {
 		if(doublezerr(a, b)) return null;
 		regs.put(b, regs.get(a));
+		checkr7(a);
 		return a;
 	}
 	
 	public String storerind(String a, String b) {
 		if(doublezerr(a, b)) return null;
 		regs.put(a, regs.get(b));
+		checkr7(a);
 		return a;
 	}
 	
@@ -101,6 +106,7 @@ public class Register {
 		int add1 = Integer.parseInt(tok2, 16);
 		int add2 = Integer.parseInt(tok3, 16);
 		regs.put(a, String.format("%02x", add1 + add2));
+		checkr7(a);
 		return regs.get(a);
 	}
 	
@@ -110,6 +116,7 @@ public class Register {
 		int add1 = Integer.parseInt(tok2, 16);
 		int add2 = Integer.parseInt(tok3, 16);
 		regs.put(a, String.format("%02x", add1 - add2));
+		checkr7(a);
 		return regs.get(a);
 	}
 	
@@ -117,12 +124,14 @@ public class Register {
 	public String addim(String a, String b) {
 		if(zeroerr(a)) return null;
 		regs.put(a, Integer.toHexString(Integer.parseInt(a, 16) + Integer.parseInt(b, 2)));
+		checkr7(a);
 		return a;
 	}
 	
 	public String subim(String a, String b) {
 		if(zeroerr(a)) return null;
 		regs.put(a, Integer.toHexString(Integer.parseInt(a, 16) - Integer.parseInt(b, 2)));
+		checkr7(a);
 		return a;
 	}
 	
@@ -143,6 +152,7 @@ public class Register {
 			}
 		}
 		regs.put(a, String.format("%02x", Integer.parseInt(str, 2)));
+		checkr7(a);
 		return a;
 	}
 	
@@ -160,6 +170,7 @@ public class Register {
 			}
 		}
 		regs.put(a, String.format("%02x", Integer.parseInt(str, 2)));
+		checkr7(a);
 		return regs.get(a);
 	}
 	
@@ -177,6 +188,7 @@ public class Register {
 			}
 		}
 		regs.put(a, String.format("%02x", Integer.parseInt(str, 2)));
+		checkr7(a);
 		return regs.get(a);
 	}
 	
@@ -194,6 +206,7 @@ public class Register {
 			}
 		}
 		regs.put(a, String.format("%02x", Integer.parseInt(s, 2)));
+		checkr7(a);
 		return regs.get(a);
 	}
 	
@@ -201,30 +214,35 @@ public class Register {
 		if(doublezerr(a, b)) return null;
 		String s = String.format("%x", ~(Integer.parseInt(regs.get(b), 16)));
 		regs.put(a, s.substring(s.length() - 2, s.length()));
+		checkr7(a);
 		return a;
 	}
 	
 	public String shiftr(String a, String b, String c) {
 		if(triplezerr(a, b, c)) return null;
 		regs.put(a, String.format("%04x", Integer.parseInt(regs.get(b), 16)>>> Integer.parseInt(regs.get(c), 16)));
+		checkr7(a);
 		return a;
 	}
 	
 	public String shiftl(String a, String b, String c) {
 		if(triplezerr(a, b, c)) return null;
 		regs.put(a, String.format("%04x", Integer.parseInt(regs.get(b), 16)<< Integer.parseInt(regs.get(c), 16)));
+		checkr7(a);
 		return a;
 	}
 	
 	public String rotar(String a, String b, String c) {
 		if(triplezerr(a, b, c)) return null;
 		regs.put(a, Integer.toHexString(Integer.rotateRight(Integer.parseInt(regs.get(b), 16), Integer.parseInt(regs.get(c), 16))));
+		checkr7(a);
 		return a;
 	}
 	
 	public String rotal(String a, String b, String c) {
 		if(triplezerr(a, b, c)) return null;
 		regs.put(a, Integer.toHexString(Integer.rotateLeft(Integer.parseInt(regs.get(b), 16), Integer.parseInt(regs.get(c), 16))));
+		checkr7(a);
 		return a;
 	}
 	
@@ -253,7 +271,7 @@ public class Register {
 		return a;
 	}
 	
-	public String loop(String a, String b) {
+	public String loop(String a, String b) {//needs work
 		if(zeroerr(a)) return null;
 		int bool = Integer.parseInt(regs.get(a), 16);
 		regs.put(a, Integer.toString(Integer.parseInt(regs.get(a), 16) - 1));
@@ -313,6 +331,11 @@ public class Register {
 //	End r0
 	
 //	Check r7
+	public void checkr7(String a) {
+		if(a.equals("r7")) {
+			sp = regs.get(a);
+		}
+	}
 	
 //	End r7
 	
