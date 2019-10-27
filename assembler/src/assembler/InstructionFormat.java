@@ -59,22 +59,22 @@ public class InstructionFormat {
 	public String Fswitch(String a, String b, String c, String d, int i) {
 		String str = "";
 		switch(i) {
-			case 4:
+			case 1:
 				F1switch(a, b, c, d);
 				str = Formatted1(a, b, c, d);
 				break;
-			case 3:
+			case 2:
 				F2switch(a, b, c);
 				str = Formatted2(a, b, c);
 				break;
-			case 2:
+			case 3:
 				F3switch(a, b);
 				str = Formatted3(a, b);
 				break;
 			default:
 				break;
 		}
-		return str;
+		return conv.binToHex(str);
 	}
 
 	private void F1switch(String a, String b, String c, String d) {
@@ -173,12 +173,15 @@ public class InstructionFormat {
 				break;
 			case "jcondrind":
 				//needs work
+				regloc.jcondrind(true, b);
 				break;
 			case "jcondaddr":
 				//needs work
+				regloc.jcondaddr(true, b);
 				break;
 			case "loop":
 				//needs work
+				regloc.loop(b, b);
 				break;
 			case "call":
 				regloc.call(b);

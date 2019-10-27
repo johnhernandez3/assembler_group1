@@ -44,6 +44,15 @@ public class Register {
 		return regloc;
 	}
 	
+//	Access to sp and pc
+	public String getSP() {
+		return sp;
+	}
+	
+	public String getPC() {
+		return pc;
+	}
+	
 //	Set Regs
 	public String load(String a, String b) { //F2 y loadim
 		if(zeroerr(a)) return null;
@@ -302,5 +311,9 @@ public class Register {
 		return zeroerr(a) || zeroerr(b);
 	}
 //	End r0
+	
+//	Check r7
+	
+//	End r7
 	
 }
