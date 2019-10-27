@@ -1,6 +1,7 @@
 package assembler;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,11 +20,15 @@ public class Tokenizer {
 		this.offset = 0;
 		this.tokenPatterns = new ArrayList<>();
 		this.lines = new ArrayList<>();
-		String newline = System.getProperty("line.separator");
-//		boolean hasNewline = word.contains(newline);
-		
-		
-		
+		Scanner scanner = new Scanner(this.source);
+		int c = 1;
+		while (scanner.hasNextLine()) {
+			String s = scanner.nextLine().trim();
+			this.lines.add(s);
+			System.out.println("Line " + c + ": " + s);
+			c++;
+		}
+		scanner.close();
 		
 		
 		this.tokenPatterns.add(new TokenRegex(TokenType.COMMENT, "\\/\\/[^\\n\\r]*"));
