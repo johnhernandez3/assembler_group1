@@ -123,14 +123,14 @@ public class Register {
 //	Needs error handler for addr
 	public String addim(String a, String b) {
 		if(zeroerr(a)) return null;
-		regs.put(a, Integer.toHexString(Integer.parseInt(a, 16) + Integer.parseInt(b, 2)));
+		regs.put(a, Integer.toHexString(Integer.parseInt(regs.get(a), 16) + Integer.parseInt(b, 16)));
 		checkr7(a);
 		return a;
 	}
 	
 	public String subim(String a, String b) {
 		if(zeroerr(a)) return null;
-		regs.put(a, Integer.toHexString(Integer.parseInt(a, 16) - Integer.parseInt(b, 2)));
+		regs.put(a, Integer.toHexString(Integer.parseInt(regs.get(a), 16) - Integer.parseInt(b, 16)));
 		checkr7(a);
 		return a;
 	}

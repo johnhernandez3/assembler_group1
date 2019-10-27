@@ -7,9 +7,59 @@ import java.util.Map;
 
 import assembler.Converter;
 
-public class Memory {
+public class Memory implements MemoryInterface {
 	
-	public class MemoryLocation {
+//	Try to make it into a doubly linked list to traverse to the next and prev with ease
+//	private class MemoryNode<T> {
+//		private MemoryNode<T> curr;
+//		private MemoryNode<T> prev;
+//		private MemoryNode<T> next;
+//		private MemoryLocation here;
+//		
+//		public MemoryNode(MemoryNode<T> prev, MemoryNode<T> curr, MemoryNode<T> next, MemoryLocation here) {
+//			this.curr = curr;
+//			this.next = next;
+//			this.prev = prev;
+//			this.here = here;
+//		}
+//
+//		public MemoryNode<T> getCurr() {
+//			return curr;
+//		}
+//
+//		public void setCurr(MemoryNode<T> curr) {
+//			this.curr = curr;
+//		}
+//
+//		public MemoryNode<T> getPrev() {
+//			return prev;
+//		}
+//
+//		public void setPrev(MemoryNode<T> prev) {
+//			this.prev = prev;
+//		}
+//
+//		public MemoryNode<T> getNext() {
+//			return next;
+//		}
+//
+//		public void setNext(MemoryNode<T> next) {
+//			this.next = next;
+//		}
+//
+//		public MemoryLocation getHere() {
+//			return here;
+//		}
+//
+//		public void setHere(MemoryLocation here) {
+//			this.here = here;
+//		}
+//		
+//		
+//	}
+	
+	
+	public class MemoryLocation implements MemoryLocationInterface {
 		
 		public String direction;
 		public String content;
@@ -37,7 +87,6 @@ public class Memory {
 	}
 	
 	String address; 
-	String setter = "0000000000000000";
 	ArrayList<String> Mem = new ArrayList<String>();
 	ArrayList<MemoryLocation> memory = new ArrayList<>();
 	
@@ -67,8 +116,15 @@ public class Memory {
 			data[l][1] = c.getContent();
 			l++;
 		}
-		
 		return data;
+	}
+	
+	public MemoryLocation currAddr(int i) {
+		return memory.get(i);
+	}
+	
+	public String instrBefore(MemoryLocation addr) {
+		return memory.get(Integer.parseInt(addr.getDirection()) - 2).getContent() + memory.get(Integer.parseInt(addr.getDirection()) - 1).getContent();
 	}
 	
 	public void loadMemoryFromFile(String fileContent) {

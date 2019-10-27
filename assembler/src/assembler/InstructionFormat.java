@@ -116,8 +116,10 @@ public class InstructionFormat {
 			case "load":
 				regloc.load(b, c);
 				break;
+			case "loadim":// needs work
+				regloc.load(b, c);
 			case "pop":
-				regloc.pop(b);//work needed
+				regloc.pop(b);// work needed
 				break;
 			case "store":
 				regloc.store(b, c);
