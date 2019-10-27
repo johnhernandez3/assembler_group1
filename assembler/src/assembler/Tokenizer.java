@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 public class Tokenizer {
 	
 	private ArrayList<TokenRegex> tokenPatterns;
+	private ArrayList<String> lines;
 	private String source;
 	private int offset;
 	
@@ -17,6 +18,14 @@ public class Tokenizer {
 		this.source = source;
 		this.offset = 0;
 		this.tokenPatterns = new ArrayList<>();
+		this.lines = new ArrayList<>();
+		String newline = System.getProperty("line.separator");
+//		boolean hasNewline = word.contains(newline);
+		
+		
+		
+		
+		
 		this.tokenPatterns.add(new TokenRegex(TokenType.COMMENT, "\\/\\/[^\\n\\r]*"));
 		this.tokenPatterns.add(new TokenRegex(TokenType.ADDRESS, "[A-Za-z0-9]+:?"));
 		this.tokenPatterns.add(new TokenRegex(TokenType.CONST, "(const)\\s+([A-Za-z0-9]+)\\s+([A-Fa-f0-9]+)"));
