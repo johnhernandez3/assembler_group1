@@ -52,7 +52,20 @@ public class Parser {
 	public String parseLine(String line) {
 		String result = "";
 		tokens = tokenizer.getTokens(line);
+		if(tokens.size() == 4) {
+			result = instructionFormat.Fswitch(tokens.get(0).toString(), tokens.get(1).toString(), 
+					tokens.get(2).toString(), tokens.get(3).toString(), 1);
+		}
+		else if(tokens.size() == 3) {
+			result = instructionFormat.Fswitch(tokens.get(0).toString(), tokens.get(1).toString(), 
+					tokens.get(2).toString(), "", 2);
+		}
+		else if(tokens.size() <= 2) {
+			result = instructionFormat.Fswitch(tokens.get(0).toString(), tokens.get(1).toString(), 
+					"", "", 3);
+		}
 		for (Token t : tokens) {
+			
 			this.classifyToken(t);
 			result += t.toString() + " ";
 		}

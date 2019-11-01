@@ -21,24 +21,43 @@ public class Converter {
 		 String hex4 = Integer.toHexString(dec4);
 		 
 		 return hex1 + hex2 + hex3 + hex4;
+//		while(str.length()%4 != 0) {
+//			str = "0" + str;
+//		}
+//		String s = "";
+//		for(int i = 0; i < str.length(); i+=4) {
+//			int dec1 = Integer.parseInt(str.substring(i, i + 4));
+//			s += Integer.toHexString(dec1);
+//		}
+//		return s;
 	}
 	
 	public String hextoBin(String str){
 		//Declare String binary numbers
 		String bin1= "";
 		String bin2= "";
+		int dec2 = 0;
+		if(str.length() == 2) {
+			dec2 = hex.indexOf(str.charAt(1));
+		}
 		//Return Decimal number of Hex Number based on index
 		int dec1 = hex.indexOf(str.charAt(0));
-		int dec2 = hex.indexOf(str.charAt(1));
+		dec2 = hex.indexOf(str.charAt(1));
 		
 		//If binary number has less than 4 digits it returns new binary number with 4 digit format
 		if(dec1 < 4){
-		 bin1 = String.format("%04d",(Integer.parseInt(Integer.toBinaryString(dec1))));
+		 bin1 = String.format("%04d", dec1);
 		}
 		else if(dec2 < 4){
-	 	bin2 = String.format("%04d",(Integer.parseInt(Integer.toBinaryString(dec2))));
+	 	bin2 = String.format("%04d", dec2);
 		}
 		
 		return bin1 + bin2;
+//		String s = "";
+//		for(int i = 0; i < str.length(); i++) {
+//			int dec1 = hex.indexOf(str.charAt(i));
+//			s += String.format("04d", dec1);
+//		}
+//		return s;
 		}
 }

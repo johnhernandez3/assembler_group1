@@ -31,6 +31,6 @@ class Token {
 	
 	@Override
 	public String toString() {
-		return String.format("(%s, '%s')", type, value);
+		return value;
 	}
 }

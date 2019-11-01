@@ -66,7 +66,8 @@ public class InstructionSet {
 	 ** 
 	 **/
 	public String BinaryReturn(String str) {
-		return map.get(str.toLowerCase()).getOpcode();
+		if(str.equals("org")) return "";
+		return map.get(str).getOpcode();
 	}
 
 }
