@@ -6,7 +6,9 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +19,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -266,6 +269,31 @@ public class GUI extends javax.swing.JFrame {
 			}	
 		}
 
+	});
+	saveFileOpt.addActionListener(new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JFileChooser saver = new JFileChooser("./");
+	        int returnVal = saver.showSaveDialog(getParent());
+	        File file = saver.getSelectedFile();
+	        BufferedWriter writer = null;
+	        if (returnVal == JFileChooser.APPROVE_OPTION)
+	        {
+	            try
+	            {
+	            writer = new BufferedWriter( new FileWriter(file));
+	            writer.write( textEditor.getText());
+	            writer.close( );
+	          
+	            }
+	            catch (IOException s)
+	            {
+	            
+	            }
+	        }
+		}
+		
 	});
 	
 	/****************************************************************************************************************************
