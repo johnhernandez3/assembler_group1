@@ -50,12 +50,16 @@ public class GUI extends javax.swing.JFrame {
 	private JMenu fileDropdown;
 	private JButton genObjectFile;
 	private JButton loadMemoryFile;
+	private JButton executePrev;
+	private JButton executeAll;
+	private JButton executeNext;
 	private JMenuItem openFileOpt;
 	private JMenuItem saveFileOpt;
 	private JTable registerTable;
 	private JTable memoryTable;
 	private DefaultTableModel tableModel;
 	private JTable headerTable;
+	private Runner runner;
 
 
 	private static int columnNumber = 1;
@@ -117,6 +121,11 @@ public class GUI extends javax.swing.JFrame {
 	fileDropdown = new JMenu("File");
     genObjectFile = new JButton("Generate Object File");
     loadMemoryFile = new JButton("Upload Memory File");
+    
+    executePrev = new JButton("Prev Instruction");
+    executeAll = new JButton("Execute All");
+    executeNext = new JButton("Next Instruction");
+    
     openFileOpt = new JMenuItem("Open");
     saveFileOpt = new JMenuItem("Save");
     fileDropdown.add(openFileOpt);
@@ -125,14 +134,63 @@ public class GUI extends javax.swing.JFrame {
     menu.add(genObjectFile);
     menu.add(loadMemoryFile);
     
+    menu.add(executePrev);
+    menu.add(executeAll);
+    menu.add(executeNext);
+    
+    executePrev.addActionListener(new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			try {
+				if (textEditor.getStyledDocument().getLength() == 0) {
+					console.getStyledDocument().insertString(console.getStyledDocument().getLength(), "There are no instructions...\n", attrWHITE);
+				}
+			} catch (BadLocationException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+    });
+    executeAll.addActionListener(new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			try {
+				console.getStyledDocument().insertString(console.getStyledDocument().getLength(), "Execute all pressed.\n", attrWHITE);
+			} catch (BadLocationException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+    });
+    executeNext.addActionListener(new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			try {
+				console.getStyledDocument().insertString(console.getStyledDocument().getLength(), "Execute next pressed.\n", attrWHITE);
+			} catch (BadLocationException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+    });
+    
     genObjectFile.addActionListener(new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			try {
-				console.getStyledDocument().insertString(console.getStyledDocument().getLength(), "Generate Object File Pressed.", attrWHITE);
-				
+				console.getStyledDocument().insertString(console.getStyledDocument().getLength(), "Generate Object File Pressed.\n", attrWHITE);
+				String fileContent = textEditor.getStyledDocument().getText(0, textEditor.getStyledDocument().getLength());
+				Parser p = new Parser(fileContent);
+				runner = new Runner(p.parseLine(fileContent));
+				console.getStyledDocument().insertString(console.getStyledDocument().getLength(), runner.runLine(), attrWHITE);
 			} catch (BadLocationException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -197,6 +255,7 @@ public class GUI extends javax.swing.JFrame {
 						textEditorDoc.remove(0, textEditorDoc.getLength());
 						textEditorDoc.insertString(0, fileContent, attrWHITE);
 						Parser p = new Parser(fileContent);
+						runner = new Runner(p.parseLine(fileContent));
 						String parsed = p.parse();
 						System.out.println(parsed);
 					} catch (BadLocationException e1) {

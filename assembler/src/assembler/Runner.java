@@ -7,6 +7,7 @@ import java.util.Map;
 public class Runner {
 	// This will manage the runs through tokens we need to do to store constants and values and write the object code
 	private InstructionSet opcodes = new InstructionSet();
+	InstructionFormat instructionFormat = new InstructionFormat();
 	private Register registers = new Register();
 	private Converter converter = new Converter();
 	private ArrayList<Token> tokens;
@@ -34,11 +35,11 @@ public class Runner {
 				}
 				constants.put(nameToken.value, valueToken.value);
 			}
-			// check for values adn store them respectively
+			// check for values and store them respectively
 		}
 	}
 	
-	public String secondRun() {
+	public String runnner() {
 		this.firstRun();
 		// generate object code per instruction
 		String objectCode = "";
@@ -62,5 +63,24 @@ public class Runner {
 			tokenIndex++;
 		}
 		return objectCode;
+	}
+	
+	public String runLine() {
+		String result = "";
+		
+		if(tokens.size() == 4) {
+ 			result = instructionFormat.Fswitch(tokens.get(0).getValue(), tokens.get(1).getValue(), 
+ 					tokens.get(2).getValue(), tokens.get(3).getValue(), 1);
+ 		}
+ 		else if(tokens.size() == 3) {
+ 			result = instructionFormat.Fswitch(tokens.get(0).getValue(), tokens.get(1).getValue(), 
+ 					tokens.get(2).getValue(), "", 2);
+ 		}
+ 		else if(tokens.size() <= 2) {
+ 			result = instructionFormat.Fswitch(tokens.get(0).getValue(), tokens.get(1).getValue(), 
+ 					"", "", 3);
+ 		}
+		
+		return result;
 	}
 }
