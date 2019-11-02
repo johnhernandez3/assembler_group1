@@ -27,7 +27,7 @@ public class Parser {
 			// WARNING: trimming every line might cause problems with syntax error handling
 			String s = scanner.nextLine().trim();
 			this.lines.add(s);
-			System.out.println("Line " + c + ": " + s);
+//			System.out.println("Line " + c + ": " + s);
 			c++;
 		}
 		scanner.close();
@@ -46,24 +46,32 @@ public class Parser {
 	}
 	
 	public ArrayList<Token> getAllParsedTokens() {
+		this.tokens = tokenizer.getTokens(this.sourceCode);
+		for (Token t : tokens) {
+			this.classifyToken(t);
+		}
 		return this.tokens;
 	}
 	
 	public ArrayList<Token> parseLine(String line) {
-		String result = "";
+//		String result = "";
 		tokens = tokenizer.getTokens(line);
 		for (Token t : tokens) {
 			this.classifyToken(t);
-			result += t.toString() + " ";
+//			result += t.toString() + " ";
 		}
-		System.out.println(result += "\n");
+//		System.out.println(result += "\n");
 		return tokens;
 	}
 	
 	public String parse() {
 		String result = "";
 		for (String line : this.lines) {
-			result += this.parseLine(line);
+			ArrayList<Token> lineTokens = this.parseLine(line);
+			for (Token t : lineTokens) {
+				result += t.toString() + " ";
+			}
+			result += "\n";
 		}
 		return result;
 	}

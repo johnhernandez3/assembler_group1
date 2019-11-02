@@ -16,7 +16,7 @@ public class Main {
 		for (String name: regs.keySet()) {
 	        String key = name.toString();
 	        String value = regs.get(name).toString();  
-	        System.out.println(key + " " + value);  
+//	        System.out.println(key + " " + value);  
 		} 
 	    
 //	    Converter c = new Converter("07");

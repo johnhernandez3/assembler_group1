@@ -3,7 +3,7 @@ package assembler;
 public class Converter {
 
 	String inst = "";
-	String hex = "0123456789ABCDEF";
+	String hex = "0123456789abcdef";
 	
 	public Converter() {
 	}
@@ -21,38 +21,47 @@ public class Converter {
 		 String hex4 = Integer.toHexString(dec4);
 		 
 		 return hex1 + hex2 + hex3 + hex4;
-//		while(str.length()%4 != 0) {
-//			str = "0" + str;
-//		}
-//		String s = "";
-//		for(int i = 0; i < str.length(); i+=4) {
-//			int dec1 = Integer.parseInt(str.substring(i, i + 4));
-//			s += Integer.toHexString(dec1);
-//		}
-//		return s;
 	}
 	
 	public String hextoBin(String str){
 		//Declare String binary numbers
-		String bin1= "";
-		String bin2= "";
-		int dec2 = 0;
-		if(str.length() == 2) {
-			dec2 = hex.indexOf(str.charAt(1));
-		}
-		//Return Decimal number of Hex Number based on index
-		int dec1 = hex.indexOf(str.charAt(0));
-		dec2 = hex.indexOf(str.charAt(1));
+//		String bin1= "";
+//		String bin2= "";
 		
-		//If binary number has less than 4 digits it returns new binary number with 4 digit format
-		if(dec1 < 4){
-		 bin1 = String.format("%04d", dec1);
-		}
-		else if(dec2 < 4){
-	 	bin2 = String.format("%04d", dec2);
+		String result = "";
+		System.out.println("str: " + str);
+		for(int i = 0; i < str.length(); i++) {
+			int h = hex.indexOf(str.charAt(i));
+			if (h < 10) {
+				String binary09 = ("0000" + Integer.toBinaryString(h)).substring(Integer.toBinaryString(h).length());
+				System.out.println("binary09: " + binary09 + "hex: " + h);
+				result += binary09;
+			} else {
+				String binaryAF = Integer.toBinaryString(h);
+				System.out.println("binaryAF: " + binaryAF);
+				result += binaryAF;
+			}
 		}
 		
-		return bin1 + bin2;
+		
+//		if(str.length() == 2) {
+//			dec2 = hex.indexOf(str.charAt(1));
+//		}
+//		//Return Decimal number of Hex Number based on index
+//		int dec1 = hex.indexOf(str.charAt(0));
+//		dec2 = hex.indexOf(str.charAt(1));
+//		
+//		//If binary number has less than 4 digits it returns new binary number with 4 digit format
+//		if (dec1 < 4) {
+//		 bin1 = String.format("%04d", dec1);
+//		}
+//		else if(dec2 < 4){
+//	 	bin2 = String.format("%04d", dec2);
+//		}
+		
+		// str = 0a return 00001010
+		
+		return result;
 //		String s = "";
 //		for(int i = 0; i < str.length(); i++) {
 //			int dec1 = hex.indexOf(str.charAt(i));
