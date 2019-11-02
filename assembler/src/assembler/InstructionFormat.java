@@ -60,15 +60,15 @@ public class InstructionFormat {
 		String str = "";
 		switch(i) {
 			case 1:
-				F1switch(a, b, c, d);
+//				F1switch(a, b, c, d);
 				str = Formatted1(a, b, c, d);
 				break;
 			case 2:
-				F2switch(a, b, c);
+//				F2switch(a, b, c);
 				str = Formatted2(a, b, c);
 				break;
 			case 3:
-				F3switch(a, b);
+//				F3switch(a, b);
 				str = Formatted3(a, b);
 				break;
 			default:
