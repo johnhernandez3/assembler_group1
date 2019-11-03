@@ -37,7 +37,7 @@ public class TrafficLight {
 	 */
 	private static JFrame initializeFrame() {
 		JFrame frame = new JFrame();
-		frame.setTitle("Trafficligth");
+		frame.setTitle("Trafficlight");
 		frame.setSize(250, 400);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);

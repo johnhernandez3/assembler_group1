@@ -69,7 +69,6 @@ public class GUI extends javax.swing.JFrame {
 //	private JTable headerTable;
 	private Runner runner;
 //	private static int columnNumber = 1;
-	//private static JLabel IO3label;
 	private IO3 access = new IO3();
 	private char[] ascii = new char[8];
 	private ArrayList<String> ref = access.getList();
@@ -81,7 +80,7 @@ public class GUI extends javax.swing.JFrame {
 
 	Register reg = new Register();
 	HashMap<String,String> regs = reg.getregs();
-	Object[][] IO3 = new Object[8][2];
+	Object[][] IO3 = new Object[9][2];
 	String[] columnNames = { "Direction", "Content" };
 	Object[][] rowData = new Memory().memData();
 	Parser p;
@@ -442,14 +441,14 @@ public class GUI extends javax.swing.JFrame {
 		
 		
 		TableModel model = table2.getModel();
-		table2.setBackground(Color.gray);
+		table2.setBackground(Color.white);
 		table2.setBounds(5,20, 200, 150);
 		table2.setFont(new Font("Tahome",Font.ITALIC,14));
 		table2.setGridColor(Color.GREEN);
 
 		
 		
-        IOPanel.setBounds(1300,0,500,650);
+        IOPanel.setBounds(1300,0,250,200);
 		IOPanel.setBackground(Color.gray);
 		IOPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "IO #3(ASCII)"));
 		IOPanel.add(table2);
@@ -471,9 +470,8 @@ public class GUI extends javax.swing.JFrame {
 			 DirRows++;
 			 DirectionReference++;
 		}
-		
-		
-
+		model.setValueAt("Ascii result:", 8, 0);
+		model.setValueAt(AsciiConversion, 8, 1);
 
 
 
