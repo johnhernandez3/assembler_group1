@@ -32,8 +32,8 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
+//import javax.swing.table.AbstractTableModel;
+//import javax.swing.table.TableModel;
 
 import assembler.IO3;
 
@@ -160,13 +160,9 @@ public class GUI extends javax.swing.JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			try {
-				if (textEditor.getStyledDocument().getLength() == 0) {
-					console.getStyledDocument().insertString(console.getStyledDocument().getLength(), "There are no instructions...\n", attrWHITE);
-				}
-			} catch (BadLocationException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			log("Execute prev pressed.\n");
+			if (textEditor.getStyledDocument().getLength() == 0) {
+				log("ERROR: There are no instructions.\n");
 			}
 		}
     });
@@ -175,12 +171,7 @@ public class GUI extends javax.swing.JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			try {
-				console.getStyledDocument().insertString(console.getStyledDocument().getLength(), "Execute all pressed.\n", attrWHITE);
-			} catch (BadLocationException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			log("Execute all pressed.\n");
 		}
     });
     executeNext.addActionListener(new ActionListener() {
@@ -188,11 +179,25 @@ public class GUI extends javax.swing.JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			try {
-				console.getStyledDocument().insertString(console.getStyledDocument().getLength(), "Execute next pressed.\n", attrWHITE);
-			} catch (BadLocationException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			log("Execute next pressed.\n");
+			if (textEditor.getStyledDocument().getLength() == 0) {
+				log("ERROR: There are no instructions.\n");
+			} else if (runner == null) {
+				String fileContent = "";
+				try {
+					fileContent = textEditor.getStyledDocument().getText(0, textEditor.getStyledDocument().getLength());
+				} catch (BadLocationException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				Parser p = new Parser(fileContent);
+				runner = new Runner(p.getAllParsedTokens());
+				runner.run();
+			}
+			if (runner.getNumOfInstructions() < 1) {
+				log("ERROR: There are no instructions.\n");
+			} else {
+				log(runner.executeNext() + "\n");
 			}
 		}
     });
@@ -202,16 +207,17 @@ public class GUI extends javax.swing.JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
+			log("Generate Object File Pressed.\n");
+			String fileContent = "";
 			try {
-				console.getStyledDocument().insertString(console.getStyledDocument().getLength(), "Generate Object File Pressed.\n", attrWHITE);
-				String fileContent = textEditor.getStyledDocument().getText(0, textEditor.getStyledDocument().getLength());
-				Parser p = new Parser(fileContent);
-				runner = new Runner(p.parseLine(fileContent));
-				console.getStyledDocument().insertString(console.getStyledDocument().getLength(), runner.runLine(), attrWHITE);
+				fileContent = textEditor.getStyledDocument().getText(0, textEditor.getStyledDocument().getLength());
 			} catch (BadLocationException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+			Parser p = new Parser(fileContent);
+			runner = new Runner(p.parseLine(fileContent));
+//			log(runner.executeLine());
 		}
 
     });
@@ -232,19 +238,13 @@ public class GUI extends javax.swing.JFrame {
 						// TODO Auto-generated catch block
 						e2.printStackTrace();
 					}
-
-					try {
-						// load memory with fileContent String here
-						console.getStyledDocument().insertString(console.getStyledDocument().getLength(), "Upload Memory File Uploaded.", attrWHITE);
-						Memory mem = new Memory();
-						mem.loadMemoryFromFile(fileContent);
-						DefaultTableModel model = new DefaultTableModel(mem.memData(), columnNames);
-						memoryTable.setModel(model);
-						memoryTable.repaint();
-					} catch (BadLocationException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
+					// load memory with fileContent String here
+					log("Upload Memory File Uploaded.\n");
+					Memory mem = new Memory();
+					mem.loadMemoryFromFile(fileContent);
+					DefaultTableModel model = new DefaultTableModel(mem.memData(), columnNames);
+					memoryTable.setModel(model);
+					memoryTable.repaint();
 					break;
 			}	
 		}
@@ -272,9 +272,10 @@ public class GUI extends javax.swing.JFrame {
 						textEditorDoc.remove(0, textEditorDoc.getLength());
 						textEditorDoc.insertString(0, fileContent, attrWHITE);
 						Parser p = new Parser(fileContent);
-						runner = new Runner(p.parseLine(fileContent));
 						String parsed = p.parse();
-						System.out.println(parsed);
+						runner = new Runner(p.parseLine(fileContent));
+						runner.run();
+						log(parsed);
 					} catch (BadLocationException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -385,7 +386,7 @@ public class GUI extends javax.swing.JFrame {
 	 *************************************************************************************************************************** */
 	
 	JScrollPane consoleScrollPane = new JScrollPane(console);
-	consoleScrollPane.setBounds(0, 480,1275,900);
+	consoleScrollPane.setBounds(0, 480,1275,400);
 	consoleScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 	consoleScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 	consoleScrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Console"));
@@ -484,6 +485,15 @@ public class GUI extends javax.swing.JFrame {
 	f.setLayout(null);
 	f.setVisible(true);
 
+	}
+	
+	public void log(String s) {
+		try {
+			console.getStyledDocument().insertString(console.getStyledDocument().getLength(), s, attrWHITE);
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
 

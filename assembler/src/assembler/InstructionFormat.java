@@ -27,38 +27,56 @@ public class InstructionFormat {
 	}
 
 	private String Formatted1(String op, String rega, String regb, String regc) {
+		System.out.println("op: " + op + "rega: " + rega + "regb: " + regb + "regc: " + regc);
+		if (regc.equals("")) {
+			regc = "r0";
+		}
+		if (regb.equals("")) {
+			regb = "r0";
+		}
+		if (rega.equals("")) {
+			rega = "r0";
+		}
 		return opcodes.BinaryReturn(op) + regloc.getregloc().get(rega) + regloc.getregloc().get(regb) + regloc.getregloc().get(regc) + "00";
 	}
 	
 	private String Formatted2(String op, String reg, String addr) {
+		System.out.println("Address: " + addr);
+		if (addr.contains("#")) {
+			addr = addr.replace("#", "");
+		}
+		if (addr.equals("")) {
+			addr = "00";
+		}
 		String str = conv.hextoBin(addr);
-		if(str.length() > 8) {
-			str = str.substring(str.charAt(str.length() - 7), str.charAt(str.length()));
-		}
-		else {
-			while(str.length() < 8) {
-				str = "0" + str;
-			}
-		}
+//		if(str.length() > 8) {
+//			str = str.substring(str.charAt(str.length() - 7), str.charAt(str.length()));
+//		}
+//		else {
+//			while(str.length() < 8) {
+//				str += "0";
+//			}
+//		}
+		str = ("00000000" + str).substring(str.length());
 		return opcodes.BinaryReturn(op) + regloc.getregloc().get(reg) + str;
 	}
 	
 	private String Formatted3(String op, String addr) {
+		if (addr.contains("r")) {
+			String str = conv.hextoBin("00");
+			str = ("00000000000" + str).substring(str.length());
+			return opcodes.BinaryReturn(op) + regloc.getregloc().get(addr) + str;
+		}
 		String str = conv.hextoBin(addr);
-		if(str.length() > 11) {
-			str = str.substring(str.charAt(str.length() - 10), str.charAt(str.length()));
-		}
-		else {
-			while(str.length() < 11) {
-				str = "0" + str;
-			}
-		}
+		str = ("00000000000" + str).substring(str.length());
 		return opcodes.BinaryReturn(op) + str;
 	}
 	
 	public String Fswitch(String a, String b, String c, String d, int i) {
 		String str = "";
 		switch(i) {
+			case 0:
+				str = "1111100000000000";
 			case 1:
 //				F1switch(a, b, c, d);
 				str = Formatted1(a, b, c, d);
@@ -74,6 +92,7 @@ public class InstructionFormat {
 			default:
 				break;
 		}
+		System.out.println(str);
 		return conv.binToHex(str);
 	}
 
