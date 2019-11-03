@@ -29,16 +29,16 @@ public class Converter {
 //		String bin2= "";
 		
 		String result = "";
-		System.out.println("str: " + str);
+//		System.out.println("str: " + str);
 		for(int i = 0; i < str.length(); i++) {
 			int h = hex.indexOf(str.charAt(i));
 			if (h < 10) {
 				String binary09 = ("0000" + Integer.toBinaryString(h)).substring(Integer.toBinaryString(h).length());
-				System.out.println("binary09: " + binary09 + "hex: " + h);
+//				System.out.println("binary09: " + binary09 + "hex: " + h);
 				result += binary09;
 			} else {
 				String binaryAF = Integer.toBinaryString(h);
-				System.out.println("binaryAF: " + binaryAF);
+//				System.out.println("binaryAF: " + binaryAF);
 				result += binaryAF;
 			}
 		}

@@ -22,17 +22,36 @@ public class Runner {
 	public int getNumOfInstructions() {
 		return this.instructions.size();
 	}
-
-	public Runner(ArrayList<Token> tokens) {
-		this.tokens = tokens;
-	}
 	
-	public ArrayList<Instruction> run() {
+	public int getCurrentInstruction() {
+		return this.currentInstruction;
+	}
+	public void setCurrentInstruction(int i) {
+		this.currentInstruction = i;
+	}
+
+	public Runner() {}
+	
+	public Instruction run(ArrayList<Token> tokens) {
 		// store constants and values
 		Iterator<Token> iter = tokens.iterator();
 		while (iter.hasNext()) {
 			Token currentToken = iter.next();
 			switch (currentToken.getType()) {
+				case CONST:
+					// store constants here
+					Token nameToken = iter.next();
+					if (nameToken.type != TokenType.NAME) {
+						// return "Error";
+					}
+					Token valueToken = iter.next();
+					if (valueToken.type != TokenType.VALUE) {
+						// return "Error";
+					}
+					constants.put(nameToken.value, valueToken.value);
+				case NAME:
+					 // store values here
+					
 				case OPCODE:
 					switch (currentToken.getValue()) {
 						case "load":
@@ -50,8 +69,8 @@ public class Runner {
 							} else {
 								load.addToken(addressToken);
 							}
-							this.instructions.add(load);
-							break;
+							instructions.add(load);
+							return load;
 						case "loadim":
 							Instruction loadim = opcodes.getInstruction(currentToken.getValue());
 							loadim.addToken(currentToken);
@@ -67,8 +86,8 @@ public class Runner {
 							} else {
 								loadim.addToken(constantToken);
 							}
-							this.instructions.add(loadim);
-							break;
+							instructions.add(loadim);
+							return loadim;
 						case "pop":
 							Instruction pop = opcodes.getInstruction(currentToken.getValue());
 							pop.addToken(currentToken);
@@ -78,8 +97,8 @@ public class Runner {
 							} else {
 								pop.addToken(registerToken2);
 							}
-							this.instructions.add(pop);
-							break;
+							instructions.add(pop);
+							return pop;
 						case "store":
 							Instruction store = opcodes.getInstruction(currentToken.getValue());
 							store.addToken(currentToken);
@@ -95,8 +114,8 @@ public class Runner {
 							} else {
 								store.addToken(addressToken1);
 							}
-							this.instructions.add(store);
-							break;
+							instructions.add(store);
+							return store;
 						case "push":
 							Instruction push = opcodes.getInstruction(currentToken.getValue());
 							push.addToken(currentToken);
@@ -106,8 +125,8 @@ public class Runner {
 							} else {
 								push.addToken(registerToken4);
 							}
-							this.instructions.add(push);
-							break;
+							instructions.add(push);
+							return push;
 						case "loadrind":
 							Instruction loadrind = opcodes.getInstruction(currentToken.getValue());
 							loadrind.addToken(currentToken);
@@ -123,8 +142,8 @@ public class Runner {
 							} else {
 								loadrind.addToken(registerToken6);
 							}
-							this.instructions.add(loadrind);
-							break;
+							instructions.add(loadrind);
+							return loadrind;
 						case "storerind":
 							Instruction storerind = opcodes.getInstruction(currentToken.getValue());
 							storerind.addToken(currentToken);
@@ -140,8 +159,8 @@ public class Runner {
 							} else {
 								storerind.addToken(registerToken8);
 							}
-							this.instructions.add(storerind);
-							break;
+							instructions.add(storerind);
+							return storerind;
 						case "add":
 							Instruction add = opcodes.getInstruction(currentToken.getValue());
 							add.addToken(currentToken);
@@ -163,8 +182,8 @@ public class Runner {
 							} else {
 								add.addToken(registerToken11);
 							}
-							this.instructions.add(add);
-							break;
+							instructions.add(add);
+							return add;
 						case "sub":
 							Instruction sub = opcodes.getInstruction(currentToken.getValue());
 							sub.addToken(currentToken);
@@ -186,8 +205,8 @@ public class Runner {
 							} else {
 								sub.addToken(registerToken14);
 							}
-							this.instructions.add(sub);
-							break;
+							instructions.add(sub);
+							return sub;
 						case "addim":
 							Instruction addim = opcodes.getInstruction(currentToken.getValue());
 							addim.addToken(currentToken);
@@ -203,8 +222,8 @@ public class Runner {
 							} else {
 								addim.addToken(constantToken1);
 							}
-							this.instructions.add(addim);
-							break;
+							instructions.add(addim);
+							return addim;
 						case "subim":
 							Instruction subim = opcodes.getInstruction(currentToken.getValue());
 							subim.addToken(currentToken);
@@ -220,8 +239,8 @@ public class Runner {
 							} else {
 								subim.addToken(constantToken2);
 							}
-							this.instructions.add(subim);
-							break;
+							instructions.add(subim);
+							return subim;
 						case "and":
 							Instruction and = opcodes.getInstruction(currentToken.getValue());
 							and.addToken(currentToken);
@@ -243,8 +262,8 @@ public class Runner {
 							} else {
 								and.addToken(registerToken19);
 							}
-							this.instructions.add(and);
-							break;
+							instructions.add(and);
+							return and;
 						case "or":
 							Instruction or = opcodes.getInstruction(currentToken.getValue());
 							or.addToken(currentToken);
@@ -266,8 +285,8 @@ public class Runner {
 							} else {
 								or.addToken(registerToken22);
 							}
-							this.instructions.add(or);
-							break;
+							instructions.add(or);
+							return or;
 						case "xor":
 							Instruction xor = opcodes.getInstruction(currentToken.getValue());
 							xor.addToken(currentToken);
@@ -289,8 +308,8 @@ public class Runner {
 							} else {
 								xor.addToken(registerToken25);
 							}
-							this.instructions.add(xor);
-							break;
+							instructions.add(xor);
+							return xor;
 						case "not":
 							Instruction not = opcodes.getInstruction(currentToken.getValue());
 							not.addToken(currentToken);
@@ -306,8 +325,8 @@ public class Runner {
 							} else {
 								not.addToken(registerToken27);
 							}
-							this.instructions.add(not);
-							break;
+							instructions.add(not);
+							return not;
 						case "neg":
 							Instruction neg = opcodes.getInstruction(currentToken.getValue());
 							neg.addToken(currentToken);
@@ -323,8 +342,8 @@ public class Runner {
 							} else {
 								neg.addToken(registerToken29);
 							}
-							this.instructions.add(neg);
-							break;
+							instructions.add(neg);
+							return neg;
 						case "shiftr":
 							Instruction shiftr = opcodes.getInstruction(currentToken.getValue());
 							shiftr.addToken(currentToken);
@@ -346,8 +365,8 @@ public class Runner {
 							} else {
 								shiftr.addToken(registerToken32);
 							}
-							this.instructions.add(shiftr);
-							break;
+							instructions.add(shiftr);
+							return shiftr;
 						case "shiftl":
 							Instruction shiftl = opcodes.getInstruction(currentToken.getValue());
 							shiftl.addToken(currentToken);
@@ -369,8 +388,8 @@ public class Runner {
 							} else {
 								shiftl.addToken(registerToken35);
 							}
-							this.instructions.add(shiftl);
-							break;
+							instructions.add(shiftl);
+							return shiftl;
 						case "rotar":
 							Instruction rotar = opcodes.getInstruction(currentToken.getValue());
 							rotar.addToken(currentToken);
@@ -392,8 +411,8 @@ public class Runner {
 							} else {
 								rotar.addToken(registerToken38);
 							}
-							this.instructions.add(rotar);
-							break;
+							instructions.add(rotar);
+							return rotar;
 						case "rotal":
 							Instruction rotal = opcodes.getInstruction(currentToken.getValue());
 							rotal.addToken(currentToken);
@@ -415,8 +434,8 @@ public class Runner {
 							} else {
 								rotal.addToken(registerToken41);
 							}
-							this.instructions.add(rotal);
-							break;
+							instructions.add(rotal);
+							return rotal;
 						case "jmprind":
 							Instruction jmprind = opcodes.getInstruction(currentToken.getValue());
 							jmprind.addToken(currentToken);
@@ -426,8 +445,8 @@ public class Runner {
 							} else {
 								jmprind.addToken(registerToken42);
 							}
-							this.instructions.add(jmprind);
-							break;
+							instructions.add(jmprind);
+							return jmprind;
 						case "jmpaddr":
 							Instruction jmpaddr = opcodes.getInstruction(currentToken.getValue());
 							jmpaddr.addToken(currentToken);
@@ -437,8 +456,8 @@ public class Runner {
 							} else {
 								jmpaddr.addToken(addressToken2);
 							}
-							this.instructions.add(jmpaddr);
-							break;
+							instructions.add(jmpaddr);
+							return jmpaddr;
 						case "jcondrin":
 							Instruction jcondrin = opcodes.getInstruction(currentToken.getValue());
 							jcondrin.addToken(currentToken);
@@ -448,8 +467,8 @@ public class Runner {
 							} else {
 								jcondrin.addToken(registerToken43);
 							}
-							this.instructions.add(jcondrin);
-							break;
+							instructions.add(jcondrin);
+							return jcondrin;
 						case "jcondaddr":
 							Instruction jcondaddr = opcodes.getInstruction(currentToken.getValue());
 							jcondaddr.addToken(currentToken);
@@ -459,8 +478,8 @@ public class Runner {
 							} else {
 								jcondaddr.addToken(addressToken3);
 							}
-							this.instructions.add(jcondaddr);
-							break;
+							instructions.add(jcondaddr);
+							return jcondaddr;
 						case "loop":
 							Instruction loop = opcodes.getInstruction(currentToken.getValue());
 							loop.addToken(currentToken);
@@ -476,8 +495,8 @@ public class Runner {
 							} else {
 								loop.addToken(addressToken4);
 							}
-							this.instructions.add(loop);
-							break;
+							instructions.add(loop);
+							return loop;
 						case "grt":
 							Instruction grt = opcodes.getInstruction(currentToken.getValue());
 							grt.addToken(currentToken);
@@ -493,8 +512,8 @@ public class Runner {
 							} else {
 								grt.addToken(registerToken46);
 							}
-							this.instructions.add(grt);
-							break;
+							instructions.add(grt);
+							return grt;
 						case "grteq":
 							Instruction grteq = opcodes.getInstruction(currentToken.getValue());
 							grteq.addToken(currentToken);
@@ -510,8 +529,8 @@ public class Runner {
 							} else {
 								grteq.addToken(registerToken48);
 							}
-							this.instructions.add(grteq);
-							break;
+							instructions.add(grteq);
+							return grteq;
 						case "eq":
 							Instruction eq = opcodes.getInstruction(currentToken.getValue());
 							eq.addToken(currentToken);
@@ -527,8 +546,8 @@ public class Runner {
 							} else {
 								eq.addToken(registerToken50);
 							}
-							this.instructions.add(eq);
-							break;
+							instructions.add(eq);
+							return eq;
 						case "neq":
 							Instruction neq = opcodes.getInstruction(currentToken.getValue());
 							neq.addToken(currentToken);
@@ -544,13 +563,13 @@ public class Runner {
 							} else {
 								neq.addToken(registerToken52);
 							}
-							this.instructions.add(neq);
-							break;
+							instructions.add(neq);
+							return neq;
 						case "nop":
 							Instruction nop = opcodes.getInstruction(currentToken.getValue());
 							nop.addToken(currentToken);
-							this.instructions.add(nop);
-							break;
+							instructions.add(nop);
+							return nop;
 						case "call":
 							Instruction call = opcodes.getInstruction(currentToken.getValue());
 							call.addToken(currentToken);
@@ -560,115 +579,49 @@ public class Runner {
 							} else {
 								call.addToken(addressToken5);
 							}
-							this.instructions.add(call);
-							break;
+							instructions.add(call);
+							return call;
 						case "return":
 							Instruction r = opcodes.getInstruction(currentToken.getValue());
 							r.addToken(currentToken);
-							this.instructions.add(r);
-							break;
+							instructions.add(r);
+							return r;
 						default:
 //							return Error
 							break;
 					}
-//				case CONST:
-//					Token nameToken = iter.next();
-//					if (nameToken.type != TokenType.NAME) {
-////						return "Error";
-//					}
-//					Token valueToken = iter.next();
-//					if (valueToken.type != TokenType.VALUE) {
-////						return "Error";
-//					}
-//					constants.put(nameToken.value, valueToken.value);
-//				case NAME:
-					// store values and constants here
 				default:
-//					return Error
+					// return Error
 					break;
 			}
 		}
-		return this.instructions;
+		return null;
 	}
 	
-//	public String runnner() {
-//		this.run();
-//		// generate object code per instruction
-//		String objectCode = "";
-//		int tokenIndex = 0;
-//		for (Token t : tokens) {
-//			if (t.type == TokenType.OPCODE) {
-//				Instruction instruction = opcodes.getInstruction(t.value);
-//				String binaryCode = instruction.getOpcode();
-//				for (int i = 0; i < instruction.numOfNextTokens; i++) {
-//					tokenIndex++;
-//					Token nextToken = tokens.get(tokenIndex);
-//					TokenType nextTokenType = nextToken.type;
-//					if (nextTokenType != TokenType.NAME || nextTokenType != TokenType.HEX || nextTokenType != TokenType.REGISTER) {
-//						return "Error";
-//					}
-//					// create the binarycode depending on the opcode
-////					binaryCode += ;
-//				}
-//				objectCode += converter.binToHex(binaryCode) + "\n";
-//			}
-//			tokenIndex++;
-//		}
-//		return objectCode;
-//	}
-	
-	public String executePrev() {
+	public String executeLine(Instruction instruction) {
 		String result = "";
-		if (currentInstruction == 1) {
-			return "WARNING: No previous instruction.\n";
-		} else {
-			currentInstruction--;
-			Instruction i = instructions.get(currentInstruction);
-			if(i.getTokens().size() == 4) {
-	 			result = instructionFormat.Fswitch(i.getTokens().get(0).getValue(), i.getTokens().get(1).getValue(), 
-	 					i.getTokens().get(2).getValue(), i.getTokens().get(3).getValue(), 1);
-	 		}
-	 		else if(i.getTokens().size() == 3) {
-	 			result = instructionFormat.Fswitch(i.getTokens().get(0).getValue(), i.getTokens().get(1).getValue(), 
-	 					i.getTokens().get(2).getValue(), "", 2);
-	 		}
-	 		else if(i.getTokens().size() <= 2) {
-	 			result = instructionFormat.Fswitch(i.getTokens().get(0).getValue(), i.getTokens().get(1).getValue(), 
-	 					"", "", 3);
-	 		}
-		}
+		Instruction i = instruction;
+//		System.out.println(i.toString() + "\n" + "Num Of Tokens: " + i.getTokens().size());
+		if(i.getTokens().size() == 4) {
+ 			result = instructionFormat.Fswitch(i.getTokens().get(0).getValue(), i.getTokens().get(1).getValue(), 
+ 					i.getTokens().get(2).getValue(), i.getTokens().get(3).getValue(), i.getFormat());
+ 		}
+ 		else if(i.getTokens().size() == 3) {
+ 			result = instructionFormat.Fswitch(i.getTokens().get(0).getValue(), i.getTokens().get(1).getValue(), 
+ 					i.getTokens().get(2).getValue(), "", i.getFormat());
+ 		}
+ 		else if(i.getTokens().size() == 2) {
+ 			result = instructionFormat.Fswitch(i.getTokens().get(0).getValue(), i.getTokens().get(1).getValue(), 
+ 					"", "", i.getFormat());
+ 		} else if(i.getTokens().size() == 1) {
+ 			result = instructionFormat.Fswitch(i.getTokens().get(0).getValue(), "", "", "", i.getFormat());
+ 		}
 		return result;
 	}
 	
 	public String executeAll() {
 		String result = "";
 		
-		return result;
-	}
-	
-	public String executeNext() {
-		String result = "";
-		if (this.currentInstruction == instructions.size()) {
-			return "WARNING: No next instruction.\n";
-		} else {
-			Instruction i = instructions.get(this.currentInstruction);
-			System.out.println(i.toString() + "\n" + "Num Of Tokens: " + i.getTokens().size());
-			if(i.getTokens().size() == 4) {
-	 			result = instructionFormat.Fswitch(i.getTokens().get(0).getValue(), i.getTokens().get(1).getValue(), 
-	 					i.getTokens().get(2).getValue(), i.getTokens().get(3).getValue(), i.getFormat());
-	 		}
-	 		else if(i.getTokens().size() == 3) {
-	 			result = instructionFormat.Fswitch(i.getTokens().get(0).getValue(), i.getTokens().get(1).getValue(), 
-	 					i.getTokens().get(2).getValue(), "", i.getFormat());
-	 		}
-	 		else if(i.getTokens().size() == 2) {
-	 			result = instructionFormat.Fswitch(i.getTokens().get(0).getValue(), i.getTokens().get(1).getValue(), 
-	 					"", "", i.getFormat());
-	 		} else if(i.getTokens().size() == 1) {
-	 			result = instructionFormat.Fswitch(i.getTokens().get(0).getValue(), "", "", "", i.getFormat());
-	 		}
-			this.currentInstruction++;
-		}
 		return result;
 	}
 }

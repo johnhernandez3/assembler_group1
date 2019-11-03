@@ -21,7 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
+//import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -48,8 +48,8 @@ public class GUI extends javax.swing.JFrame {
 	private JTextPane textEditor;
 	private JTextPane output;
 	private JTextPane console;
-	private JTextPane registers;
-	private JPanel memoryPanel;
+//	private JTextPane registers;
+//	private JPanel memoryPanel;
 	private StyledDocument textEditorDoc;
 	private StyledDocument outputDoc;
 	private StyledDocument consoleDoc;
@@ -63,12 +63,12 @@ public class GUI extends javax.swing.JFrame {
 	private JButton executeNext;
 	private JMenuItem openFileOpt;
 	private JMenuItem saveFileOpt;
-	private JTable registerTable;
+//	private JTable registerTable;
 	private JTable memoryTable;
-	private DefaultTableModel tableModel;
-	private JTable headerTable;
+//	private DefaultTableModel tableModel;
+//	private JTable headerTable;
 	private Runner runner;
-	private static int columnNumber = 1;
+//	private static int columnNumber = 1;
 	//private static JLabel IO3label;
 	private IO3 access = new IO3();
 	private char[] ascii = new char[8];
@@ -84,8 +84,8 @@ public class GUI extends javax.swing.JFrame {
 	Object[][] IO3 = new Object[8][2];
 	String[] columnNames = { "Direction", "Content" };
 	Object[][] rowData = new Memory().memData();
-	
-
+	Parser p;
+	int currentLine;
 	
 	/****************************************************************************************************************************
 	 * 	Getters and Setters
@@ -121,7 +121,7 @@ public class GUI extends javax.swing.JFrame {
 	textEditor = new JTextPane();
 	output = new JTextPane();
 	console = new JTextPane();
-	registers = new JTextPane();
+//	registers = new JTextPane();
 	attrWHITE = new SimpleAttributeSet();
 	menu = new JMenuBar();
 	
@@ -164,6 +164,25 @@ public class GUI extends javax.swing.JFrame {
 			log("Execute prev pressed.\n");
 			if (textEditor.getStyledDocument().getLength() == 0) {
 				log("ERROR: There are no instructions.\n");
+			} else if (runner == null) {
+				String fileContent = "";
+				try {
+					fileContent = textEditor.getStyledDocument().getText(0, textEditor.getStyledDocument().getLength());
+				} catch (BadLocationException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				p = new Parser(fileContent);
+				runner = new Runner();
+			}
+			currentLine = runner.getCurrentInstruction();
+			if (currentLine == 0) {
+				log("WARNING: There is no prev instruction.\n");
+			} else if (currentLine > 0) {
+				runner.setCurrentInstruction(currentLine-1);
+				currentLine = runner.getCurrentInstruction();
+				log("Current Line: " + currentLine + "\n");
+				log(runner.executeLine(runner.run(p.parseLine(currentLine))) + "\n");
 			}
 		}
     });
@@ -191,15 +210,13 @@ public class GUI extends javax.swing.JFrame {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				Parser p = new Parser(fileContent);
-				runner = new Runner(p.getAllParsedTokens());
-				runner.run();
+				p = new Parser(fileContent);
+				runner = new Runner();
 			}
-			if (runner.getNumOfInstructions() < 1) {
-				log("ERROR: There are no instructions.\n");
-			} else {
-				log(runner.executeNext() + "\n");
-			}
+			currentLine = runner.getCurrentInstruction();
+			log("Current Line: " + currentLine + "\n");
+			log(runner.executeLine(runner.run(p.parseLine(currentLine))) + "\n");
+			runner.setCurrentInstruction(currentLine+1);
 		}
     });
     
@@ -217,7 +234,7 @@ public class GUI extends javax.swing.JFrame {
 				e1.printStackTrace();
 			}
 			Parser p = new Parser(fileContent);
-			runner = new Runner(p.parseLine(fileContent));
+//			runner = new Runner(p.parseLine(fileContent));
 //			log(runner.executeLine());
 		}
 
@@ -272,11 +289,12 @@ public class GUI extends javax.swing.JFrame {
 					try {
 						textEditorDoc.remove(0, textEditorDoc.getLength());
 						textEditorDoc.insertString(0, fileContent, attrWHITE);
-						Parser p = new Parser(fileContent);
+						p = new Parser(fileContent);
 						String parsed = p.parse();
-						runner = new Runner(p.parseLine(fileContent));
-						runner.run();
+//						runner = new Runner(p.parseLine(fileContent));
+//						runner.run();
 						log(parsed);
+//						log(p.printLines());
 					} catch (BadLocationException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -340,20 +358,6 @@ public class GUI extends javax.swing.JFrame {
 	 * 	Memory 
 	 *************************************************************************************************************************** */
 	
-//	TableModel memoryDataModel = new AbstractTableModel() {
-//		private static final long serialVersionUID = 1L;
-//		String[] columnNames = { "Direction", "Content" };
-//		Object[][] rowData;
-//		public int getColumnCount() { return columnNames.length; }
-//		public boolean isCellEditable(int row, int col) { return true; }
-//		public String getColumnName(int index) { return columnNames[index]; }
-//		public int getRowCount() { return 2048; }
-//		public Object getValueAt(int row, int col) { return new Integer(row*col); }
-//		public void setValueAt(Object value, int row, int col) {
-//			rowData[row][col] = value;
-//	        fireTableCellUpdated(row, col);
-//	    }
-//	};
 	//Added Model to JTable & add JTable to ScrollPane
 	memoryTable = new JTable(rowData, columnNames);
 	JScrollPane memoryScrollPane2 = new JScrollPane(memoryTable);

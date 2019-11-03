@@ -27,7 +27,7 @@ public class InstructionFormat {
 	}
 
 	private String Formatted1(String op, String rega, String regb, String regc) {
-		System.out.println("op: " + op + "rega: " + rega + "regb: " + regb + "regc: " + regc);
+//		System.out.println("op: " + op + "rega: " + rega + "regb: " + regb + "regc: " + regc);
 		if (regc.equals("")) {
 			regc = "r0";
 		}
@@ -41,7 +41,7 @@ public class InstructionFormat {
 	}
 	
 	private String Formatted2(String op, String reg, String addr) {
-		System.out.println("Address: " + addr);
+//		System.out.println("Address: " + addr);
 		if (addr.contains("#")) {
 			addr = addr.replace("#", "");
 		}
@@ -92,7 +92,7 @@ public class InstructionFormat {
 			default:
 				break;
 		}
-		System.out.println(str);
+//		System.out.println(str);
 		return conv.binToHex(str);
 	}
 
