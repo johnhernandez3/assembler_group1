@@ -10,12 +10,14 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -32,6 +34,8 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
+
+import assembler.IO3;
 
 public class GUI extends javax.swing.JFrame {
 
@@ -63,15 +67,23 @@ public class GUI extends javax.swing.JFrame {
 	private DefaultTableModel tableModel;
 	private JTable headerTable;
 	private Runner runner;
-
-
 	private static int columnNumber = 1;
+	//private static JLabel IO3label;
+	private IO3 access = new IO3();
+	private char[] ascii = new char[8];
+	private ArrayList<String> ref = access.getList();
+	
+	
+
+	
+	
 
 	Register reg = new Register();
 	HashMap<String,String> regs = reg.getregs();
-	
+	Object[][] IO3 = new Object[8][2];
 	String[] columnNames = { "Direction", "Content" };
 	Object[][] rowData = new Memory().memData();
+	
 
 	
 	/****************************************************************************************************************************
@@ -102,7 +114,8 @@ public class GUI extends javax.swing.JFrame {
 	/****************************************************************************************************************************
 	 * 	Initializations
 	 *************************************************************************************************************************** */
-
+    ascii = access.AsciConversion(ref, ascii);
+    String AsciiConversion = new String(ascii);
 	f = new JFrame("IDE TextBox");
 	textEditor = new JTextPane();
 	output = new JTextPane();
@@ -110,7 +123,8 @@ public class GUI extends javax.swing.JFrame {
 	registers = new JTextPane();
 	attrWHITE = new SimpleAttributeSet();
 	menu = new JMenuBar();
-
+	
+	
 	/****************************************************************************************************************************
 	 * 	File Upload
 	 *************************************************************************************************************************** */
@@ -411,12 +425,56 @@ public class GUI extends javax.swing.JFrame {
 
 	registerPanel.setLayout(null);
 	registerPanel.setVisible(true);
+	
+	JPanel IOPanel = new JPanel(new GridBagLayout());
+	JLabel IO3label = new JLabel(AsciiConversion);
+	IOPanel.add(IO3label);
+	IO3label.revalidate();
+	    int DirRows = 0;
+	    int DirectionReference = 40;
+		JTable table2 =new JTable(IO3, columnNames);
+		
+		
+		TableModel model = table2.getModel();
+		table2.setBackground(Color.gray);
+		table2.setBounds(5,20, 200, 150);
+		table2.setFont(new Font("Tahome",Font.ITALIC,14));
+		table2.setGridColor(Color.GREEN);
+
+		
+		
+        IOPanel.setBounds(1300,0,500,650);
+		IOPanel.setBackground(Color.gray);
+		IOPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "IO #3(ASCII)"));
+		IOPanel.add(table2);
+
+		IOPanel.setLayout(null);
+		IOPanel.setVisible(true);
+		
+		
+		System.out.println(AsciiConversion);
+		
+		
+		for(int i = 0; i < 8 ; i++) {
+			model.setValueAt(ref.get(i), DirRows, 1);
+			 DirRows++;
+		}
+		DirRows = 0;
+		for(int i = 0; i < 8 ; i++) {
+			model.setValueAt(DirectionReference, DirRows, 0);
+			 DirRows++;
+			 DirectionReference++;
+		}
+		
+		
+
 
 
 
 	/****************************************************************************************************************************
 	 * 	Adding to Frame
 	 *************************************************************************************************************************** */
+	f.add(IOPanel);
 	f.add(textEditorScrollPane);
 	f.add(consoleScrollPane);
 	f.add(registerPanel);
