@@ -1,0 +1,116 @@
+package assembler;
+
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+public class Keyboard {
+	//JFrame && JPanel Declared
+	private final JFrame f = new JFrame("Keyboard");
+	private final JPanel keyboard = new JPanel();
+	private JButton b;
+	Converter c = new Converter();
+
+	//Declare Two Dim Array to hold keys
+	private static final String[][] key = {
+			{"0","1", "2", "3"},
+			{"4","5","6","7"},
+			{"8","9","A","B"},
+			{"C","D","E","F"},
+	};
+	/********************************************************************************************************
+	 * 										Keyboard
+	 *******************************************************************************************************/
+	//Focuses on Keyboard appearance
+	public Keyboard(){
+
+		keyboard.setLayout(new GridBagLayout());
+		Insets zeroInset = new Insets(0, 0, 0, 0);
+		Font monospace = new Font(Font.MONOSPACED, Font.PLAIN, 12);
+
+		JPanel pRow;
+		//JButton b;
+
+		GridBagConstraints cRow = new GridBagConstraints(),
+				cButton = new GridBagConstraints();
+		cRow.anchor = GridBagConstraints.WEST;
+		cButton.ipady = 21;
+
+		for(int row = 0, i = 0; row < key.length; ++row){
+			pRow = new JPanel(new GridBagLayout());
+			cRow.gridy = row;
+
+			for (int col = 0; col < key[row].length; ++col, ++i) {
+				switch (key[row][col]) {
+				case " ":
+					cButton.ipadx = 247;
+					cButton.insets = new Insets(0, 192, 0, 72);
+					break;
+
+				default:
+					cButton.ipadx = 9;
+					cButton.insets = zeroInset;
+			}
+				b = new JButton(key[row][col]);
+				b.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						JButton btn = (JButton) e.getSource();
+						onButtonPress(btn.getText());
+						
+					}
+					
+				});
+				b.setFont(monospace);
+				b.setFocusable(false);
+				pRow.add(b, cButton);			
+			}
+			keyboard.add(pRow, cRow);
+			
+		
+		}
+		
+		f.add(keyboard);
+	}
+	/***********************************************************************************************************
+	 * 											Event Handler
+	 * @param text 
+	 ***********************************************************************************************************/
+	
+
+	
+	private void onButtonPress(String text){
+//		String text = b.getText();
+//		System.out.println(text);
+		System.out.println(text + ": " + c.hextoBin(text.toLowerCase()));
+		
+	}
+	
+	
+	/******************************************************************************************************************
+	 * 										Launch JFrame
+	 ******************************************************************************************************************/
+	public void launch() {
+		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		f.pack();
+		f.setResizable(false);
+		f.setLocationRelativeTo(null);
+		f.setVisible(true);
+	}
+	/**********************************************************************************************************************
+	 * 										Main
+	 ********************************************************************************************************************/
+	public static void main(String[] args) {
+		Keyboard ui = new Keyboard();
+		ui.launch();
+		
+	}
+}

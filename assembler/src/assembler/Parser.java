@@ -15,6 +15,20 @@ public class Parser {
 	private ArrayList<String> lines;
 	private String sourceCode;
 	
+	public String printLines() {
+		String result = "";
+		int c = 1;
+		for (String s : this.lines) {
+			result += "Line " + c + ": " + s + "\n";
+			c++;
+		}
+		return result;
+	}
+	
+	public String printLine(int i) {
+		return "Line " + i + ": " + this.lines.get(i) + "\n";
+	}
+	
 	public Parser(String sourceCode) {
 		if (sourceCode == null) {
 			throw new NullPointerException("File Content is empty.");
@@ -22,13 +36,13 @@ public class Parser {
 		this.sourceCode = sourceCode;
 		this.lines = new ArrayList<>();
 		Scanner scanner = new Scanner(this.sourceCode);
-		int c = 1;
+//		int c = 1;
 		while (scanner.hasNextLine()) {
 			// WARNING: trimming every line might cause problems with syntax error handling
 			String s = scanner.nextLine().trim();
 			this.lines.add(s);
-			System.out.println("Line " + c + ": " + s);
-			c++;
+//			System.out.println("Line " + c + ": " + s);
+//			c++;
 		}
 		scanner.close();
 		
@@ -46,58 +60,52 @@ public class Parser {
 	}
 	
 	public ArrayList<Token> getAllParsedTokens() {
+		this.tokens = tokenizer.getTokens(this.sourceCode);
+		this.classifyToken(this.tokens);
 		return this.tokens;
 	}
 	
-	public String parseLine(String line) {
-		String result = "";
-		tokens = tokenizer.getTokens(line);
-		if(tokens.size() == 4) {
-			result = instructionFormat.Fswitch(tokens.get(0).toString(), tokens.get(1).toString(), 
-					tokens.get(2).toString(), tokens.get(3).toString(), 1);
-		}
-		else if(tokens.size() == 3) {
-			result = instructionFormat.Fswitch(tokens.get(0).toString(), tokens.get(1).toString(), 
-					tokens.get(2).toString(), "", 2);
-		}
-		else if(tokens.size() <= 2) {
-			result = instructionFormat.Fswitch(tokens.get(0).toString(), tokens.get(1).toString(), 
-					"", "", 3);
-		}
-		for (Token t : tokens) {
-			
-			this.classifyToken(t);
-			result += t.toString() + " ";
-		}
-		return result += "\n";
+	public ArrayList<Token> parseLine(int i) {
+		String line = this.lines.get(i);
+		System.out.println(this.printLine(i));
+		ArrayList<Token> tokens = tokenizer.getTokens(line);
+		this.classifyToken(tokens);
+		return tokens;
 	}
 	
 	public String parse() {
 		String result = "";
-		for (String line : this.lines) {
-			result += this.parseLine(line);
+		for (int i = 0; i < this.lines.size(); i++) {
+			ArrayList<Token> lineTokens = this.parseLine(i);
+			for (Token t : lineTokens) {
+				result += t.toString() + " ";
+			}
+			result += "\n\n";
 		}
 		return result;
 	}
 	
-	private void classifyToken(Token token) {
-		if (token.type == TokenType.COMMENT) return;
-		for (TokenRegex regex : tokenPatterns) {
-			Matcher match = match(regex.pattern, token.getValue());
-			if (match != null) {
-				if (this.tokens.size() > 1) {
-					if (this.getPrevTokenType(token) == TokenType.JMP || this.getPrevTokenType(token) == TokenType.ORIGIN) {
-						token.setType(TokenType.ADDRESS);
-						return;
+	private void classifyToken(ArrayList<Token> tokenList) {
+		for (Token t : tokenList) {
+			if (t.type != TokenType.COMMENT) {
+				for (TokenRegex regex : tokenPatterns) {
+					Matcher match = match(regex.pattern, t.getValue());
+					if (match != null) {
+						if (tokenList.size() > 1) {
+							if (this.getPrevTokenType(t, tokenList) == TokenType.JMP || this.getPrevTokenType(t, tokenList) == TokenType.ORIGIN) {
+								t.setType(TokenType.ADDRESS);
+								return;
+							}
+						}
+						t.setType(regex.tokenType);
 					}
 				}
-				token.setType(regex.tokenType);
 			}
 		}
 	}
 	
-	private TokenType getPrevTokenType(Token t) {
-		return this.tokens.get(this.tokens.size() - 2).type;
+	private TokenType getPrevTokenType(Token t, ArrayList<Token> tokenList) {
+		return tokenList.get(tokenList.size() - 2).type;
 	}
 	
 	private Matcher match(Pattern pattern, String s) {

@@ -10,14 +10,14 @@ public class Main {
 	    GUI gui = new GUI();
 	    gui.buildGUI();
     
-	    Register reg = new Register();
-		HashMap<String,String> regs = reg.getregs();
+//	    Register reg = new Register();
+//		HashMap<String,String> regs = reg.getregs();
 	
-		for (String name: regs.keySet()) {
-	        String key = name.toString();
-	        String value = regs.get(name).toString();  
-	        System.out.println(key + " " + value);  
-		} 
+//		for (String name: regs.keySet()) {
+//	        String key = name.toString();
+//	        String value = regs.get(name).toString();  
+//	        System.out.println(key + " " + value);  
+//		} 
 	    
 //	    Converter c = new Converter("07");
 //	    Converter c2 = new Converter("1A");

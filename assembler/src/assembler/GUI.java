@@ -6,29 +6,37 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+//import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
+//import javax.swing.table.AbstractTableModel;
+//import javax.swing.table.TableModel;
+
+import assembler.IO3;
 
 public class GUI extends javax.swing.JFrame {
 
@@ -40,8 +48,8 @@ public class GUI extends javax.swing.JFrame {
 	private JTextPane textEditor;
 	private JTextPane output;
 	private JTextPane console;
-	private JTextPane registers;
-	private JPanel memoryPanel;
+//	private JTextPane registers;
+//	private JPanel memoryPanel;
 	private StyledDocument textEditorDoc;
 	private StyledDocument outputDoc;
 	private StyledDocument consoleDoc;
@@ -50,22 +58,34 @@ public class GUI extends javax.swing.JFrame {
 	private JMenu fileDropdown;
 	private JButton genObjectFile;
 	private JButton loadMemoryFile;
+	private JButton executePrev;
+	private JButton executeAll;
+	private JButton executeNext;
 	private JMenuItem openFileOpt;
 	private JMenuItem saveFileOpt;
-	private JTable registerTable;
+//	private JTable registerTable;
 	private JTable memoryTable;
-	private DefaultTableModel tableModel;
-	private JTable headerTable;
+//	private DefaultTableModel tableModel;
+//	private JTable headerTable;
+	private Runner runner;
+//	private static int columnNumber = 1;
+	//private static JLabel IO3label;
+	private IO3 access = new IO3();
+	private char[] ascii = new char[8];
+	private ArrayList<String> ref = access.getList();
+	
+	
 
-
-	private static int columnNumber = 1;
+	
+	
 
 	Register reg = new Register();
 	HashMap<String,String> regs = reg.getregs();
-	
+	Object[][] IO3 = new Object[8][2];
 	String[] columnNames = { "Direction", "Content" };
 	Object[][] rowData = new Memory().memData();
-
+	Parser p;
+	int currentLine;
 	
 	/****************************************************************************************************************************
 	 * 	Getters and Setters
@@ -95,15 +115,17 @@ public class GUI extends javax.swing.JFrame {
 	/****************************************************************************************************************************
 	 * 	Initializations
 	 *************************************************************************************************************************** */
-
+    ascii = access.AsciConversion(ref, ascii);
+    String AsciiConversion = new String(ascii);
 	f = new JFrame("IDE TextBox");
 	textEditor = new JTextPane();
 	output = new JTextPane();
 	console = new JTextPane();
-	registers = new JTextPane();
+//	registers = new JTextPane();
 	attrWHITE = new SimpleAttributeSet();
 	menu = new JMenuBar();
-
+	
+	
 	/****************************************************************************************************************************
 	 * 	File Upload
 	 *************************************************************************************************************************** */
@@ -117,6 +139,11 @@ public class GUI extends javax.swing.JFrame {
 	fileDropdown = new JMenu("File");
     genObjectFile = new JButton("Generate Object File");
     loadMemoryFile = new JButton("Upload Memory File");
+    
+    executePrev = new JButton("Prev Instruction");
+    executeAll = new JButton("Execute All");
+    executeNext = new JButton("Next Instruction");
+    
     openFileOpt = new JMenuItem("Open");
     saveFileOpt = new JMenuItem("Save");
     fileDropdown.add(openFileOpt);
@@ -125,18 +152,90 @@ public class GUI extends javax.swing.JFrame {
     menu.add(genObjectFile);
     menu.add(loadMemoryFile);
     
+    menu.add(executePrev);
+    menu.add(executeAll);
+    menu.add(executeNext);
+    
+    executePrev.addActionListener(new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			log("Execute prev pressed.\n");
+			if (textEditor.getStyledDocument().getLength() == 0) {
+				log("ERROR: There are no instructions.\n");
+			} else if (runner == null) {
+				String fileContent = "";
+				try {
+					fileContent = textEditor.getStyledDocument().getText(0, textEditor.getStyledDocument().getLength());
+				} catch (BadLocationException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				p = new Parser(fileContent);
+				runner = new Runner();
+			}
+			currentLine = runner.getCurrentInstruction();
+			if (currentLine == 0) {
+				log("WARNING: There is no prev instruction.\n");
+			} else if (currentLine > 0) {
+				runner.setCurrentInstruction(currentLine-1);
+				currentLine = runner.getCurrentInstruction();
+				log("Current Line: " + currentLine + "\n");
+				log(runner.executeLine(runner.run(p.parseLine(currentLine))) + "\n");
+			}
+		}
+    });
+    executeAll.addActionListener(new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			log("Execute all pressed.\n");
+		}
+    });
+    executeNext.addActionListener(new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			log("Execute next pressed.\n");
+			if (textEditor.getStyledDocument().getLength() == 0) {
+				log("ERROR: There are no instructions.\n");
+			} else if (runner == null) {
+				String fileContent = "";
+				try {
+					fileContent = textEditor.getStyledDocument().getText(0, textEditor.getStyledDocument().getLength());
+				} catch (BadLocationException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				p = new Parser(fileContent);
+				runner = new Runner();
+			}
+			currentLine = runner.getCurrentInstruction();
+			log("Current Line: " + currentLine + "\n");
+			log(runner.executeLine(runner.run(p.parseLine(currentLine))) + "\n");
+			runner.setCurrentInstruction(currentLine+1);
+		}
+    });
+    
     genObjectFile.addActionListener(new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
+			log("Generate Object File Pressed.\n");
+			String fileContent = "";
 			try {
-				console.getStyledDocument().insertString(console.getStyledDocument().getLength(), "Generate Object File Pressed.", attrWHITE);
-				
+				fileContent = textEditor.getStyledDocument().getText(0, textEditor.getStyledDocument().getLength());
 			} catch (BadLocationException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+			Parser p = new Parser(fileContent);
+//			runner = new Runner(p.parseLine(fileContent));
+//			log(runner.executeLine());
 		}
 
     });
@@ -157,19 +256,13 @@ public class GUI extends javax.swing.JFrame {
 						// TODO Auto-generated catch block
 						e2.printStackTrace();
 					}
-
-					try {
-						// load memory with fileContent String here
-						console.getStyledDocument().insertString(console.getStyledDocument().getLength(), "Upload Memory File Uploaded.", attrWHITE);
-						Memory mem = new Memory();
-						mem.loadMemoryFromFile(fileContent);
-						DefaultTableModel model = new DefaultTableModel(mem.memData(), columnNames);
-						memoryTable.setModel(model);
-						memoryTable.repaint();
-					} catch (BadLocationException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
+					// load memory with fileContent String here
+					log("Upload Memory File Uploaded.\n");
+					Memory mem = new Memory();
+					mem.loadMemoryFromFile(fileContent);
+					DefaultTableModel model = new DefaultTableModel(mem.memData(), columnNames);
+					memoryTable.setModel(model);
+					memoryTable.repaint();
 					break;
 			}	
 		}
@@ -196,9 +289,12 @@ public class GUI extends javax.swing.JFrame {
 					try {
 						textEditorDoc.remove(0, textEditorDoc.getLength());
 						textEditorDoc.insertString(0, fileContent, attrWHITE);
-						Parser p = new Parser(fileContent);
+						p = new Parser(fileContent);
 						String parsed = p.parse();
-						System.out.println(parsed);
+//						runner = new Runner(p.parseLine(fileContent));
+//						runner.run();
+						log(parsed);
+//						log(p.printLines());
 					} catch (BadLocationException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -207,6 +303,31 @@ public class GUI extends javax.swing.JFrame {
 			}	
 		}
 
+	});
+	saveFileOpt.addActionListener(new ActionListener() {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JFileChooser saver = new JFileChooser("./");
+	        int returnVal = saver.showSaveDialog(getParent());
+	        File file = saver.getSelectedFile();
+	        BufferedWriter writer = null;
+	        if (returnVal == JFileChooser.APPROVE_OPTION)
+	        {
+	            try
+	            {
+	            writer = new BufferedWriter( new FileWriter(file));
+	            writer.write( textEditor.getText());
+	            writer.close( );
+	          
+	            }
+	            catch (IOException s)
+	            {
+	            
+	            }
+	        }
+		}
+		
 	});
 	
 	/****************************************************************************************************************************
@@ -237,20 +358,6 @@ public class GUI extends javax.swing.JFrame {
 	 * 	Memory 
 	 *************************************************************************************************************************** */
 	
-//	TableModel memoryDataModel = new AbstractTableModel() {
-//		private static final long serialVersionUID = 1L;
-//		String[] columnNames = { "Direction", "Content" };
-//		Object[][] rowData;
-//		public int getColumnCount() { return columnNames.length; }
-//		public boolean isCellEditable(int row, int col) { return true; }
-//		public String getColumnName(int index) { return columnNames[index]; }
-//		public int getRowCount() { return 2048; }
-//		public Object getValueAt(int row, int col) { return new Integer(row*col); }
-//		public void setValueAt(Object value, int row, int col) {
-//			rowData[row][col] = value;
-//	        fireTableCellUpdated(row, col);
-//	    }
-//	};
 	//Added Model to JTable & add JTable to ScrollPane
 	memoryTable = new JTable(rowData, columnNames);
 	JScrollPane memoryScrollPane2 = new JScrollPane(memoryTable);
@@ -284,7 +391,7 @@ public class GUI extends javax.swing.JFrame {
 	 *************************************************************************************************************************** */
 	
 	JScrollPane consoleScrollPane = new JScrollPane(console);
-	consoleScrollPane.setBounds(0, 480,1275,900);
+	consoleScrollPane.setBounds(0, 480,1275,400);
 	consoleScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 	consoleScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 	consoleScrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Console"));
@@ -324,12 +431,56 @@ public class GUI extends javax.swing.JFrame {
 
 	registerPanel.setLayout(null);
 	registerPanel.setVisible(true);
+	
+	JPanel IOPanel = new JPanel(new GridBagLayout());
+	JLabel IO3label = new JLabel(AsciiConversion);
+	IOPanel.add(IO3label);
+	IO3label.revalidate();
+	    int DirRows = 0;
+	    int DirectionReference = 40;
+		JTable table2 =new JTable(IO3, columnNames);
+		
+		
+		TableModel model = table2.getModel();
+		table2.setBackground(Color.gray);
+		table2.setBounds(5,20, 200, 150);
+		table2.setFont(new Font("Tahome",Font.ITALIC,14));
+		table2.setGridColor(Color.GREEN);
+
+		
+		
+        IOPanel.setBounds(1300,0,500,650);
+		IOPanel.setBackground(Color.gray);
+		IOPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "IO #3(ASCII)"));
+		IOPanel.add(table2);
+
+		IOPanel.setLayout(null);
+		IOPanel.setVisible(true);
+		
+		
+		System.out.println(AsciiConversion);
+		
+		
+		for(int i = 0; i < 8 ; i++) {
+			model.setValueAt(ref.get(i), DirRows, 1);
+			 DirRows++;
+		}
+		DirRows = 0;
+		for(int i = 0; i < 8 ; i++) {
+			model.setValueAt(DirectionReference, DirRows, 0);
+			 DirRows++;
+			 DirectionReference++;
+		}
+		
+		
+
 
 
 
 	/****************************************************************************************************************************
 	 * 	Adding to Frame
 	 *************************************************************************************************************************** */
+	f.add(IOPanel);
 	f.add(textEditorScrollPane);
 	f.add(consoleScrollPane);
 	f.add(registerPanel);
@@ -339,6 +490,15 @@ public class GUI extends javax.swing.JFrame {
 	f.setLayout(null);
 	f.setVisible(true);
 
+	}
+	
+	public void log(String s) {
+		try {
+			console.getStyledDocument().insertString(console.getStyledDocument().getLength(), s, attrWHITE);
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
 
