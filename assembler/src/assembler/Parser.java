@@ -15,6 +15,18 @@ public class Parser {
 	private ArrayList<String> lines;
 	private String sourceCode;
 	
+	public String getSourceCode() {
+		return sourceCode;
+	}
+
+	public void setSourceCode(String sourceCode) {
+		this.sourceCode = sourceCode;
+	}
+
+	public ArrayList<String> getLines() {
+		return lines;
+	}
+
 	public String printLines() {
 		String result = "";
 		int c = 1;
@@ -61,15 +73,15 @@ public class Parser {
 	
 	public ArrayList<Token> getAllParsedTokens() {
 		this.tokens = tokenizer.getTokens(this.sourceCode);
-		this.classifyToken(this.tokens);
+		this.classifyTokens(this.tokens);
 		return this.tokens;
 	}
 	
 	public ArrayList<Token> parseLine(int i) {
 		String line = this.lines.get(i);
-		System.out.println(this.printLine(i));
+//		System.out.println(this.printLine(i));
 		ArrayList<Token> tokens = tokenizer.getTokens(line);
-		this.classifyToken(tokens);
+		this.classifyTokens(tokens);
 		return tokens;
 	}
 	
@@ -85,7 +97,7 @@ public class Parser {
 		return result;
 	}
 	
-	private void classifyToken(ArrayList<Token> tokenList) {
+	private void classifyTokens(ArrayList<Token> tokenList) {
 		for (Token t : tokenList) {
 			if (t.type != TokenType.COMMENT) {
 				for (TokenRegex regex : tokenPatterns) {

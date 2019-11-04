@@ -1,31 +1,44 @@
 package assembler;
 
-import java.util.HashMap;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.Scanner;
 
 public class Main {
 	
+	public static boolean incorrectAnswer;
+	public static Scanner scanner;
+	public static String input;
 	
 	public static void main(String[] args) {
 	   
 	    GUI gui = new GUI();
 	    gui.buildGUI();
-    
-//	    Register reg = new Register();
-//		HashMap<String,String> regs = reg.getregs();
-	
-//		for (String name: regs.keySet()) {
-//	        String key = name.toString();
-//	        String value = regs.get(name).toString();  
-//	        System.out.println(key + " " + value);  
-//		} 
 	    
-//	    Converter c = new Converter("07");
-//	    Converter c2 = new Converter("1A");
-//	    Converter c3 = new Converter("1111111111111111");
-//	    
-//	    // System.out.println(c.binToHex(c.inst));
-//	    System.out.println(c.hextoBin(c.inst));
-//	    System.out.println(c2.hextoBin(c2.inst));
-//	    System.out.println(c3.binToHex(c3.inst));
+	    scanner = new Scanner(System.in);
+		
+		incorrectAnswer = true;
+		
+		while (incorrectAnswer) {
+			
+			System.out.println ("Please enter sourceCode, objectCode: e.j. load r1, 0a::010a. Type 'stop' to stop testing.");
+	        input = scanner.nextLine().trim();
+	        String[] inputs = input.split("::");
+	        
+	        String sourceCode = inputs[0];
+			String objectCode = inputs[1];
+			
+			Parser p = new Parser(sourceCode);
+			Runner runner = new Runner();
+			System.out.println("\nSource Code: " + sourceCode);
+			System.out.println("Object Code: " + objectCode);
+            System.out.println("Generated Object Code: " + runner.executeLine(runner.run(p.parseLine(0))));
+            if (input.equals("stop")) {
+            	System.out.println("Stopped.");
+            	incorrectAnswer = false;
+                scanner.close();
+            }
+	            
+        }
 	}
 }

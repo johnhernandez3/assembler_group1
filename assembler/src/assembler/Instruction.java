@@ -34,7 +34,7 @@ public class Instruction {
 	}
 	
 	public void addToken(Token t) {
-		this.tokens.add(t);
+		tokens.add(t);
 	}
 	
 	@Override

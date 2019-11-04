@@ -116,14 +116,14 @@ public class GUI extends javax.swing.JFrame {
 	 *************************************************************************************************************************** */
     ascii = access.AsciConversion(ref, ascii);
     String AsciiConversion = new String(ascii);
-	f = new JFrame("IDE TextBox");
+	f = new JFrame("Microprocessor Simulator");
 	textEditor = new JTextPane();
 	output = new JTextPane();
 	console = new JTextPane();
 //	registers = new JTextPane();
 	attrWHITE = new SimpleAttributeSet();
 	menu = new JMenuBar();
-	
+	runner = new Runner();
 	
 	/****************************************************************************************************************************
 	 * 	File Upload
@@ -160,10 +160,10 @@ public class GUI extends javax.swing.JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			log("Execute prev pressed.\n");
+//			log("Execute prev pressed.\n");
 			if (textEditor.getStyledDocument().getLength() == 0) {
-				log("ERROR: There are no instructions.\n");
-			} else if (runner == null) {
+				log("WARNING: There is no source code.\n");
+			} else if (p == null) {
 				String fileContent = "";
 				try {
 					fileContent = textEditor.getStyledDocument().getText(0, textEditor.getStyledDocument().getLength());
@@ -172,16 +172,16 @@ public class GUI extends javax.swing.JFrame {
 					e1.printStackTrace();
 				}
 				p = new Parser(fileContent);
-				runner = new Runner();
-			}
-			currentLine = runner.getCurrentInstruction();
-			if (currentLine == 0) {
-				log("WARNING: There is no prev instruction.\n");
-			} else if (currentLine > 0) {
-				runner.setCurrentInstruction(currentLine-1);
+			} else {
 				currentLine = runner.getCurrentInstruction();
-				log("Current Line: " + currentLine + "\n");
-				log(runner.executeLine(runner.run(p.parseLine(currentLine))) + "\n");
+				if (currentLine == 0) {
+					log("WARNING: There is no prev instruction.\n");
+				} else if (currentLine > 0) {
+					runner.setCurrentInstruction(currentLine-1);
+					currentLine = runner.getCurrentInstruction();
+					log("Current Line: " + currentLine + "\n");
+					runner.executeLine(runner.run(p.parseLine(currentLine)));
+				}
 			}
 		}
     });
@@ -198,10 +198,10 @@ public class GUI extends javax.swing.JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			log("Execute next pressed.\n");
+//			log("Execute next pressed.\n");
 			if (textEditor.getStyledDocument().getLength() == 0) {
-				log("ERROR: There are no instructions.\n");
-			} else if (runner == null) {
+				log("WARNING: There is no source code.\n");
+			} else if (p == null) {
 				String fileContent = "";
 				try {
 					fileContent = textEditor.getStyledDocument().getText(0, textEditor.getStyledDocument().getLength());
@@ -210,12 +210,17 @@ public class GUI extends javax.swing.JFrame {
 					e1.printStackTrace();
 				}
 				p = new Parser(fileContent);
-				runner = new Runner();
+			} else {
+				currentLine = runner.getCurrentInstruction();
+				if (currentLine > (p.getLines().size() - 1)) {
+					log("WARNING: There is no next instruction.\n");
+				} else {
+					log("Current Line: " + currentLine + "\n");
+					runner.executeLine(runner.run(p.parseLine(currentLine)));
+					runner.setCurrentInstruction(currentLine+1);
+					log("Constant: " + runner.getConstants().get("ten") + "\n");
+				}
 			}
-			currentLine = runner.getCurrentInstruction();
-			log("Current Line: " + currentLine + "\n");
-			log(runner.executeLine(runner.run(p.parseLine(currentLine))) + "\n");
-			runner.setCurrentInstruction(currentLine+1);
 		}
     });
     

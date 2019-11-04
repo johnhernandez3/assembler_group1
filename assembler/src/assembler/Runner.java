@@ -14,8 +14,13 @@ public class Runner {
 	private Converter converter = new Converter();
 	private ArrayList<Token> tokens;
 	
-	public Map<String, ArrayList<String>> values = new HashMap<>();
+	public Map<String, String> values = new HashMap<>();
 	public Map<String, String> constants = new HashMap<>();
+	
+	public Map<String, String> getConstants() {
+		return constants;
+	}
+
 	public ArrayList<Instruction> instructions = new ArrayList<>();
 	public int currentInstruction = 0;
 	
@@ -39,22 +44,30 @@ public class Runner {
 			Token currentToken = iter.next();
 			switch (currentToken.getType()) {
 				case CONST:
+					System.out.println("testing constants");
 					// store constants here
 					Token nameToken = iter.next();
-					if (nameToken.type != TokenType.NAME) {
+					String keywordRegex = "^org$|^jmp$|^const$|^db$|^loadim$|^loadrind$|^load$|^pop$|^storerind$|^push$|^store$|^addim$|^subim$|^add$|^sub$|^and$|^or$|^xor$|^not$|^neg$|^shiftr$|^shiftl$|^rotar$|^rotal$|^jmprind$|^jmpaddr$|^jcondrin$|^jcondaddr$|^loop$|^grteq$|^grt$|^eq$|^neq$|^nop$|^call$|^return$";
+					if (nameToken.getType() != TokenType.NAME) {
 						// return "Error";
+					} else if (nameToken.getValue().matches(keywordRegex)) {
+						// return Error;
+					} else {
+						Token valueToken = iter.next();
+						if (valueToken.type != TokenType.VALUE) {
+							// return "Error";
+						} else {
+							System.out.println("running put in constants");
+							constants.put(nameToken.value, valueToken.value);
+						}
 					}
-					Token valueToken = iter.next();
-					if (valueToken.type != TokenType.VALUE) {
-						// return "Error";
-					}
-					constants.put(nameToken.value, valueToken.value);
 				case NAME:
 					 // store values here
 					
 				case OPCODE:
 					switch (currentToken.getValue()) {
 						case "load":
+							opcodes = new InstructionSet();
 							Instruction load = opcodes.getInstruction(currentToken.getValue());
 							load.addToken(currentToken);
 							Token registerToken = iter.next();
@@ -72,6 +85,7 @@ public class Runner {
 							instructions.add(load);
 							return load;
 						case "loadim":
+							opcodes = new InstructionSet();
 							Instruction loadim = opcodes.getInstruction(currentToken.getValue());
 							loadim.addToken(currentToken);
 							Token registerToken1 = iter.next();
@@ -89,6 +103,7 @@ public class Runner {
 							instructions.add(loadim);
 							return loadim;
 						case "pop":
+							opcodes = new InstructionSet();
 							Instruction pop = opcodes.getInstruction(currentToken.getValue());
 							pop.addToken(currentToken);
 							Token registerToken2 = iter.next();
@@ -100,6 +115,7 @@ public class Runner {
 							instructions.add(pop);
 							return pop;
 						case "store":
+							opcodes = new InstructionSet();
 							Instruction store = opcodes.getInstruction(currentToken.getValue());
 							store.addToken(currentToken);
 							Token registerToken3 = iter.next();
@@ -117,6 +133,7 @@ public class Runner {
 							instructions.add(store);
 							return store;
 						case "push":
+							opcodes = new InstructionSet();
 							Instruction push = opcodes.getInstruction(currentToken.getValue());
 							push.addToken(currentToken);
 							Token registerToken4 = iter.next();
@@ -128,6 +145,7 @@ public class Runner {
 							instructions.add(push);
 							return push;
 						case "loadrind":
+							opcodes = new InstructionSet();
 							Instruction loadrind = opcodes.getInstruction(currentToken.getValue());
 							loadrind.addToken(currentToken);
 							Token registerToken5 = iter.next();
@@ -145,6 +163,7 @@ public class Runner {
 							instructions.add(loadrind);
 							return loadrind;
 						case "storerind":
+							opcodes = new InstructionSet();
 							Instruction storerind = opcodes.getInstruction(currentToken.getValue());
 							storerind.addToken(currentToken);
 							Token registerToken7 = iter.next();
@@ -162,6 +181,7 @@ public class Runner {
 							instructions.add(storerind);
 							return storerind;
 						case "add":
+							opcodes = new InstructionSet();
 							Instruction add = opcodes.getInstruction(currentToken.getValue());
 							add.addToken(currentToken);
 							Token registerToken9 = iter.next();
@@ -185,6 +205,7 @@ public class Runner {
 							instructions.add(add);
 							return add;
 						case "sub":
+							opcodes = new InstructionSet();
 							Instruction sub = opcodes.getInstruction(currentToken.getValue());
 							sub.addToken(currentToken);
 							Token registerToken12 = iter.next();
@@ -208,6 +229,7 @@ public class Runner {
 							instructions.add(sub);
 							return sub;
 						case "addim":
+							opcodes = new InstructionSet();
 							Instruction addim = opcodes.getInstruction(currentToken.getValue());
 							addim.addToken(currentToken);
 							Token registerToken15 = iter.next();
@@ -225,6 +247,7 @@ public class Runner {
 							instructions.add(addim);
 							return addim;
 						case "subim":
+							opcodes = new InstructionSet();
 							Instruction subim = opcodes.getInstruction(currentToken.getValue());
 							subim.addToken(currentToken);
 							Token registerToken16 = iter.next();
@@ -242,6 +265,7 @@ public class Runner {
 							instructions.add(subim);
 							return subim;
 						case "and":
+							opcodes = new InstructionSet();
 							Instruction and = opcodes.getInstruction(currentToken.getValue());
 							and.addToken(currentToken);
 							Token registerToken17 = iter.next();
@@ -265,6 +289,7 @@ public class Runner {
 							instructions.add(and);
 							return and;
 						case "or":
+							opcodes = new InstructionSet();
 							Instruction or = opcodes.getInstruction(currentToken.getValue());
 							or.addToken(currentToken);
 							Token registerToken20 = iter.next();
@@ -288,6 +313,7 @@ public class Runner {
 							instructions.add(or);
 							return or;
 						case "xor":
+							opcodes = new InstructionSet();
 							Instruction xor = opcodes.getInstruction(currentToken.getValue());
 							xor.addToken(currentToken);
 							Token registerToken23 = iter.next();
@@ -311,6 +337,7 @@ public class Runner {
 							instructions.add(xor);
 							return xor;
 						case "not":
+							opcodes = new InstructionSet();
 							Instruction not = opcodes.getInstruction(currentToken.getValue());
 							not.addToken(currentToken);
 							Token registerToken26 = iter.next();
@@ -328,6 +355,7 @@ public class Runner {
 							instructions.add(not);
 							return not;
 						case "neg":
+							opcodes = new InstructionSet();
 							Instruction neg = opcodes.getInstruction(currentToken.getValue());
 							neg.addToken(currentToken);
 							Token registerToken28 = iter.next();
@@ -345,6 +373,7 @@ public class Runner {
 							instructions.add(neg);
 							return neg;
 						case "shiftr":
+							opcodes = new InstructionSet();
 							Instruction shiftr = opcodes.getInstruction(currentToken.getValue());
 							shiftr.addToken(currentToken);
 							Token registerToken30 = iter.next();
@@ -368,6 +397,7 @@ public class Runner {
 							instructions.add(shiftr);
 							return shiftr;
 						case "shiftl":
+							opcodes = new InstructionSet();
 							Instruction shiftl = opcodes.getInstruction(currentToken.getValue());
 							shiftl.addToken(currentToken);
 							Token registerToken33 = iter.next();
@@ -391,6 +421,7 @@ public class Runner {
 							instructions.add(shiftl);
 							return shiftl;
 						case "rotar":
+							opcodes = new InstructionSet();
 							Instruction rotar = opcodes.getInstruction(currentToken.getValue());
 							rotar.addToken(currentToken);
 							Token registerToken36 = iter.next();
@@ -414,6 +445,7 @@ public class Runner {
 							instructions.add(rotar);
 							return rotar;
 						case "rotal":
+							opcodes = new InstructionSet();
 							Instruction rotal = opcodes.getInstruction(currentToken.getValue());
 							rotal.addToken(currentToken);
 							Token registerToken39 = iter.next();
@@ -437,6 +469,7 @@ public class Runner {
 							instructions.add(rotal);
 							return rotal;
 						case "jmprind":
+							opcodes = new InstructionSet();
 							Instruction jmprind = opcodes.getInstruction(currentToken.getValue());
 							jmprind.addToken(currentToken);
 							Token registerToken42 = iter.next();
@@ -448,6 +481,7 @@ public class Runner {
 							instructions.add(jmprind);
 							return jmprind;
 						case "jmpaddr":
+							opcodes = new InstructionSet();
 							Instruction jmpaddr = opcodes.getInstruction(currentToken.getValue());
 							jmpaddr.addToken(currentToken);
 							Token addressToken2 = iter.next();
@@ -459,6 +493,7 @@ public class Runner {
 							instructions.add(jmpaddr);
 							return jmpaddr;
 						case "jcondrin":
+							opcodes = new InstructionSet();
 							Instruction jcondrin = opcodes.getInstruction(currentToken.getValue());
 							jcondrin.addToken(currentToken);
 							Token registerToken43 = iter.next();
@@ -470,6 +505,7 @@ public class Runner {
 							instructions.add(jcondrin);
 							return jcondrin;
 						case "jcondaddr":
+							opcodes = new InstructionSet();
 							Instruction jcondaddr = opcodes.getInstruction(currentToken.getValue());
 							jcondaddr.addToken(currentToken);
 							Token addressToken3 = iter.next();
@@ -481,6 +517,7 @@ public class Runner {
 							instructions.add(jcondaddr);
 							return jcondaddr;
 						case "loop":
+							opcodes = new InstructionSet();
 							Instruction loop = opcodes.getInstruction(currentToken.getValue());
 							loop.addToken(currentToken);
 							Token registerToken44 = iter.next();
@@ -498,6 +535,7 @@ public class Runner {
 							instructions.add(loop);
 							return loop;
 						case "grt":
+							opcodes = new InstructionSet();
 							Instruction grt = opcodes.getInstruction(currentToken.getValue());
 							grt.addToken(currentToken);
 							Token registerToken45 = iter.next();
@@ -515,6 +553,7 @@ public class Runner {
 							instructions.add(grt);
 							return grt;
 						case "grteq":
+							opcodes = new InstructionSet();
 							Instruction grteq = opcodes.getInstruction(currentToken.getValue());
 							grteq.addToken(currentToken);
 							Token registerToken47 = iter.next();
@@ -532,6 +571,7 @@ public class Runner {
 							instructions.add(grteq);
 							return grteq;
 						case "eq":
+							opcodes = new InstructionSet();
 							Instruction eq = opcodes.getInstruction(currentToken.getValue());
 							eq.addToken(currentToken);
 							Token registerToken49 = iter.next();
@@ -549,6 +589,7 @@ public class Runner {
 							instructions.add(eq);
 							return eq;
 						case "neq":
+							opcodes = new InstructionSet();
 							Instruction neq = opcodes.getInstruction(currentToken.getValue());
 							neq.addToken(currentToken);
 							Token registerToken51 = iter.next();
@@ -566,11 +607,13 @@ public class Runner {
 							instructions.add(neq);
 							return neq;
 						case "nop":
+							opcodes = new InstructionSet();
 							Instruction nop = opcodes.getInstruction(currentToken.getValue());
 							nop.addToken(currentToken);
 							instructions.add(nop);
 							return nop;
 						case "call":
+							opcodes = new InstructionSet();
 							Instruction call = opcodes.getInstruction(currentToken.getValue());
 							call.addToken(currentToken);
 							Token addressToken5 = iter.next();
@@ -582,6 +625,7 @@ public class Runner {
 							instructions.add(call);
 							return call;
 						case "return":
+							opcodes = new InstructionSet();
 							Instruction r = opcodes.getInstruction(currentToken.getValue());
 							r.addToken(currentToken);
 							instructions.add(r);
@@ -600,6 +644,7 @@ public class Runner {
 	
 	public String executeLine(Instruction instruction) {
 		String result = "";
+		if (instruction == null) return "No OPCODE. Not an instruction";
 		Instruction i = instruction;
 //		System.out.println(i.toString() + "\n" + "Num Of Tokens: " + i.getTokens().size());
 		if(i.getTokens().size() == 4) {
