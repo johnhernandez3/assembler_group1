@@ -280,7 +280,6 @@ public class GUI extends javax.swing.JFrame {
 			switch (fileChooser.showOpenDialog(f)) {
 				case JFileChooser.APPROVE_OPTION:
 					File f = fileChooser.getSelectedFile();
-
 					FileManager fm = new FileManager();
 					String fileContent = null;
 					try {
@@ -293,12 +292,6 @@ public class GUI extends javax.swing.JFrame {
 					try {
 						textEditorDoc.remove(0, textEditorDoc.getLength());
 						textEditorDoc.insertString(0, fileContent, attrWHITE);
-						p = new Parser(fileContent);
-						String parsed = p.parse();
-//						runner = new Runner(p.parseLine(fileContent));
-//						runner.run();
-						log(parsed);
-//						log(p.printLines());
 					} catch (BadLocationException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -312,24 +305,8 @@ public class GUI extends javax.swing.JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			JFileChooser saver = new JFileChooser("./");
-	        int returnVal = saver.showSaveDialog(getParent());
-	        File file = saver.getSelectedFile();
-	        BufferedWriter writer = null;
-	        if (returnVal == JFileChooser.APPROVE_OPTION)
-	        {
-	            try
-	            {
-	            writer = new BufferedWriter( new FileWriter(file));
-	            writer.write( textEditor.getText());
-	            writer.close( );
-	          
-	            }
-	            catch (IOException s)
-	            {
-	            
-	            }
-	        }
+			FileManager fm = new FileManager();
+			fm.save(textEditor.getText(), getParent());
 		}
 		
 	});

@@ -1,12 +1,17 @@
 package assembler;
 
+import java.awt.Component;
 import java.io.BufferedInputStream;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+
+import javax.swing.JFileChooser;
 
 public class FileManager {
 
@@ -45,6 +50,24 @@ public class FileManager {
 	
 //	method to save file
 	
+	public String save(String text, Component parent) {
+		JFileChooser saver = new JFileChooser("./");
+        int returnVal = saver.showSaveDialog(parent);
+        File file = saver.getSelectedFile();
+        BufferedWriter writer = null;
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            try {
+				writer = new BufferedWriter(new FileWriter(file));
+				writer.write(text);
+	            writer.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+		
+		return "File saved.";
+	}
 //	handling file type acceptance
 	
 //	creation of object file (data to file is managed elsewhere
