@@ -180,7 +180,7 @@ public class GUI extends javax.swing.JFrame {
 					runner.setCurrentInstruction(currentLine-1);
 					currentLine = runner.getCurrentInstruction();
 					log("Current Line: " + currentLine + "\n");
-					runner.executeLine(runner.run(p.parseLine(currentLine)));
+					log(runner.executeLine(runner.run(p.parseLine(currentLine))) + "\n");
 				}
 			}
 		}
@@ -216,9 +216,9 @@ public class GUI extends javax.swing.JFrame {
 					log("WARNING: There is no next instruction.\n");
 				} else {
 					log("Current Line: " + currentLine + "\n");
-					runner.executeLine(runner.run(p.parseLine(currentLine)));
+					log(runner.executeLine(runner.run(p.parseLine(currentLine))) + "\n");
 					runner.setCurrentInstruction(currentLine+1);
-					log("Constant: " + runner.getConstants().get("ten") + "\n");
+//					log("Constant: " + runner.getConstants().get("ten") + "\n");
 				}
 			}
 		}
@@ -462,7 +462,7 @@ public class GUI extends javax.swing.JFrame {
 		IOPanel.setVisible(true);
 		
 		
-		System.out.println(AsciiConversion);
+//		System.out.println(AsciiConversion);
 		
 		
 		for(int i = 0; i < 8 ; i++) {

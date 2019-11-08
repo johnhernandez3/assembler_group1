@@ -126,7 +126,7 @@ public class TrafficLight {
 		}
 		//Switch Case to decide which light turns on
 		public void turnOnLight(int light){
-			System.out.println("Turn on light #" + light);
+//			System.out.println("Turn on light #" + light);
 			switch(light){
 			case 0:
 				this.iRed = Color.red;

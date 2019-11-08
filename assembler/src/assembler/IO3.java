@@ -27,7 +27,7 @@ public class IO3 {
 	public static void main(String[] args) {
 	
 		result = AsciConversion(ref,result);
-		System.out.println("ASCII: " + result);
+//		System.out.println("ASCII: " + result);
 
 	}
 	
