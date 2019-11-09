@@ -1,7 +1,5 @@
 package assembler;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.util.Scanner;
 
 public class Main {

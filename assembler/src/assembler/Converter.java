@@ -69,4 +69,10 @@ public class Converter {
 //		}
 //		return s;
 		}
+	
+	public String decimalToHex(int decimal) {
+		String result = "";
+		result = ("000" + Integer.toHexString(decimal)).substring(Integer.toHexString(decimal).length());
+		return result;
+	}
 }

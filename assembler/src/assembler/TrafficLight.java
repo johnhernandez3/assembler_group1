@@ -1,8 +1,6 @@
 package assembler;
 
 import java.awt.*;
-import java.util.Scanner;
-
 import javax.swing.*;
 
 
@@ -66,6 +64,7 @@ public class TrafficLight {
 		Light() {}
 
 
+		@Override
 		public void paintComponent(Graphics g) {
 			defineLight(g);
 

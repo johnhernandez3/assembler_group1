@@ -2,7 +2,6 @@ package assembler;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
-
 import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -15,8 +14,6 @@ public class IO3 {
 	private static String[] columnNames = { "Direction", "Content" };
 	private static int DirRows = 0;
 	private static int DirectionReference = 40;
-
-	    
 	    
 	public static void main(String[] args) {
 	 	ref.add("01000011");

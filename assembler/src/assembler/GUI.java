@@ -1,19 +1,20 @@
 package assembler;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -112,7 +113,6 @@ public class GUI extends javax.swing.JFrame {
 	/****************************************************************************************************************************
 	 * 	Initializations
 	 *************************************************************************************************************************** */
-
 	f = new JFrame("Microprocessor Simulator");
 	textEditor = new JTextPane();
 	output = new JTextPane();
@@ -136,9 +136,12 @@ public class GUI extends javax.swing.JFrame {
     genObjectFile = new JButton("Generate Object File");
     loadMemoryFile = new JButton("Upload Memory File");
     
-    executePrev = new JButton("Prev Instruction");
+    String basePath = new File("").getAbsolutePath();
+    Icon prev = new ImageIcon(basePath + "/src/media/prev.png");
+    Icon next = new ImageIcon(basePath + "/src/media/next.png");
+    executePrev = new JButton(prev);
     executeAll = new JButton("Execute All");
-    executeNext = new JButton("Next Instruction");
+    executeNext = new JButton(next);
     
     openFileOpt = new JMenuItem("Open");
     saveFileOpt = new JMenuItem("Save");
@@ -169,15 +172,26 @@ public class GUI extends javax.swing.JFrame {
 					e1.printStackTrace();
 				}
 				p = new Parser(fileContent);
+				currentLine = runner.getCurrentInstruction();
+				if (currentLine == 0) {
+					log("WARNING: There is no prev instruction.\n");
+				} else if (currentLine > 0) {
+					Converter converter = new Converter();
+					runner.setCurrentInstruction(currentLine-1);
+					currentLine = runner.getCurrentInstruction();
+//					log("Current Line: " + currentLine + "\n");
+					log(converter.decimalToHex(currentLine).toUpperCase() + ": " + runner.executeLine(runner.run(p.parseLine(currentLine))).toUpperCase() + ": " + p.getLine(currentLine) + "\n");
+				}
 			} else {
 				currentLine = runner.getCurrentInstruction();
 				if (currentLine == 0) {
 					log("WARNING: There is no prev instruction.\n");
 				} else if (currentLine > 0) {
+					Converter converter = new Converter();
 					runner.setCurrentInstruction(currentLine-1);
 					currentLine = runner.getCurrentInstruction();
-					log("Current Line: " + currentLine + "\n");
-					log(runner.executeLine(runner.run(p.parseLine(currentLine))) + "\n");
+//					log("Current Line: " + currentLine + "\n");
+					log(converter.decimalToHex(currentLine).toUpperCase() + ": " + runner.executeLine(runner.run(p.parseLine(currentLine))).toUpperCase() + ": " + p.getLine(currentLine) + "\n");
 				}
 			}
 		}
@@ -188,6 +202,24 @@ public class GUI extends javax.swing.JFrame {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			log("Execute all pressed.\n");
+			if (textEditor.getStyledDocument().getLength() == 0) {
+				log("WARNING: There is no source code.\n");
+			} else if (p == null) {
+				String fileContent = "";
+				try {
+					fileContent = textEditor.getStyledDocument().getText(0, textEditor.getStyledDocument().getLength());
+				} catch (BadLocationException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				p = new Parser(fileContent);
+				for (String s : p.getLines()) {
+					Converter converter = new Converter();
+					currentLine = runner.getCurrentInstruction();
+					log(converter.decimalToHex(currentLine).toUpperCase() + ": " + runner.executeLine(runner.run(p.parseLine(currentLine))).toUpperCase() + ": " + p.getLine(currentLine) + "\n");
+					runner.setCurrentInstruction(currentLine+1);
+				}
+			}
 		}
     });
     executeNext.addActionListener(new ActionListener() {
@@ -207,13 +239,24 @@ public class GUI extends javax.swing.JFrame {
 					e1.printStackTrace();
 				}
 				p = new Parser(fileContent);
+				currentLine = runner.getCurrentInstruction();
+				if (currentLine > (p.getLines().size() - 1)) {
+					log("WARNING: There is no next instruction.\n");
+				} else {
+					Converter converter = new Converter();
+//					log("Current Line: " + currentLine + "\n");
+					log(converter.decimalToHex(currentLine).toUpperCase() + ": " + runner.executeLine(runner.run(p.parseLine(currentLine))).toUpperCase() + ": " + p.getLine(currentLine) + "\n");
+					runner.setCurrentInstruction(currentLine+1);
+//					log("Constant: " + runner.getConstants().get("ten") + "\n");
+				}
 			} else {
 				currentLine = runner.getCurrentInstruction();
 				if (currentLine > (p.getLines().size() - 1)) {
 					log("WARNING: There is no next instruction.\n");
 				} else {
-					log("Current Line: " + currentLine + "\n");
-					log(runner.executeLine(runner.run(p.parseLine(currentLine))) + "\n");
+					Converter converter = new Converter();
+//					log("Current Line: " + currentLine + "\n");
+					log(converter.decimalToHex(currentLine).toUpperCase() + ": " + runner.executeLine(runner.run(p.parseLine(currentLine))).toUpperCase() + ": " + p.getLine(currentLine) + "\n");
 					runner.setCurrentInstruction(currentLine+1);
 //					log("Constant: " + runner.getConstants().get("ten") + "\n");
 				}
@@ -258,12 +301,12 @@ public class GUI extends javax.swing.JFrame {
 						e2.printStackTrace();
 					}
 					// load memory with fileContent String here
-					log("Upload Memory File Uploaded.\n");
+					log("Memory File Uploaded.\n");
 					Memory mem = new Memory();
 					mem.loadMemoryFromFile(fileContent);
 					DefaultTableModel model = new DefaultTableModel(mem.memData(), columnNames);
 					memoryTable.setModel(model);
-					memoryTable.repaint();
+//					memoryTable.repaint();
 					break;
 			}	
 		}
@@ -289,6 +332,9 @@ public class GUI extends javax.swing.JFrame {
 					try {
 						textEditorDoc.remove(0, textEditorDoc.getLength());
 						textEditorDoc.insertString(0, fileContent, attrWHITE);
+						p = null;
+						currentLine = 0;
+						console.getStyledDocument().remove(0, console.getStyledDocument().getLength());
 					} catch (BadLocationException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();

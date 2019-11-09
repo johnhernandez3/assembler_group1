@@ -41,6 +41,10 @@ public class Parser {
 		return "Line " + i + ": " + this.lines.get(i) + "\n";
 	}
 	
+	public String getLine(int currentLine) {
+		return this.lines.get(currentLine);
+	}
+	
 	public Parser(String sourceCode) {
 		if (sourceCode == null) {
 			throw new NullPointerException("File Content is empty.");

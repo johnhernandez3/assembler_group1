@@ -100,6 +100,7 @@ public class IO2_SevenSegmentDisplay {
 			this.Greeng2 = Color.BLACK;
 		}
 		
+		@Override
 		public void paintComponent(Graphics g) {
 			segmentLights(g);
 			segmentLights2(g);

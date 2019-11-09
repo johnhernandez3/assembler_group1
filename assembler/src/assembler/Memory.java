@@ -1,10 +1,6 @@
 package assembler;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
-
 import assembler.Converter;
 
 public class Memory implements MemoryInterface {
@@ -69,6 +65,7 @@ public class Memory implements MemoryInterface {
 			this.content = content;
 		}
 		
+		@Override
 		public String getDirection() {
 			return direction;
 		}
@@ -77,6 +74,7 @@ public class Memory implements MemoryInterface {
 			this.direction = direction;
 		}
 
+		@Override
 		public String getContent() {
 			return content;
 		}
@@ -103,6 +101,7 @@ public class Memory implements MemoryInterface {
 //	    }
 	}
 	
+	@Override
 	public Object[][] memData() {
 		Object[][] data = new Object[2048][2];
 		
@@ -132,16 +131,19 @@ public class Memory implements MemoryInterface {
 		fileContent = fileContent.trim().replaceAll("\n||\t||\r", "");
 		for (int i = 0; i < (fileContent.length() - 2); i+=2) {
 			nextDirectionContent = fileContent.substring(i, i+2);
+			if (!nextDirectionContent.matches("^[a-fA-F0-9]+$")) {
+				// return Error
+			}
 			if (!this.memory.isEmpty()) {
 				if (this.memory.size() < 10) {
-		    		memory.add(new MemoryLocation("0" + (this.memory.size() + ""), nextDirectionContent));
+		    		memory.add(new MemoryLocation("0" + (this.memory.size() + ""), nextDirectionContent.toUpperCase()));
 		    		System.out.println("Added: " + nextDirectionContent);
 		    	} else {
-		    		memory.add(new MemoryLocation("" + (this.memory.size() + ""), nextDirectionContent));
+		    		memory.add(new MemoryLocation("" + (this.memory.size() + ""), nextDirectionContent.toUpperCase()));
 		    		System.out.println("Added: " + nextDirectionContent);
 		    	}
 			} else {
-				memory.add(new MemoryLocation("00", nextDirectionContent));
+				memory.add(new MemoryLocation("00", nextDirectionContent.toUpperCase()));
 	    		System.out.println("Added: " + nextDirectionContent);
 			}
 		}
