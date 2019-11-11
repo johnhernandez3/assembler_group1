@@ -4,67 +4,19 @@ import java.util.ArrayList;
 import assembler.Converter;
 
 public class Memory implements MemoryInterface {
-	
-//	Try to make it into a doubly linked list to traverse to the next and prev with ease
-//	private class MemoryNode<T> {
-//		private MemoryNode<T> curr;
-//		private MemoryNode<T> prev;
-//		private MemoryNode<T> next;
-//		private MemoryLocation here;
-//		
-//		public MemoryNode(MemoryNode<T> prev, MemoryNode<T> curr, MemoryNode<T> next, MemoryLocation here) {
-//			this.curr = curr;
-//			this.next = next;
-//			this.prev = prev;
-//			this.here = here;
-//		}
-//
-//		public MemoryNode<T> getCurr() {
-//			return curr;
-//		}
-//
-//		public void setCurr(MemoryNode<T> curr) {
-//			this.curr = curr;
-//		}
-//
-//		public MemoryNode<T> getPrev() {
-//			return prev;
-//		}
-//
-//		public void setPrev(MemoryNode<T> prev) {
-//			this.prev = prev;
-//		}
-//
-//		public MemoryNode<T> getNext() {
-//			return next;
-//		}
-//
-//		public void setNext(MemoryNode<T> next) {
-//			this.next = next;
-//		}
-//
-//		public MemoryLocation getHere() {
-//			return here;
-//		}
-//
-//		public void setHere(MemoryLocation here) {
-//			this.here = here;
-//		}
-//		
-//		
-//	}
-	
-	
+	/***********************************************************************************************************************************************************************************************
+	 * 																				Memory Location
+	 *********************************************************************************************************************************************************************************************/
 	public class MemoryLocation implements MemoryLocationInterface {
-		
+
 		public String direction;
 		public String content;
-		
+
 		public MemoryLocation(String direction, String content) {
 			this.direction = direction;
 			this.content = content;
 		}
-		
+
 		@Override
 		public String getDirection() {
 			return direction;
@@ -83,28 +35,71 @@ public class Memory implements MemoryInterface {
 			this.content = content;
 		}
 	}
-	
+
 	String address; 
 	ArrayList<String> Mem = new ArrayList<String>();
 	ArrayList<MemoryLocation> memory = new ArrayList<>();
-	
-	// Create new memory location object which will act as the storage and control unit of the bits 
-	// each location has. This idea was to implement the 'const' functionality.
-	
+
+/****************************************************************************************************************************************************************************************************
+ * 																				New Memory
+ ****************************************************************************************************************************************************************************************************/
+	int next;
+	MemoryLocation[] directions;
+	MemoryLocation currDirection;
+
+	//Memory Contructor
 	public Memory() {
-//		for (int i = 0; i < 2048; i++) {
-//	    	if (i < 10) {
-//	    		memory.add(new MemoryLocation("0" + i, "00"));
-//	    	} else {
-//	    		memory.add(new MemoryLocation("" + i, "00"));
-//	    	}
-//	    }
+		directions = this.initializeMem();
+		next = 0;
+		currDirection = directions[next];
+	}
+
+	//Memory Initialization
+	private MemoryLocation [] initializeMem(){
+		String direction,content = "";
+		MemoryLocation [] result = (MemoryLocation[]) new Object[2048];
+		for (int i = 0; i < 2048; i++) {
+			if (i < 10) {
+				direction = "0" + i;
+			}
+			else{
+				direction = i + "";
+			}
+			result[i] = new MemoryLocation(direction,content);
+		}
+		return result;
 	}
 	
+	
+/***********************************************************************************************************************************************************************************************
+ * 																			Getter and Setter
+ ********************************************************************************************************************************************************************************************/
+	public MemoryLocation getMemoryDirection(int i){
+		return this.directions[i];
+	}
+
+	public void setNextDirection(int i){
+		this.validate(i);
+		for (int j = next; j < i; j++) {
+			this.directions[j].setContent("00");
+		}
+		next = i;
+		currDirection = this.directions[i];
+	}
+
+	//Helper Method
+	private Boolean validate(int i)  {
+		return i>=0 && i<2048;
+	}
+	
+	/**********************************************************************************************************************************************************************************************
+	 * 																	Code Before New Memory Implementation
+	 * 																	Ask Cristian if usable 
+	 */
 	@Override
 	public Object[][] memData() {
 		Object[][] data = new Object[2048][2];
-		
+
 		int l = 0;
 		for (MemoryLocation d : this.memory) {
 			data[l][0] = d.getDirection();
@@ -117,15 +112,15 @@ public class Memory implements MemoryInterface {
 		}
 		return data;
 	}
-	
+
 	public MemoryLocation currAddr(int i) {
 		return memory.get(i);
 	}
-	
+
 	public String instrBefore(MemoryLocation addr) {
 		return memory.get(Integer.parseInt(addr.getDirection()) - 2).getContent() + memory.get(Integer.parseInt(addr.getDirection()) - 1).getContent();
 	}
-	
+
 	public void loadMemoryFromFile(String fileContent) {
 		String nextDirectionContent = "";
 		fileContent = fileContent.trim().replaceAll("\n||\t||\r", "");
@@ -136,48 +131,48 @@ public class Memory implements MemoryInterface {
 			}
 			if (!this.memory.isEmpty()) {
 				if (this.memory.size() < 10) {
-		    		memory.add(new MemoryLocation("0" + (this.memory.size() + ""), nextDirectionContent.toUpperCase()));
-		    		System.out.println("Added: " + nextDirectionContent);
-		    	} else {
-		    		memory.add(new MemoryLocation("" + (this.memory.size() + ""), nextDirectionContent.toUpperCase()));
-		    		System.out.println("Added: " + nextDirectionContent);
-		    	}
+					memory.add(new MemoryLocation("0" + (this.memory.size() + ""), nextDirectionContent.toUpperCase()));
+					System.out.println("Added: " + nextDirectionContent);
+				} else {
+					memory.add(new MemoryLocation("" + (this.memory.size() + ""), nextDirectionContent.toUpperCase()));
+					System.out.println("Added: " + nextDirectionContent);
+				}
 			} else {
 				memory.add(new MemoryLocation("00", nextDirectionContent.toUpperCase()));
-	    		System.out.println("Added: " + nextDirectionContent);
+				System.out.println("Added: " + nextDirectionContent);
 			}
 		}
 	}
 
 	public String MemtoHex() {
 		//Prints the content in the memory as separate lines of Hexadecimals values.
-		 String str = "";
-		 String hexChange = "";
-		 Converter c = new Converter();
-		 for (String s : Mem) {
-		   	
-		   	hexChange = c.binToHex(s);
-		     
-		    str+= System.lineSeparator() + hexChange;
-		       
+		String str = "";
+		String hexChange = "";
+		Converter c = new Converter();
+		for (String s : Mem) {
+
+			hexChange = c.binToHex(s);
+
+			str+= System.lineSeparator() + hexChange;
+
 		}
 		return str;
 	}
 
-	public String GetLastEvenbit() { 
-		//Gets the last bit of the previous "even" entry in the memory.
-		//if mem size = 3(Index = 2) , itll return the last bit of the first entry (index = 0).
-		
-		String result = "";
-		if (Mem.size() > 1 && Mem.size() %2 == 0) {
-			String s = Mem.get(Mem.size() -2);
-			result = String.valueOf(s.charAt(s.length()-1));
-		} else if (Mem.size() > 1 && Mem.size()%2 !=0) {
-			String s = Mem.get(Mem.size()-3);
-			result = String.valueOf(s.charAt(s.length()-1));
-		}
-		return result;
-	}
+//	public String GetLastEvenbit() { 
+//		//Gets the last bit of the previous "even" entry in the memory.
+//		//if mem size = 3(Index = 2) , itll return the last bit of the first entry (index = 0).
+//
+//		String result = "";
+//		if (Mem.size() > 1 && Mem.size() %2 == 0) {
+//			String s = Mem.get(Mem.size() -2);
+//			result = String.valueOf(s.charAt(s.length()-1));
+//		} else if (Mem.size() > 1 && Mem.size()%2 !=0) {
+//			String s = Mem.get(Mem.size()-3);
+//			result = String.valueOf(s.charAt(s.length()-1));
+//		}
+//		return result;
+//	}
 }
 
 
