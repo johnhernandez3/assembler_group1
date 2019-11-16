@@ -1,7 +1,6 @@
 package assembler;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -9,7 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.BorderFactory;
@@ -18,26 +16,19 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-//import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
-//import javax.swing.table.AbstractTableModel;
-//import javax.swing.table.TableModel;
-
-import assembler.IO3;
 
 public class GUI extends javax.swing.JFrame {
 
@@ -49,8 +40,6 @@ public class GUI extends javax.swing.JFrame {
 	private JTextPane textEditor;
 	private JTextPane output;
 	private JTextPane console;
-//	private JTextPane registers;
-//	private JPanel memoryPanel;
 	private StyledDocument textEditorDoc;
 	private StyledDocument outputDoc;
 	private StyledDocument consoleDoc;
@@ -64,24 +53,13 @@ public class GUI extends javax.swing.JFrame {
 	private JButton executeNext;
 	private JMenuItem openFileOpt;
 	private JMenuItem saveFileOpt;
-//	private JTable registerTable;
 	private JTable memoryTable;
-//	private DefaultTableModel tableModel;
-//	private JTable headerTable;
 	private Runner runner;
-//	private static int columnNumber = 1;
-	
-	
-	
-	
-
-	
-	
 
 	Register reg = new Register();
 	HashMap<String,String> regs = reg.getregs();
 	String[] columnNames = { "Direction", "Content" };
-	Object[][] rowData = new Memory().memData();
+//	Object[][] rowData = new Memory().memData();
 	Parser p;
 	int currentLine;
 	
@@ -110,14 +88,15 @@ public class GUI extends javax.swing.JFrame {
 	}
 
 	public void buildGUI() {
+
 	/****************************************************************************************************************************
 	 * 	Initializations
 	 *************************************************************************************************************************** */
+
 	f = new JFrame("Microprocessor Simulator");
 	textEditor = new JTextPane();
 	output = new JTextPane();
 	console = new JTextPane();
-//	registers = new JTextPane();
 	attrWHITE = new SimpleAttributeSet();
 	menu = new JMenuBar();
 	runner = new Runner();
@@ -160,7 +139,6 @@ public class GUI extends javax.swing.JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-//			log("Execute prev pressed.\n");
 			if (textEditor.getStyledDocument().getLength() == 0) {
 				log("WARNING: There is no source code.\n");
 			} else if (p == null) {
@@ -179,7 +157,6 @@ public class GUI extends javax.swing.JFrame {
 					Converter converter = new Converter();
 					runner.setCurrentInstruction(currentLine-1);
 					currentLine = runner.getCurrentInstruction();
-//					log("Current Line: " + currentLine + "\n");
 					log(converter.decimalToHex(currentLine).toUpperCase() + ": " + runner.executeLine(runner.run(p.parseLine(currentLine))).toUpperCase() + ": " + p.getLine(currentLine) + "\n");
 				}
 			} else {
@@ -190,18 +167,17 @@ public class GUI extends javax.swing.JFrame {
 					Converter converter = new Converter();
 					runner.setCurrentInstruction(currentLine-1);
 					currentLine = runner.getCurrentInstruction();
-//					log("Current Line: " + currentLine + "\n");
 					log(converter.decimalToHex(currentLine).toUpperCase() + ": " + runner.executeLine(runner.run(p.parseLine(currentLine))).toUpperCase() + ": " + p.getLine(currentLine) + "\n");
 				}
 			}
 		}
     });
+    
     executeAll.addActionListener(new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			log("Execute all pressed.\n");
 			if (textEditor.getStyledDocument().getLength() == 0) {
 				log("WARNING: There is no source code.\n");
 			} else if (p == null) {
@@ -222,12 +198,12 @@ public class GUI extends javax.swing.JFrame {
 			}
 		}
     });
+    
     executeNext.addActionListener(new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-//			log("Execute next pressed.\n");
 			if (textEditor.getStyledDocument().getLength() == 0) {
 				log("WARNING: There is no source code.\n");
 			} else if (p == null) {
@@ -244,10 +220,8 @@ public class GUI extends javax.swing.JFrame {
 					log("WARNING: There is no next instruction.\n");
 				} else {
 					Converter converter = new Converter();
-//					log("Current Line: " + currentLine + "\n");
 					log(converter.decimalToHex(currentLine).toUpperCase() + ": " + runner.executeLine(runner.run(p.parseLine(currentLine))).toUpperCase() + ": " + p.getLine(currentLine) + "\n");
 					runner.setCurrentInstruction(currentLine+1);
-//					log("Constant: " + runner.getConstants().get("ten") + "\n");
 				}
 			} else {
 				currentLine = runner.getCurrentInstruction();
@@ -255,10 +229,8 @@ public class GUI extends javax.swing.JFrame {
 					log("WARNING: There is no next instruction.\n");
 				} else {
 					Converter converter = new Converter();
-//					log("Current Line: " + currentLine + "\n");
 					log(converter.decimalToHex(currentLine).toUpperCase() + ": " + runner.executeLine(runner.run(p.parseLine(currentLine))).toUpperCase() + ": " + p.getLine(currentLine) + "\n");
 					runner.setCurrentInstruction(currentLine+1);
-//					log("Constant: " + runner.getConstants().get("ten") + "\n");
 				}
 			}
 		}
@@ -285,6 +257,7 @@ public class GUI extends javax.swing.JFrame {
     });
     
     loadMemoryFile.addActionListener(new ActionListener() {
+    	
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			JFileChooser fileChooser = new JFileChooser();
@@ -306,7 +279,6 @@ public class GUI extends javax.swing.JFrame {
 					mem.loadMemoryFromFile(fileContent);
 					DefaultTableModel model = new DefaultTableModel(mem.memData(), columnNames);
 					memoryTable.setModel(model);
-//					memoryTable.repaint();
 					break;
 			}	
 		}
@@ -314,6 +286,7 @@ public class GUI extends javax.swing.JFrame {
     });
 
 	openFileOpt.addActionListener(new ActionListener() {
+		
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			JFileChooser fileChooser = new JFileChooser();
@@ -344,6 +317,7 @@ public class GUI extends javax.swing.JFrame {
 		}
 
 	});
+	
 	saveFileOpt.addActionListener(new ActionListener() {
 
 		@Override
@@ -383,7 +357,7 @@ public class GUI extends javax.swing.JFrame {
 	 *************************************************************************************************************************** */
 	
 	//Added Model to JTable & add JTable to ScrollPane
-	memoryTable = new JTable(rowData, columnNames);
+//	memoryTable = new JTable(rowData, columnNames);
 	JScrollPane memoryScrollPane2 = new JScrollPane(memoryTable);
 	memoryScrollPane2.setBounds(800, 0, 480, 480);
 	memoryScrollPane2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -438,9 +412,11 @@ public class GUI extends javax.swing.JFrame {
 	table.setValueAt(entry.getValue(),row,1);
 	row++;
 	}
+	
 	/****************************************************************************************************************************
 	 * 	StackPointer & Instruction Register 
 	 *************************************************************************************************************************** */
+	
 	JPanel stackPointerPanel = new JPanel(new GridBagLayout());
 	stackPointerPanel.setBounds(table.getWidth()+7,0, table.getWidth(), 480);
 	stackPointerPanel.setBackground(Color.gray);
@@ -460,6 +436,7 @@ public class GUI extends javax.swing.JFrame {
 	/****************************************************************************************************************************
 	 * 	Adding to Frame
 	 *************************************************************************************************************************** */
+	
 	f.add(textEditorScrollPane);
 	f.add(consoleScrollPane);
 	f.add(registerPanel);

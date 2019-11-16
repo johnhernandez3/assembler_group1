@@ -57,7 +57,7 @@ public class Memory implements MemoryInterface {
 	//Memory Initialization
 	private MemoryLocation [] initializeMem(){
 		String direction,content = "";
-		MemoryLocation [] result = (MemoryLocation[]) new Object[2048];
+		MemoryLocation[] result = (MemoryLocation[]) new Object[2048];
 		for (int i = 0; i < 2048; i++) {
 			if (i < 10) {
 				direction = "0" + i;

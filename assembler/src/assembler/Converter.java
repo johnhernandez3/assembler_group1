@@ -5,10 +5,9 @@ public class Converter {
 	String inst = "";
 	String hex = "0123456789abcdef";
 	
-	public Converter() {
-	}
+	public Converter() { }
 	
-	public String binToHex(String str){
+	public String binToHex(String str) {
 		//Divide instruction into 4 bits & convert from Binary to Decimal
 		  int dec1 = Integer.parseInt(str.substring(0,4),2);
 		  int dec2 = Integer.parseInt(str.substring(4,8),2);
@@ -23,14 +22,14 @@ public class Converter {
 		 return hex1 + hex2 + hex3 + hex4;
 	}
 	
-	public String hextoBin(String str){
+	public String hextoBin(String str) {
 		//Declare String binary numbers
 //		String bin1= "";
 //		String bin2= "";
 		
 		String result = "";
 //		System.out.println("str: " + str);
-		for(int i = 0; i < str.length(); i++) {
+		for (int i = 0; i < str.length(); i++) {
 			int h = hex.indexOf(str.charAt(i));
 			if (h < 10) {
 				String binary09 = ("0000" + Integer.toBinaryString(h)).substring(Integer.toBinaryString(h).length());
@@ -68,7 +67,7 @@ public class Converter {
 //			s += String.format("04d", dec1);
 //		}
 //		return s;
-		}
+	}
 	
 	public String decimalToHex(int decimal) {
 		String result = "";
