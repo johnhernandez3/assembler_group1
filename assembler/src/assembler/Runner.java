@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+
 public class Runner {
 	
 	// This will manage the runs through tokens we need to do to store constants and values and write the object code
@@ -13,6 +16,8 @@ public class Runner {
 	private Register registers = new Register();
 	private Converter converter = new Converter();
 	private ArrayList<Token> tokens;
+	
+	private GUI gui;
 	
 	public Map<String, String> values = new HashMap<>();
 	public Map<String, String> constants = new HashMap<>();
@@ -34,8 +39,14 @@ public class Runner {
 	public void setCurrentInstruction(int i) {
 		this.currentInstruction = i;
 	}
+	
+	public Runner() {
+		this.gui = new GUI();
+	}
 
-	public Runner() {}
+	public Runner(GUI gui) {
+		this.gui = gui;
+	}
 	
 	public Instruction run(ArrayList<Token> tokens) {
 		// store constants and values
@@ -130,6 +141,12 @@ public class Runner {
 							} else {
 								store.addToken(addressToken1);
 							}
+							Memory mem = new Memory();
+							mem.directions[Integer.parseInt(addressToken1.value)].setContent("DF");
+							Object[][] memoryData = mem.memData();
+							DefaultTableModel model = new DefaultTableModel(memoryData, gui.columnNames);
+							gui.memoryTable.setModel(model);
+							System.out.println(mem.getMemoryDirection(Integer.parseInt(addressToken1.value)).toString());
 							instructions.add(store);
 							return store;
 						case "push":

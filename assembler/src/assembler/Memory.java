@@ -34,6 +34,11 @@ public class Memory implements MemoryInterface {
 		public void setContent(String content) {
 			this.content = content;
 		}
+		
+		@Override
+		public String toString() {
+			return "Direction: " + this.direction + " Content: " + this.content;
+		}
 	}
 
 	String address; 
@@ -47,25 +52,24 @@ public class Memory implements MemoryInterface {
 	MemoryLocation[] directions;
 	MemoryLocation currDirection;
 
-	//Memory Contructor
+	//Memory Constructor
 	public Memory() {
-		directions = this.initializeMem();
+		directions = (MemoryLocation[]) this.initializeMem();
 		next = 0;
 		currDirection = directions[next];
 	}
 
-	//Memory Initialization
-	private MemoryLocation [] initializeMem(){
-		String direction,content = "";
-		MemoryLocation[] result = (MemoryLocation[]) new Object[2048];
+	// Memory Initialization
+	private MemoryLocation[] initializeMem() {
+		String direction, content = "";
+		MemoryLocation[] result = new MemoryLocation[2048];
 		for (int i = 0; i < 2048; i++) {
 			if (i < 10) {
 				direction = "0" + i;
-			}
-			else{
+			} else {
 				direction = i + "";
 			}
-			result[i] = new MemoryLocation(direction,content);
+			result[i] = new MemoryLocation(direction, content);
 		}
 		return result;
 	}
@@ -74,11 +78,11 @@ public class Memory implements MemoryInterface {
 /***********************************************************************************************************************************************************************************************
  * 																			Getter and Setter
  ********************************************************************************************************************************************************************************************/
-	public MemoryLocation getMemoryDirection(int i){
+	public MemoryLocation getMemoryDirection(int i) {
 		return this.directions[i];
 	}
 
-	public void setNextDirection(int i){
+	public void setNextDirection(int i) {
 		this.validate(i);
 		for (int j = next; j < i; j++) {
 			this.directions[j].setContent("00");
@@ -88,8 +92,8 @@ public class Memory implements MemoryInterface {
 	}
 
 	//Helper Method
-	private Boolean validate(int i)  {
-		return i>=0 && i<2048;
+	private Boolean validate(int i) {
+		return i >= 0 && i < 2048;
 	}
 	
 	/**********************************************************************************************************************************************************************************************
@@ -101,12 +105,12 @@ public class Memory implements MemoryInterface {
 		Object[][] data = new Object[2048][2];
 
 		int l = 0;
-		for (MemoryLocation d : this.memory) {
+		for (MemoryLocation d : this.directions) {
 			data[l][0] = d.getDirection();
 			l++;
 		}
 		l = 0;
-		for (MemoryLocation c : this.memory) {
+		for (MemoryLocation c : this.directions) {
 			data[l][1] = c.getContent();
 			l++;
 		}
@@ -123,24 +127,16 @@ public class Memory implements MemoryInterface {
 
 	public void loadMemoryFromFile(String fileContent) {
 		String nextDirectionContent = "";
+		int c = 0;
 		fileContent = fileContent.trim().replaceAll("\n||\t||\r", "");
-		for (int i = 0; i < (fileContent.length() - 2); i+=2) {
+		for (int i = 0; i < fileContent.length(); i+=2) {
 			nextDirectionContent = fileContent.substring(i, i+2);
 			if (!nextDirectionContent.matches("^[a-fA-F0-9]+$")) {
 				// return Error
 			}
-			if (!this.memory.isEmpty()) {
-				if (this.memory.size() < 10) {
-					memory.add(new MemoryLocation("0" + (this.memory.size() + ""), nextDirectionContent.toUpperCase()));
-					System.out.println("Added: " + nextDirectionContent);
-				} else {
-					memory.add(new MemoryLocation("" + (this.memory.size() + ""), nextDirectionContent.toUpperCase()));
-					System.out.println("Added: " + nextDirectionContent);
-				}
-			} else {
-				memory.add(new MemoryLocation("00", nextDirectionContent.toUpperCase()));
-				System.out.println("Added: " + nextDirectionContent);
-			}
+			this.directions[c].setContent(nextDirectionContent.toUpperCase());
+			c++;
+			System.out.println("Added: " + nextDirectionContent.toUpperCase());
 		}
 	}
 
