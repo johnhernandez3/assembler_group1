@@ -24,6 +24,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
@@ -372,6 +373,7 @@ public class GUI extends javax.swing.JFrame {
 				JFrame frame2 = initializeFrame();
 				Light l1 = new Light();
 				frame2.add(l1);
+			
 				
 			
 			}
@@ -383,6 +385,7 @@ public class GUI extends javax.swing.JFrame {
 				JFrame frame2 = initializeFrame();
 				SevenSegments ss = new SevenSegments();
 				frame2.add(ss);
+				
 				
 			
 			}
@@ -532,7 +535,7 @@ public class GUI extends javax.swing.JFrame {
 		JFrame frame = new JFrame();
 		frame.setTitle("Traffic Light");
 		frame.setSize(400, 400);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		frame.setVisible(true);
 		return frame;
 	}
