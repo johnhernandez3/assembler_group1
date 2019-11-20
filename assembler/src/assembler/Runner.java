@@ -5,9 +5,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
-
 public class Runner {
 	
 	// This will manage the runs through tokens we need to do to store constants and values and write the object code
@@ -16,7 +13,6 @@ public class Runner {
 	private Register registers = new Register();
 	private Converter converter = new Converter();
 	private ArrayList<Token> tokens;
-	
 	private GUI gui;
 	
 	public Map<String, String> values = new HashMap<>();
@@ -39,7 +35,7 @@ public class Runner {
 	public void setCurrentInstruction(int i) {
 		this.currentInstruction = i;
 	}
-	
+
 	public Runner() {
 		this.gui = new GUI();
 	}
@@ -60,13 +56,13 @@ public class Runner {
 					Token nameToken = iter.next();
 					String keywordRegex = "^org$|^jmp$|^const$|^db$|^loadim$|^loadrind$|^load$|^pop$|^storerind$|^push$|^store$|^addim$|^subim$|^add$|^sub$|^and$|^or$|^xor$|^not$|^neg$|^shiftr$|^shiftl$|^rotar$|^rotal$|^jmprind$|^jmpaddr$|^jcondrin$|^jcondaddr$|^loop$|^grteq$|^grt$|^eq$|^neq$|^nop$|^call$|^return$";
 					if (nameToken.getType() != TokenType.NAME) {
-						// return "Error";
+						gui.log("Not a viable name!");
 					} else if (nameToken.getValue().matches(keywordRegex)) {
-						// return Error;
+						gui.log("Not a viable keyword!");
 					} else {
 						Token valueToken = iter.next();
 						if (valueToken.type != TokenType.VALUE) {
-							// return "Error";
+							gui.log("Not a valid value!");
 						} else {
 							System.out.println("running put in constants");
 							constants.put(nameToken.value, valueToken.value);
@@ -83,13 +79,13 @@ public class Runner {
 							load.addToken(currentToken);
 							Token registerToken = iter.next();
 							if (registerToken.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								load.addToken(registerToken);
 							}
 							Token addressToken = iter.next();
 							if (addressToken.getType() != TokenType.ADDRESS && addressToken.getType() != TokenType.NAME && addressToken.getType() != TokenType.VALUE) {
-//								return Error
+								addresslog();
 							} else {
 								load.addToken(addressToken);
 							}
@@ -101,13 +97,13 @@ public class Runner {
 							loadim.addToken(currentToken);
 							Token registerToken1 = iter.next();
 							if (registerToken1.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								loadim.addToken(registerToken1);
 							}
 							Token constantToken = iter.next();
 							if (constantToken.getType() != TokenType.CONST && constantToken.getType() != TokenType.HEX) {
-//								return Error
+								constlog();
 							} else {
 								loadim.addToken(constantToken);
 							}
@@ -119,7 +115,7 @@ public class Runner {
 							pop.addToken(currentToken);
 							Token registerToken2 = iter.next();
 							if (registerToken2.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								pop.addToken(registerToken2);
 							}
@@ -131,22 +127,16 @@ public class Runner {
 							store.addToken(currentToken);
 							Token registerToken3 = iter.next();
 							if (registerToken3.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								store.addToken(registerToken3);
 							}
 							Token addressToken1 = iter.next();
 							if (addressToken1.getType() != TokenType.ADDRESS && addressToken1.getType() != TokenType.NAME && addressToken1.getType() != TokenType.VALUE) {
-//								return Error
+								addresslog();
 							} else {
 								store.addToken(addressToken1);
 							}
-							Memory mem = new Memory();
-							mem.directions[Integer.parseInt(addressToken1.value)].setContent("DF");
-							Object[][] memoryData = mem.memData();
-							DefaultTableModel model = new DefaultTableModel(memoryData, gui.columnNames);
-							gui.memoryTable.setModel(model);
-							System.out.println(mem.getMemoryDirection(Integer.parseInt(addressToken1.value)).toString());
 							instructions.add(store);
 							return store;
 						case "push":
@@ -155,7 +145,7 @@ public class Runner {
 							push.addToken(currentToken);
 							Token registerToken4 = iter.next();
 							if (registerToken4.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								push.addToken(registerToken4);
 							}
@@ -167,13 +157,13 @@ public class Runner {
 							loadrind.addToken(currentToken);
 							Token registerToken5 = iter.next();
 							if (registerToken5.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								loadrind.addToken(registerToken5);
 							}
 							Token registerToken6 = iter.next();
 							if (registerToken6.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								loadrind.addToken(registerToken6);
 							}
@@ -185,13 +175,13 @@ public class Runner {
 							storerind.addToken(currentToken);
 							Token registerToken7 = iter.next();
 							if (registerToken7.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								storerind.addToken(registerToken7);
 							}
 							Token registerToken8 = iter.next();
 							if (registerToken8.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								storerind.addToken(registerToken8);
 							}
@@ -203,19 +193,19 @@ public class Runner {
 							add.addToken(currentToken);
 							Token registerToken9 = iter.next();
 							if (registerToken9.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								add.addToken(registerToken9);
 							}
 							Token registerToken10 = iter.next();
 							if (registerToken10.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								add.addToken(registerToken10);
 							}
 							Token registerToken11 = iter.next();
 							if (registerToken11.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								add.addToken(registerToken11);
 							}
@@ -227,19 +217,19 @@ public class Runner {
 							sub.addToken(currentToken);
 							Token registerToken12 = iter.next();
 							if (registerToken12.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								sub.addToken(registerToken12);
 							}
 							Token registerToken13 = iter.next();
 							if (registerToken13.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								sub.addToken(registerToken13);
 							}
 							Token registerToken14 = iter.next();
 							if (registerToken14.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								sub.addToken(registerToken14);
 							}
@@ -251,13 +241,13 @@ public class Runner {
 							addim.addToken(currentToken);
 							Token registerToken15 = iter.next();
 							if (registerToken15.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								addim.addToken(registerToken15);
 							}
 							Token constantToken1 = iter.next();
 							if (constantToken1.getType() != TokenType.CONST && constantToken1.getType() != TokenType.HEX) {
-//								return Error
+								constlog();
 							} else {
 								addim.addToken(constantToken1);
 							}
@@ -269,13 +259,13 @@ public class Runner {
 							subim.addToken(currentToken);
 							Token registerToken16 = iter.next();
 							if (registerToken16.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								subim.addToken(registerToken16);
 							}
 							Token constantToken2 = iter.next();
 							if (constantToken2.getType() != TokenType.CONST && constantToken2.getType() != TokenType.HEX) {
-//								return Error
+								constlog();
 							} else {
 								subim.addToken(constantToken2);
 							}
@@ -287,19 +277,19 @@ public class Runner {
 							and.addToken(currentToken);
 							Token registerToken17 = iter.next();
 							if (registerToken17.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								and.addToken(registerToken17);
 							}
 							Token registerToken18 = iter.next();
 							if (registerToken18.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								and.addToken(registerToken18);
 							}
 							Token registerToken19 = iter.next();
 							if (registerToken19.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								and.addToken(registerToken19);
 							}
@@ -311,19 +301,19 @@ public class Runner {
 							or.addToken(currentToken);
 							Token registerToken20 = iter.next();
 							if (registerToken20.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								or.addToken(registerToken20);
 							}
 							Token registerToken21 = iter.next();
 							if (registerToken21.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								or.addToken(registerToken21);
 							}
 							Token registerToken22 = iter.next();
 							if (registerToken22.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								or.addToken(registerToken22);
 							}
@@ -335,19 +325,19 @@ public class Runner {
 							xor.addToken(currentToken);
 							Token registerToken23 = iter.next();
 							if (registerToken23.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								xor.addToken(registerToken23);
 							}
 							Token registerToken24 = iter.next();
 							if (registerToken24.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								xor.addToken(registerToken24);
 							}
 							Token registerToken25 = iter.next();
 							if (registerToken25.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								xor.addToken(registerToken25);
 							}
@@ -359,13 +349,13 @@ public class Runner {
 							not.addToken(currentToken);
 							Token registerToken26 = iter.next();
 							if (registerToken26.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								not.addToken(registerToken26);
 							}
 							Token registerToken27 = iter.next();
 							if (registerToken27.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								not.addToken(registerToken27);
 							}
@@ -377,13 +367,13 @@ public class Runner {
 							neg.addToken(currentToken);
 							Token registerToken28 = iter.next();
 							if (registerToken28.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								neg.addToken(registerToken28);
 							}
 							Token registerToken29 = iter.next();
 							if (registerToken29.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								neg.addToken(registerToken29);
 							}
@@ -395,19 +385,19 @@ public class Runner {
 							shiftr.addToken(currentToken);
 							Token registerToken30 = iter.next();
 							if (registerToken30.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								shiftr.addToken(registerToken30);
 							}
 							Token registerToken31 = iter.next();
 							if (registerToken31.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								shiftr.addToken(registerToken31);
 							}
 							Token registerToken32 = iter.next();
 							if (registerToken32.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								shiftr.addToken(registerToken32);
 							}
@@ -419,19 +409,19 @@ public class Runner {
 							shiftl.addToken(currentToken);
 							Token registerToken33 = iter.next();
 							if (registerToken33.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								shiftl.addToken(registerToken33);
 							}
 							Token registerToken34 = iter.next();
 							if (registerToken34.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								shiftl.addToken(registerToken34);
 							}
 							Token registerToken35 = iter.next();
 							if (registerToken35.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								shiftl.addToken(registerToken35);
 							}
@@ -443,19 +433,19 @@ public class Runner {
 							rotar.addToken(currentToken);
 							Token registerToken36 = iter.next();
 							if (registerToken36.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								rotar.addToken(registerToken36);
 							}
 							Token registerToken37 = iter.next();
 							if (registerToken37.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								rotar.addToken(registerToken37);
 							}
 							Token registerToken38 = iter.next();
 							if (registerToken38.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								rotar.addToken(registerToken38);
 							}
@@ -467,19 +457,19 @@ public class Runner {
 							rotal.addToken(currentToken);
 							Token registerToken39 = iter.next();
 							if (registerToken39.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								rotal.addToken(registerToken39);
 							}
 							Token registerToken40 = iter.next();
 							if (registerToken40.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								rotal.addToken(registerToken40);
 							}
 							Token registerToken41 = iter.next();
 							if (registerToken41.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								rotal.addToken(registerToken41);
 							}
@@ -491,7 +481,7 @@ public class Runner {
 							jmprind.addToken(currentToken);
 							Token registerToken42 = iter.next();
 							if (registerToken42.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								jmprind.addToken(registerToken42);
 							}
@@ -503,7 +493,7 @@ public class Runner {
 							jmpaddr.addToken(currentToken);
 							Token addressToken2 = iter.next();
 							if (addressToken2.getType() != TokenType.ADDRESS && addressToken2.getType() != TokenType.NAME && addressToken2.getType() != TokenType.VALUE) {
-//								return Error
+								addresslog();
 							} else {
 								jmpaddr.addToken(addressToken2);
 							}
@@ -515,7 +505,7 @@ public class Runner {
 							jcondrin.addToken(currentToken);
 							Token registerToken43 = iter.next();
 							if (registerToken43.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								jcondrin.addToken(registerToken43);
 							}
@@ -527,7 +517,7 @@ public class Runner {
 							jcondaddr.addToken(currentToken);
 							Token addressToken3 = iter.next();
 							if (addressToken3.getType() != TokenType.ADDRESS && addressToken3.getType() != TokenType.NAME && addressToken3.getType() != TokenType.VALUE) {
-//								return Error
+								addresslog();
 							} else {
 								jcondaddr.addToken(addressToken3);
 							}
@@ -539,13 +529,13 @@ public class Runner {
 							loop.addToken(currentToken);
 							Token registerToken44 = iter.next();
 							if (registerToken44.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								loop.addToken(registerToken44);
 							}
 							Token addressToken4 = iter.next();
 							if (addressToken4.getType() != TokenType.ADDRESS && addressToken4.getType() != TokenType.NAME && addressToken4.getType() != TokenType.VALUE) {
-//								return Error
+								addresslog();
 							} else {
 								loop.addToken(addressToken4);
 							}
@@ -557,13 +547,13 @@ public class Runner {
 							grt.addToken(currentToken);
 							Token registerToken45 = iter.next();
 							if (registerToken45.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								grt.addToken(registerToken45);
 							}
 							Token registerToken46 = iter.next();
 							if (registerToken46.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								grt.addToken(registerToken46);
 							}
@@ -575,13 +565,13 @@ public class Runner {
 							grteq.addToken(currentToken);
 							Token registerToken47 = iter.next();
 							if (registerToken47.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								grteq.addToken(registerToken47);
 							}
 							Token registerToken48 = iter.next();
 							if (registerToken48.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								grteq.addToken(registerToken48);
 							}
@@ -593,13 +583,13 @@ public class Runner {
 							eq.addToken(currentToken);
 							Token registerToken49 = iter.next();
 							if (registerToken49.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								eq.addToken(registerToken49);
 							}
 							Token registerToken50 = iter.next();
 							if (registerToken50.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								eq.addToken(registerToken50);
 							}
@@ -611,13 +601,13 @@ public class Runner {
 							neq.addToken(currentToken);
 							Token registerToken51 = iter.next();
 							if (registerToken51.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								neq.addToken(registerToken51);
 							}
 							Token registerToken52 = iter.next();
 							if (registerToken52.getType() != TokenType.REGISTER) {
-//								return Error
+								reglog();
 							} else {
 								neq.addToken(registerToken52);
 							}
@@ -635,7 +625,7 @@ public class Runner {
 							call.addToken(currentToken);
 							Token addressToken5 = iter.next();
 							if (addressToken5.getType() != TokenType.ADDRESS && addressToken5.getType() != TokenType.NAME && addressToken5.getType() != TokenType.VALUE) {
-//								return Error
+								addresslog();
 							} else {
 								call.addToken(addressToken5);
 							}
@@ -648,11 +638,11 @@ public class Runner {
 							instructions.add(r);
 							return r;
 						default:
-//							return Error
+							oplog();
 							break;
 					}
 				default:
-					// return Error
+					gui.log("Not valid tokens!");
 					break;
 			}
 		}
@@ -685,5 +675,22 @@ public class Runner {
 		String result = "";
 		
 		return result;
+	}
+	
+//	Small helper methods
+	public void reglog() {
+		gui.log("Not a valid register!");
+	}
+	
+	public void addresslog() {
+		gui.log("Not a valid address, name, or value!");
+	}
+	
+	public void oplog() {
+		gui.log("Not a valid opcode!");
+	}
+	
+	public void constlog() {
+		gui.log("Not a valid const or hex!");
 	}
 }
