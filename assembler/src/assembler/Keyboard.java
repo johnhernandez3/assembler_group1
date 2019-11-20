@@ -11,7 +11,11 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-public class Keyboard {
+public class Keyboard extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	//JFrame && JPanel Declared
 	private final JFrame f = new JFrame("Keyboard");
 	private final JPanel keyboard = new JPanel();

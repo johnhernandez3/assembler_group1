@@ -51,7 +51,7 @@ public class IO2_SevenSegmentDisplay {
 		return frame;
 	}
 	
-	private static class SevenSegments extends JPanel {
+	 static class SevenSegments extends JPanel {
 		
 		/**
 		 * 

@@ -30,6 +30,9 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import assembler.IO2_SevenSegmentDisplay.SevenSegments;
+import assembler.TrafficLight.Light;
+
 public class GUI extends javax.swing.JFrame {
 
 	/****************************************************************************************************************************
@@ -46,6 +49,10 @@ public class GUI extends javax.swing.JFrame {
 	private SimpleAttributeSet attrWHITE;
 	private JMenuBar menu;
 	private JMenu fileDropdown;
+	private JMenu IODropdown;
+	private JMenuItem segmentDisplay;
+	private JMenuItem trafficLight;
+	private JMenuItem keyboard;
 	private JButton genObjectFile;
 	private JButton loadMemoryFile;
 	private JButton executePrev;
@@ -131,6 +138,7 @@ public class GUI extends javax.swing.JFrame {
 		StyleConstants.setForeground(attrWHITE, Color.WHITE);
 	
 		fileDropdown = new JMenu("File");
+		IODropdown = new JMenu("I/O");
 	    genObjectFile = new JButton("Generate Object File");
 	    loadMemoryFile = new JButton("Upload Memory File");
 	    
@@ -143,8 +151,18 @@ public class GUI extends javax.swing.JFrame {
 	    
 	    openFileOpt = new JMenuItem("Open");
 	    saveFileOpt = new JMenuItem("Save");
+	    
+	    segmentDisplay = new JMenuItem("Segment Display");
+	    trafficLight = new JMenuItem("Traffic Light");
+	    keyboard = new JMenuItem("Hex Keyboard");
+	    
+	    IODropdown.add(segmentDisplay);
+	    IODropdown.add(trafficLight);
+	    IODropdown.add(keyboard);
+	 
 	    fileDropdown.add(openFileOpt);
 	    fileDropdown.add(saveFileOpt);
+	    
 	    menu.add(fileDropdown);
 	    menu.add(genObjectFile);
 	    menu.add(loadMemoryFile);
@@ -152,7 +170,7 @@ public class GUI extends javax.swing.JFrame {
 	    menu.add(executePrev);
 	    menu.add(executeAll);
 	    menu.add(executeNext);
-	    
+	    menu.add(IODropdown);
 	    executePrev.addActionListener(new ActionListener() {
 	
 			@Override
@@ -348,6 +366,41 @@ public class GUI extends javax.swing.JFrame {
 			
 		});
 		
+		trafficLight.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFrame frame2 = initializeFrame();
+				Light l1 = new Light();
+				frame2.add(l1);
+				
+			
+			}
+		});
+		
+		segmentDisplay.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFrame frame2 = initializeFrame();
+				SevenSegments ss = new SevenSegments();
+				frame2.add(ss);
+				
+			
+			}
+		});
+		
+		keyboard.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//JFrame frame2 = initializeFrame();
+				Keyboard ui = new Keyboard();
+				ui.launch();
+			
+				
+			
+			}
+		});
+		
+		
 		/****************************************************************************************************************************
 		 * 	TextEditor, Output, Console SetUp
 		 *************************************************************************************************************************** */
@@ -474,6 +527,14 @@ public class GUI extends javax.swing.JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	private static JFrame initializeFrame() {
+		JFrame frame = new JFrame();
+		frame.setTitle("Traffic Light");
+		frame.setSize(400, 400);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+		return frame;
 	}
 }
 
