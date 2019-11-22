@@ -157,7 +157,7 @@ public class Runner {
 								store.addToken(addressToken1);
 							}
 							// TODO: check what type is address to get the correct content for all cases
- 							this.mem.getMemoryDirection(Integer.parseInt(addressToken1.getValue())).setContent(this.register.getregs().get(registerToken3.getValue()));
+ 							this.mem.getMemoryDirection(Integer.parseInt(addressToken1.getValue(), 16)).setContent(this.register.getregs().get(registerToken3.getValue()));
  							gui.updateMemoryTable();
  							instructions.add(store);
  							return store;

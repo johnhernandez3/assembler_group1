@@ -453,7 +453,7 @@ public class GUI extends javax.swing.JFrame {
 		
 		//Added Model to JTable & add JTable to ScrollPane
 		JScrollPane memoryScrollPane2 = new JScrollPane(memoryTable);
-		memoryScrollPane2.setBounds(800, 0, 480, 480);
+		memoryScrollPane2.setBounds(800, 0, 466, 480);
 		memoryScrollPane2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		memoryScrollPane2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		memoryScrollPane2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Memory"));
@@ -483,7 +483,7 @@ public class GUI extends javax.swing.JFrame {
 		 ***************************************** */
 		
 		JScrollPane consoleScrollPane = new JScrollPane(console);
-		consoleScrollPane.setBounds(0, 480,1275,400);
+		consoleScrollPane.setBounds(0, 480,1265,400);
 		consoleScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		consoleScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		consoleScrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Console"));
