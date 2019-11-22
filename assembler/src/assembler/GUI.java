@@ -400,9 +400,6 @@ public class GUI extends javax.swing.JFrame {
 			public void actionPerformed(ActionEvent e) {
 				Keyboard ui = new Keyboard();
 				ui.launch();
-			
-				
-			
 			}
 		});
 		
