@@ -65,15 +65,21 @@ public class GUI extends javax.swing.JFrame {
 	private JButton executeNext;
 	private JMenuItem openFileOpt;
 	private JMenuItem saveFileOpt;
-	private Runner runner;
+	private Runner runner = new Runner(this);;
 	public Register reg = new Register(this);
 	public InstructionFormat instructions = new InstructionFormat(this);
 	public HashMap<String,String> regs = reg.getregs();
 	public Memory memory = new Memory();
 	public Object[][] memoryData = memory.memData();
+	public Object[][] valuesData = runner.valuesData();
+	public Object[][] constantsData = runner.constantsData();
 	public String[] columnNames = { "Direction", "Content" };
 	public String[] registerColumns = { "Register", "Content" };
+	public String[] valuesColumns = { "Name", "Content" };
+	public String[] constantsColumns = { "Name", "Content" };
 	public JTable memoryTable = new JTable(memoryData, columnNames);
+	public JTable valuesTable = new JTable(valuesData, valuesColumns);
+	public JTable constantsTable = new JTable(constantsData, constantsColumns);
 	public JTable table = new JTable(this.reg.regsData(), registerColumns);
 	
 	public JPanel stackPointerPanel = new JPanel();
@@ -92,6 +98,18 @@ public class GUI extends javax.swing.JFrame {
 		Object[][] memoryData = memory.memData();
 		DefaultTableModel model = new DefaultTableModel(memoryData, columnNames);
 		memoryTable.setModel(model);
+	}
+	
+	public void updateValuesTable() {
+		Object[][] valuesData = runner.valuesData();
+		DefaultTableModel model = new DefaultTableModel(valuesData, valuesColumns);
+		valuesTable.setModel(model);
+	}
+	
+	public void updateConstantsTable() {
+		Object[][] constantsData = runner.constantsData();
+		DefaultTableModel model = new DefaultTableModel(constantsData, constantsColumns);
+		constantsTable.setModel(model);
 	}
 	
 	public void updateRegisterTable() {
@@ -453,17 +471,37 @@ public class GUI extends javax.swing.JFrame {
 		
 		//Added Model to JTable & add JTable to ScrollPane
 		JScrollPane memoryScrollPane2 = new JScrollPane(memoryTable);
-		memoryScrollPane2.setBounds(800, 0, 466, 480);
+		memoryScrollPane2.setBounds(1040, 0, 240, 480);
 		memoryScrollPane2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		memoryScrollPane2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		memoryScrollPane2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Memory"));
+		
+		/******************************************
+		 * 	Values Table
+		 ***************************************** */
+		
+		JScrollPane valuesScrollPane = new JScrollPane(valuesTable);
+		valuesScrollPane.setBounds(800, 480, 240, 400);
+		valuesScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		valuesScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		valuesScrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Values"));
+		
+		/******************************************
+		 * 	Constants Table
+		 ***************************************** */
+		
+		JScrollPane constantsScrollPane = new JScrollPane(constantsTable);
+		constantsScrollPane.setBounds(1040, 480, 240, 400);
+		constantsScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		constantsScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		constantsScrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Constants"));
 	
 		/******************************************
 		 * 	TextEditor
 		 ****************************************** */
 		
 		JScrollPane textEditorScrollPane = new JScrollPane(textEditor);
-		textEditorScrollPane.setBounds(300, 0, 500, 480);
+		textEditorScrollPane.setBounds(300, 0, 740, 480);
 		textEditorScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		textEditorScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		textEditorScrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Text Editor"));
@@ -483,7 +521,7 @@ public class GUI extends javax.swing.JFrame {
 		 ***************************************** */
 		
 		JScrollPane consoleScrollPane = new JScrollPane(console);
-		consoleScrollPane.setBounds(0, 480,1265,400);
+		consoleScrollPane.setBounds(0, 480, 800, 400);
 		consoleScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		consoleScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		consoleScrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Console"));
@@ -548,6 +586,8 @@ public class GUI extends javax.swing.JFrame {
 		 ***************************************** */
 		
 		f.add(textEditorScrollPane);
+		f.add(valuesScrollPane);
+		f.add(constantsScrollPane);
 		f.add(objectCodeScrollPane);
 		f.add(consoleScrollPane);
 		f.add(registerPanel);

@@ -95,7 +95,7 @@ public class Register {
 	public void load(String reg, String addr) { //F2 y loadim
 		if(zeroerr(reg))
 			// log error
-		regs.put(reg, addr);
+		regs.put(reg, addr.replace("#", ""));
 		checkr7(reg);
 	}
 	

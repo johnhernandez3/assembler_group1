@@ -22,6 +22,38 @@ public class Runner {
 	public Map<String, String> getConstants() {
 		return constants;
 	}
+	
+	public Object[][] valuesData() {
+		Object[][] data = new Object[8][2];
+		
+		int l = 0;
+		for (String d : this.values.keySet()) {
+			data[l][0] = d;
+			l++;
+		}
+		l = 0;
+		for (String c : this.values.values()) {
+			data[l][1] = c;
+			l++;
+		}
+		return data;
+	}
+	
+	public Object[][] constantsData() {
+		Object[][] data = new Object[8][2];
+		
+		int l = 0;
+		for (String d : this.constants.keySet()) {
+			data[l][0] = d;
+			l++;
+		}
+		l = 0;
+		for (String c : this.constants.values()) {
+			data[l][1] = c;
+			l++;
+		}
+		return data;
+	}
 
 	public ArrayList<Instruction> instructions = new ArrayList<>();
 	public int currentInstruction = 0;
@@ -58,7 +90,6 @@ public class Runner {
 			Token currentToken = iter.next();
 			switch (currentToken.getType()) {
 				case CONST:
-					System.out.println("testing constants");
 					// store constants here
 					Token nameToken = iter.next();
 					String keywordRegex = "^org$|^jmp$|^const$|^db$|^loadim$|^loadrind$|^load$|^pop$|^storerind$|^push$|^store$|^addim$|^subim$|^add$|^sub$|^and$|^or$|^xor$|^not$|^neg$|^shiftr$|^shiftl$|^rotar$|^rotal$|^jmprind$|^jmpaddr$|^jcondrin$|^jcondaddr$|^loop$|^grteq$|^grt$|^eq$|^neq$|^nop$|^call$|^return$";
@@ -73,11 +104,29 @@ public class Runner {
 						} else {
 							System.out.println("running put in constants");
 							constants.put(nameToken.value, valueToken.value);
+							gui.updateConstantsTable();
 						}
 					}
 				case NAME:
 					 // store values here
-					
+					keywordRegex = "^org$|^jmp$|^const$|^db$|^loadim$|^loadrind$|^load$|^pop$|^storerind$|^push$|^store$|^addim$|^subim$|^add$|^sub$|^and$|^or$|^xor$|^not$|^neg$|^shiftr$|^shiftl$|^rotar$|^rotal$|^jmprind$|^jmpaddr$|^jcondrin$|^jcondaddr$|^loop$|^grteq$|^grt$|^eq$|^neq$|^nop$|^call$|^return$";
+					if (currentToken.getType() != TokenType.NAME) {
+						gui.log("Not a viable name!");
+					}else if (currentToken.getValue().matches(keywordRegex)) {
+						gui.log("Name is a keyword!");
+					}
+					Token dbToken = iter.next();
+					if (dbToken.type != TokenType.DB) {
+						gui.log("Not a db token!");
+					}
+					Token valueToken = iter.next();
+					if (valueToken.type != TokenType.VALUE) {
+						gui.log("Not a valid value!");
+					} else {
+						System.out.println("running put in constants");
+						values.put(currentToken.value, valueToken.value);
+						gui.updateValuesTable();
+					}
 				case OPCODE:
 					switch (currentToken.getValue()) {
 						case "load":
@@ -119,7 +168,7 @@ public class Runner {
 								loadim.addToken(constantToken);
 							}
 							// TODO: check constant type to get the correct content for all cases
-							this.register.getregs().put(registerToken1.getValue(), constantToken.getValue().replaceAll("#", ""));
+							this.register.getregs().put(registerToken1.getValue(), constantToken.getValue());
 							this.gui.updateRegisterTable();
 							instructions.add(loadim);
 							return loadim;
