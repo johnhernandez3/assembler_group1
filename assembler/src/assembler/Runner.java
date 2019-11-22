@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.swing.table.DefaultTableModel;
-
 public class Runner {
 	
 	// This will manage the runs through tokens we need to do to store constants and values and write the object code
@@ -648,7 +646,7 @@ public class Runner {
 							} else {
 								grteq.addToken(registerToken48);
 							}
-							this.register.cond = this.register.grt(registerToken47.getValue(), registerToken48.getValue());
+							this.register.cond = this.register.grteq(registerToken47.getValue(), registerToken48.getValue());
 							gui.updateRegisterTable();
 							instructions.add(grteq);
 							return grteq;
@@ -668,7 +666,7 @@ public class Runner {
 							} else {
 								eq.addToken(registerToken50);
 							}
-							this.register.cond = this.register.grt(registerToken49.getValue(), registerToken50.getValue());
+							this.register.cond = this.register.eq(registerToken49.getValue(), registerToken50.getValue());
 							gui.updateRegisterTable();
 							instructions.add(eq);
 							return eq;
@@ -688,7 +686,7 @@ public class Runner {
 							} else {
 								neq.addToken(registerToken52);
 							}
-							this.register.cond = this.register.grt(registerToken51.getValue(), registerToken52.getValue());
+							this.register.cond = this.register.neq(registerToken51.getValue(), registerToken52.getValue());
 							gui.updateRegisterTable();
 							instructions.add(neq);
 							return neq;

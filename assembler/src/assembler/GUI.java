@@ -255,6 +255,7 @@ public class GUI extends javax.swing.JFrame {
 					p = new Parser(fileContent);
 					for (String s : p.getLines()) {
 						Converter converter = new Converter();
+						currentLine = runner.getCurrentInstruction();
 						String objectCode = runner.executeLine(runner.run(p.parseLine(currentLine))).toUpperCase();
 						try {
 							objectCodeDoc.insertString(objectCodeDoc.getLength(), objectCode + "\n", attrWHITE);

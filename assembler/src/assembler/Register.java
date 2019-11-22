@@ -320,7 +320,7 @@ public class Register {
 	public void ret() {
 		int stackPointer = Integer.parseInt(sp, 16);
 		pc = gui.memory.getMemoryDirection(stackPointer).getContent();
-		sp = Integer.toString(stackPointer + 2);
+		sp = String.format("%02X", (stackPointer + 2));
 	}
 	
 //	End Flow
