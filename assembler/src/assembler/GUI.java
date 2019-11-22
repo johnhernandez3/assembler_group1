@@ -19,6 +19,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -372,21 +373,20 @@ public class GUI extends javax.swing.JFrame {
 		});
 		
 		trafficLight.addActionListener(new ActionListener(){
+			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				String memLocation = JOptionPane.showInputDialog(null,"Enter Memory Location:");
 				Light l1 = new Light();
 				l1.launch();
-				
-				
-			
-				
-			
+
 			}
 		});
 		
 		segmentDisplay.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				String memLocation = JOptionPane.showInputDialog(null,"Enter Memory Location:");
 				SevenSegments ss = new SevenSegments();
 				ss.launch();
 			}
@@ -395,6 +395,7 @@ public class GUI extends javax.swing.JFrame {
 		keyboard.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				String memLocation = JOptionPane.showInputDialog(null,"Enter Memory Location:");
 				Keyboard ui = new Keyboard();
 				ui.launch();
 			}

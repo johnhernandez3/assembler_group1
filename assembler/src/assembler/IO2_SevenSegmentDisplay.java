@@ -253,7 +253,7 @@ public class IO2_SevenSegmentDisplay {
 			f.add(ss);
 			f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 			f.pack();
-			f.setSize(400,400);
+			f.setSize(250,300);
 			f.setResizable(false);
 			f.setLocationRelativeTo(null);
 			f.setVisible(true);

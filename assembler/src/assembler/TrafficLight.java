@@ -68,10 +68,11 @@ public class TrafficLight {
 		Light() {}
 
 		public void launch() {
+			
 			f.add(l1);
 			f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-			f.pack();
-			f.setSize(400,400);
+			//f.pack();
+			f.setSize(350,300);
 			f.setResizable(false);
 			f.setLocationRelativeTo(null);
 			f.setVisible(true);
