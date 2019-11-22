@@ -35,7 +35,7 @@ import javax.swing.text.StyledDocument;
 
 import assembler.IO2_SevenSegmentDisplay.SevenSegments;
 import assembler.TrafficLight.Light;
-
+import assembler.IO3;
 public class GUI extends javax.swing.JFrame {
 
 	/******************************************
@@ -58,6 +58,7 @@ public class GUI extends javax.swing.JFrame {
 	private JMenuItem segmentDisplay;
 	private JMenuItem trafficLight;
 	private JMenuItem keyboard;
+	private JMenuItem ASCII;
 	private JButton genObjectFile;
 	private JButton loadMemoryFile;
 	private JButton executePrev;
@@ -92,7 +93,10 @@ public class GUI extends javax.swing.JFrame {
 	public Parser p;
 	int currentLine;
 	
+	
 	public GUI() { }
+	
+	
 	
 	public void updateMemoryTable() {
 		Object[][] memoryData = memory.memData();
@@ -202,10 +206,13 @@ public class GUI extends javax.swing.JFrame {
 	    segmentDisplay = new JMenuItem("Segment Display");
 	    trafficLight = new JMenuItem("Traffic Light");
 	    keyboard = new JMenuItem("Hex Keyboard");
+	    ASCII = new JMenuItem("ASCII converter");
+
 	    
 	    IODropdown.add(segmentDisplay);
 	    IODropdown.add(trafficLight);
 	    IODropdown.add(keyboard);
+	    IODropdown.add(ASCII);
 	 
 	    fileDropdown.add(openFileOpt);
 	    fileDropdown.add(saveFileOpt);
@@ -262,7 +269,7 @@ public class GUI extends javax.swing.JFrame {
 				// TODO Auto-generated method stub
 				if (textEditor.getStyledDocument().getLength() == 0) {
 					log("WARNING: There is no source code.\n");
-				} else if (p == null) {
+				} else {
 					String fileContent = "";
 					try {
 						fileContent = textEditor.getStyledDocument().getText(0, textEditor.getStyledDocument().getLength());
@@ -356,6 +363,8 @@ public class GUI extends javax.swing.JFrame {
 						memoryData = memory.memData();
 						DefaultTableModel model = new DefaultTableModel(memoryData, columnNames);
 						memoryTable.setModel(model);
+						
+
 						System.out.println(memory.directions[0].getContent());
 						break;
 				}	
@@ -435,6 +444,15 @@ public class GUI extends javax.swing.JFrame {
 			}
 		});
 		
+//		ASCII.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				String memLocation = JOptionPane.showInputDialog(null,"Enter Memory Location:");
+//				ASCII convert = new AsciiConversion();
+//				convert.launch();
+//			}
+//		});
+		
 		
 		/******************************************
 		 * 	TextEditor, Output, Console, Object Code SetUp
@@ -472,6 +490,7 @@ public class GUI extends javax.swing.JFrame {
 		//Added Model to JTable & add JTable to ScrollPane
 		JScrollPane memoryScrollPane2 = new JScrollPane(memoryTable);
 		memoryScrollPane2.setBounds(1040, 0, 240, 480);
+		memoryTable.setEnabled(false);
 		memoryScrollPane2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		memoryScrollPane2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		memoryScrollPane2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Memory"));
@@ -531,6 +550,7 @@ public class GUI extends javax.swing.JFrame {
 		 ***************************************** */
 	
 		JPanel registerPanel = new JPanel(new GridBagLayout());
+		table.setEnabled(false);
 		table.setBackground(Color.WHITE);
 		table.setBounds(5,20, 200, 136);
 		table.setFont(new Font("Tahome",Font.ITALIC,14));
