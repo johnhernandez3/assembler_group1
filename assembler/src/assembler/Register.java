@@ -8,6 +8,7 @@ public class Register {
 //	private InstructionSet opcodes = new InstructionSet();
 	private Converter conv = new Converter();
 	private String[] mem = new String[2048];
+	private GUI gui;
 	
 	private HashMap<String, String> regs = new HashMap<String, String>();
 	private HashMap<String, String> regloc = new HashMap<String, String>();
@@ -32,6 +33,27 @@ public class Register {
 		regloc.put("r5", "101");
 		regloc.put("r6", "110");
 		regloc.put("r7", "111");
+	}
+	
+	public Register(GUI gui) {
+		sp = "00"; pc = "00";
+		regs.put("r0", "00");
+		regs.put("r1", "");
+		regs.put("r2", "");
+		regs.put("r3", "");
+		regs.put("r4", "");
+		regs.put("r5", "");
+		regs.put("r6", "");
+		regs.put("r7", "");
+		regloc.put("r0", "000");
+		regloc.put("r1", "001");
+		regloc.put("r2", "010");
+		regloc.put("r3", "011");
+		regloc.put("r4", "100");
+		regloc.put("r5", "101");
+		regloc.put("r6", "110");
+		regloc.put("r7", "111");
+		this.gui = gui;
 	}
 	
 	public Object[][] regsData() {
@@ -331,7 +353,7 @@ public class Register {
 	public boolean zeroerr(String a) {
 		boolean t = false;
 		if(a.equals("r0")) {
-			System.out.println("Error can't reference r0");
+			gui.log("Error can't reference r0");
 			return !t;
 		}
 		return t;

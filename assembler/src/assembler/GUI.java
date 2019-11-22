@@ -36,9 +36,9 @@ import assembler.TrafficLight.Light;
 
 public class GUI extends javax.swing.JFrame {
 
-	/****************************************************************************************************************************
+	/******************************************
 	 * 	Declarations
-	 *************************************************************************************************************************** */
+	 ***************************************** */
 	
 	private JFrame f;
 	private JTextPane textEditor;
@@ -62,7 +62,7 @@ public class GUI extends javax.swing.JFrame {
 	private JMenuItem openFileOpt;
 	private JMenuItem saveFileOpt;
 	private Runner runner;
-	public Register reg = new Register();;
+	public Register reg = new Register(this);
 	public HashMap<String,String> regs = reg.getregs();
 	public Memory memory = new Memory();
 	public Object[][] memoryData = memory.memData();
@@ -92,9 +92,9 @@ public class GUI extends javax.swing.JFrame {
 		return this.memory;
 	}
 	
-	/****************************************************************************************************************************
+	/******************************************
 	 * 	Getters and Setters
-	 *************************************************************************************************************************** */
+	 ***************************************** */
 
 	public StyledDocument getTextEditorDoc() {
 		return textEditorDoc;
@@ -120,9 +120,9 @@ public class GUI extends javax.swing.JFrame {
 		
 		this.memoryTable.setAutoCreateColumnsFromModel(false);
 
-		/****************************************************************************************************************************
+		/******************************************
 		 * 	Initializations
-		 *************************************************************************************************************************** */
+		 ***************************************** */
 	
 		f = new JFrame("Microprocessor Simulator");
 		textEditor = new JTextPane();
@@ -132,9 +132,9 @@ public class GUI extends javax.swing.JFrame {
 		menu = new JMenuBar();
 		runner = new Runner(this);
 		
-		/****************************************************************************************************************************
+		/******************************************
 		 * 	File Upload
-		 *************************************************************************************************************************** */
+		 ***************************************** */
 	
 		textEditor.setMargin(new Insets(10,10,10,10));
 		output.setMargin(new Insets(10,10,10,10));
@@ -404,9 +404,9 @@ public class GUI extends javax.swing.JFrame {
 		});
 		
 		
-		/****************************************************************************************************************************
+		/******************************************
 		 * 	TextEditor, Output, Console SetUp
-		 *************************************************************************************************************************** */
+		 ***************************************** */
 		
 		f.setJMenuBar(menu);
 	
@@ -428,9 +428,9 @@ public class GUI extends javax.swing.JFrame {
 		consoleDoc = console.getStyledDocument();
 	
 	
-		/****************************************************************************************************************************
+		/******************************************
 		 * 	Memory 
-		 *************************************************************************************************************************** */
+		 ***************************************** */
 		
 		//Added Model to JTable & add JTable to ScrollPane
 		JScrollPane memoryScrollPane2 = new JScrollPane(memoryTable);
@@ -439,9 +439,9 @@ public class GUI extends javax.swing.JFrame {
 		memoryScrollPane2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		memoryScrollPane2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Memory"));
 	
-		/****************************************************************************************************************************
+		/******************************************
 		 * 	TextEditor
-		 **************************************************************************************************************************** */
+		 ****************************************** */
 		
 		JScrollPane textEditorScrollPane = new JScrollPane(textEditor);
 		textEditorScrollPane.setBounds(300, 0, 500, 480);
@@ -449,9 +449,9 @@ public class GUI extends javax.swing.JFrame {
 		textEditorScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		textEditorScrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Text Editor"));
 		
-		/****************************************************************************************************************************
+		/******************************************
 		 * 	Memory Scrollpane(Not Used)
-		 *************************************************************************************************************************** */
+		 ***************************************** */
 		
 		JScrollPane memoryScrollPane = new JScrollPane(output);
 		memoryScrollPane.setBounds(800, 0, 480, 480);
@@ -459,9 +459,9 @@ public class GUI extends javax.swing.JFrame {
 		memoryScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		memoryScrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Memory"));
 	
-		/****************************************************************************************************************************
+		/******************************************
 		 * 	ConsoleScrollPane
-		 *************************************************************************************************************************** */
+		 ***************************************** */
 		
 		JScrollPane consoleScrollPane = new JScrollPane(console);
 		consoleScrollPane.setBounds(0, 480,1275,400);
@@ -469,9 +469,9 @@ public class GUI extends javax.swing.JFrame {
 		consoleScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		consoleScrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Console"));
 	
-		/****************************************************************************************************************************
+		/******************************************
 		 * 	GUI Register
-		 *************************************************************************************************************************** */
+		 ***************************************** */
 	
 		JPanel registerPanel = new JPanel(new GridBagLayout());
 		//Table Declaration and adjustments
@@ -479,18 +479,16 @@ public class GUI extends javax.swing.JFrame {
 		table.setBackground(Color.WHITE);
 		table.setBounds(5,20, 200, 150);
 		table.setFont(new Font("Tahome",Font.ITALIC,14));
-		// Adding Hashmaps key & Values to JTable
-		//Still need to update values once GUI has functionality
-		int row=0;
-		for(Map.Entry<String,String> entry: regs.entrySet()){
-		table.setValueAt(entry.getKey(),row,0);
-		table.setValueAt(entry.getValue(),row,1);
-		row++;
+		int row = 0;
+		for (Map.Entry<String,String> entry : regs.entrySet()) {
+			table.setValueAt(entry.getKey(),row,0);
+			table.setValueAt(entry.getValue(),row,1);
+			row++;
 		}
 		
-		/****************************************************************************************************************************
+		/******************************************
 		 * 	StackPointer & Instruction Register 
-		 *************************************************************************************************************************** */
+		 ***************************************** */
 		
 		JPanel stackPointerPanel = new JPanel(new GridBagLayout());
 		stackPointerPanel.setBounds(table.getWidth()+7,0, table.getWidth(), 480);
@@ -508,9 +506,9 @@ public class GUI extends javax.swing.JFrame {
 		registerPanel.setVisible(true);
 		
 		
-		/****************************************************************************************************************************
+		/******************************************
 		 * 	Adding to Frame
-		 *************************************************************************************************************************** */
+		 ***************************************** */
 		
 		f.add(textEditorScrollPane);
 		f.add(consoleScrollPane);
@@ -540,4 +538,3 @@ public class GUI extends javax.swing.JFrame {
 		return frame;
 	}
 }
-
