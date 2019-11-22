@@ -62,24 +62,30 @@ public class GUI extends javax.swing.JFrame {
 	private JMenuItem openFileOpt;
 	private JMenuItem saveFileOpt;
 	private Runner runner;
-	public Register reg;
-	public HashMap<String,String> regs;
+	public Register reg = new Register();;
+	public HashMap<String,String> regs = reg.getregs();
 	public Memory memory = new Memory();
 	public Object[][] memoryData = memory.memData();
 	public String[] columnNames = { "Direction", "Content" };
+	public String[] registerColumns = { "Register", "Content" };
 	public JTable memoryTable = new JTable(memoryData, columnNames);
+	public JTable table = new JTable(this.reg.regsData(), registerColumns);
 	public Parser p;
 	int currentLine;
 	
 	public GUI() { }
 	
-	public void updateMemoryTable(Memory mem) {
-		memoryData = mem.memData();
+	public void updateMemoryTable() {
+		Object[][] memoryData = memory.memData();
 		DefaultTableModel model = new DefaultTableModel(memoryData, columnNames);
-		this.memoryTable.setModel(model);
-		for (int i = 0; i < mem.directions.length-2000; i++) {
-			System.out.println(mem.directions[i].toString());
-		}
+		memoryTable.setModel(model);
+		
+	}
+	
+	public void updateRegisterTable() {
+		Object[][] registerData = reg.regsData();
+		DefaultTableModel model = new DefaultTableModel(registerData, registerColumns);
+		table.setModel(model);
 	}
 	
 	public Memory getMemory() {
@@ -112,8 +118,6 @@ public class GUI extends javax.swing.JFrame {
 
 	public void buildGUI() {
 		
-		this.reg = new Register();
-		this.regs = reg.getregs();
 		this.memoryTable.setAutoCreateColumnsFromModel(false);
 
 		/****************************************************************************************************************************
@@ -379,22 +383,21 @@ public class GUI extends javax.swing.JFrame {
 			}
 		});
 		
-		segmentDisplay.addActionListener(new ActionListener(){
+		segmentDisplay.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JFrame frame2 = initializeFrame();
+				JFrame frame3 = initializeFrame();
 				SevenSegments ss = new SevenSegments();
-				frame2.add(ss);
+				frame3.add(ss);
 				
 				
 			
 			}
 		});
 		
-		keyboard.addActionListener(new ActionListener(){
+		keyboard.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//JFrame frame2 = initializeFrame();
 				Keyboard ui = new Keyboard();
 				ui.launch();
 			
@@ -475,8 +478,8 @@ public class GUI extends javax.swing.JFrame {
 	
 		JPanel registerPanel = new JPanel(new GridBagLayout());
 		//Table Declaration and adjustments
-		JTable table=new JTable(regs.size(),2);
-		table.setBackground(Color.gray);
+//		JTable table = new JTable(this.reg.regsData(), registerColumns);
+		table.setBackground(Color.WHITE);
 		table.setBounds(5,20, 200, 150);
 		table.setFont(new Font("Tahome",Font.ITALIC,14));
 		// Adding Hashmaps key & Values to JTable
@@ -494,13 +497,13 @@ public class GUI extends javax.swing.JFrame {
 		
 		JPanel stackPointerPanel = new JPanel(new GridBagLayout());
 		stackPointerPanel.setBounds(table.getWidth()+7,0, table.getWidth(), 480);
-		stackPointerPanel.setBackground(Color.gray);
+		stackPointerPanel.setBackground(Color.WHITE);
 		stackPointerPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "PC & SP"));
 		stackPointerPanel.setLayout(null);
 		stackPointerPanel.setVisible(true);
 	
 		registerPanel.setBounds(0,0,210,480);
-		registerPanel.setBackground(Color.gray);
+		registerPanel.setBackground(Color.WHITE);
 		registerPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Registers"));
 		registerPanel.add(table);
 	

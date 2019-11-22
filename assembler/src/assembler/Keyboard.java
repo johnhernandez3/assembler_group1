@@ -33,7 +33,7 @@ public class Keyboard extends JPanel {
 	 * 										Keyboard
 	 *******************************************************************************************************/
 	//Focuses on Keyboard appearance
-	public Keyboard(){
+	public Keyboard() {
 
 		keyboard.setLayout(new GridBagLayout());
 		Insets zeroInset = new Insets(0, 0, 0, 0);
@@ -103,7 +103,7 @@ public class Keyboard extends JPanel {
 	 * 										Launch JFrame
 	 ******************************************************************************************************************/
 	public void launch() {
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		f.pack();
 		f.setResizable(false);
 		f.setLocationRelativeTo(null);

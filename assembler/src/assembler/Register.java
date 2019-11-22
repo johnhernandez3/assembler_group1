@@ -34,6 +34,22 @@ public class Register {
 		regloc.put("r7", "111");
 	}
 	
+	public Object[][] regsData() {
+		Object[][] data = new Object[8][2];
+		
+		int l = 0;
+		for (String d : this.regs.keySet()) {
+			data[l][0] = d;
+			l++;
+		}
+		l = 0;
+		for (String c : this.regs.values()) {
+			data[l][1] = c;
+			l++;
+		}
+		return data;
+	}
+	
 //	Allows access to regs
 	public HashMap<String, String> getregs() {
 		return regs;

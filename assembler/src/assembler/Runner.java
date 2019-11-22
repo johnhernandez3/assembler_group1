@@ -5,15 +5,18 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.swing.table.DefaultTableModel;
+
 public class Runner {
 	
 	// This will manage the runs through tokens we need to do to store constants and values and write the object code
 	private InstructionSet opcodes = new InstructionSet();
 	private InstructionFormat instructionFormat = new InstructionFormat();
-	private Register registers = new Register();
+	private Register register;
 	private Converter converter = new Converter();
 	private ArrayList<Token> tokens;
 	private GUI gui;
+	private Memory mem;
 	
 	public Map<String, String> values = new HashMap<>();
 	public Map<String, String> constants = new HashMap<>();
@@ -38,10 +41,14 @@ public class Runner {
 
 	public Runner() {
 		this.gui = new GUI();
+		this.register = gui.reg;
+		this.mem = gui.memory;
 	}
 
 	public Runner(GUI gui) {
 		this.gui = gui;
+		this.register = gui.reg;
+		this.mem = gui.memory;
 	}
 	
 	public Instruction run(ArrayList<Token> tokens) {
@@ -89,6 +96,9 @@ public class Runner {
 							} else {
 								load.addToken(addressToken);
 							}
+							String content = this.mem.getMemoryDirection(Integer.parseInt(addressToken.getValue())).getContent();
+							this.register.getregs().put(registerToken.getValue(), content);
+							this.gui.updateRegisterTable();
 							instructions.add(load);
 							return load;
 						case "loadim":
@@ -137,8 +147,15 @@ public class Runner {
 							} else {
 								store.addToken(addressToken1);
 							}
-							instructions.add(store);
-							return store;
+//							Memory mem = new Memory();
+ 							this.mem.directions[Integer.parseInt(addressToken1.getValue())].setContent(this.register.getregs().get(registerToken3.getValue()));
+// 							Object[][] memoryData = mem.memData();
+// 							DefaultTableModel model = new DefaultTableModel(memoryData, gui.columnNames);
+// 							gui.memoryTable.setModel(model);
+ 							gui.updateMemoryTable();
+ 							System.out.println(mem.getMemoryDirection(Integer.parseInt(addressToken1.value)).toString());
+ 							instructions.add(store);
+ 							return store;
 						case "push":
 							opcodes = new InstructionSet();
 							Instruction push = opcodes.getInstruction(currentToken.getValue());
