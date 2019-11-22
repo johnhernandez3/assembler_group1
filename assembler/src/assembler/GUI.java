@@ -67,10 +67,30 @@ public class GUI extends javax.swing.JFrame {
 	public HashMap<String,String> regs = reg.getregs();
 	public Memory memory = new Memory();
 	public Object[][] memoryData = memory.memData();
+//	public Object[][] spData = new Object[1][2];
+//	public Object[][] pcData = new Object[1][2];
 	public String[] columnNames = { "Direction", "Content" };
 	public String[] registerColumns = { "Register", "Content" };
+	public String[] spColumns = { "SP", "Content" };
+	public String[] pcColumns = { "PC", "Content" };
+	public Object[][] spData() {
+		Object[][] data = new Object[1][2];
+		
+		data[0][0] = "SP";
+		data[0][1] = "00";
+		return data;
+	}
+	public Object[][] pcData() {
+		Object[][] data = new Object[1][2];
+		
+		data[0][0] = "PC";
+		data[0][1] = "00";
+		return data;
+	}
 	public JTable memoryTable = new JTable(memoryData, columnNames);
 	public JTable table = new JTable(this.reg.regsData(), registerColumns);
+	public JTable sptable = new JTable(spData(), spColumns);
+	public JTable pctable = new JTable(pcData(), pcColumns);
 	public Parser p;
 	int currentLine;
 	
@@ -87,6 +107,18 @@ public class GUI extends javax.swing.JFrame {
 		Object[][] registerData = reg.regsData();
 		DefaultTableModel model = new DefaultTableModel(registerData, registerColumns);
 		table.setModel(model);
+	}
+	
+	public void updateSPTable() {
+		Object[][] stackpointerData = spData();
+		DefaultTableModel model = new DefaultTableModel(stackpointerData, spColumns);
+		sptable.setModel(model);
+	}
+	
+	public void updatePCTable() {
+		Object[][] stackpointerData = pcData();
+		DefaultTableModel model = new DefaultTableModel(stackpointerData, pcColumns);
+		pctable.setModel(model);
 	}
 	
 	public Memory getMemory() {
@@ -485,15 +517,38 @@ public class GUI extends javax.swing.JFrame {
 		}
 		
 		/******************************************
-		 * 	StackPointer & Instruction Register 
+		 * 	StackPointer 
 		 ***************************************** */
 		
 		JPanel stackPointerPanel = new JPanel(new GridBagLayout());
-		stackPointerPanel.setBounds(table.getWidth()+7,0, table.getWidth(), 480);
+		sptable.setBackground(Color.WHITE);
+		sptable.setBounds(table.getWidth() + 9, 0, 92, 420);
+		sptable.setFont(new Font("Tahome",Font.ITALIC,14));
+		sptable.setValueAt(this.reg.getSP(), 0, 0);
+		sptable.setValueAt(this.reg.getSP(), 0, 1);
+		stackPointerPanel.setBounds(table.getWidth()+9, 0, 92, 240);
 		stackPointerPanel.setBackground(Color.WHITE);
-		stackPointerPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "PC & SP"));
+		stackPointerPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "SP"));
+		stackPointerPanel.add(sptable);
 		stackPointerPanel.setLayout(null);
 		stackPointerPanel.setVisible(true);
+		
+		/******************************************
+		 * 	Instruction Register 
+		 ***************************************** */
+		
+		JPanel pcPointerPanel = new JPanel(new GridBagLayout());
+		pctable.setBackground(Color.WHITE);
+		pctable.setBounds(table.getWidth() + 9, 240, 92, 240);
+		pctable.setFont(new Font("Tahome",Font.ITALIC,14));
+		pctable.setValueAt(this.reg.getPC(), 0, 0);
+		pctable.setValueAt(this.reg.getPC(), 0, 1);
+		pcPointerPanel.setBounds(table.getWidth()+9, 240, 92, 240);
+		pcPointerPanel.setBackground(Color.WHITE);
+		pcPointerPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "PC"));
+		pcPointerPanel.add(pctable);
+		pcPointerPanel.setLayout(null);
+		pcPointerPanel.setVisible(true);
 	
 		registerPanel.setBounds(0,0,210,480);
 		registerPanel.setBackground(Color.WHITE);
@@ -512,6 +567,7 @@ public class GUI extends javax.swing.JFrame {
 		f.add(consoleScrollPane);
 		f.add(registerPanel);
 		f.add(stackPointerPanel);
+		f.add(pcPointerPanel);
 		f.add(memoryScrollPane2);
 		f.setSize(1280, 1000);
 		f.setLayout(null);
