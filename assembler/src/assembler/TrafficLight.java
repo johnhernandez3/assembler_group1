@@ -5,6 +5,8 @@ import javax.swing.*;
 
 
 public class TrafficLight {
+	private static final JFrame f = new JFrame("Traffic Light Display");
+	private static Light l1 = new Light();
 	//Test Intruction
 	static String  inst = "11000011";
 	/*********************************************************************************************
@@ -13,21 +15,21 @@ public class TrafficLight {
 	 * @param args
 	 * @throws InterruptedException
 	 */
-	public static void main(String[] args) throws InterruptedException {
-
-		JFrame frame = initializeFrame();
-		Light l1 = new Light();
-
-		frame.add(l1);
-
-		if (l1.getLastTwoBin(inst).equals("00")) {
-			l1.lightUp(inst);
-			l1.intermitent(false);
-		} else if (l1.getLastTwoBin(inst).equals("11")) {
-			l1.lightUp(inst);
-			l1.intermitent(true);
-		}
-	}
+//	public static void main(String[] args) throws InterruptedException {
+//
+//		JFrame frame = initializeFrame();
+//	//	Light l1 = new Light();
+//
+//		frame.add(l1);
+//
+//		if (l1.getLastTwoBin(inst).equals("00")) {
+//			l1.lightUp(inst);
+//			l1.intermitent(false);
+//		} else if (l1.getLastTwoBin(inst).equals("11")) {
+//			l1.lightUp(inst);
+//			l1.intermitent(true);
+//		}
+//	}
 	/*********************************************************************************************
 	 * 									Frame
 	 * ******************************************************************************************
@@ -41,13 +43,15 @@ public class TrafficLight {
 		frame.setVisible(true);
 		return frame;
 	}
+	
+	
 	/*********************************************************************************************
 	 * 										Traffic Light
 	 * *******************************************************************************************
 	 *
 	 */
 	static class Light extends JPanel {
-
+		
 		private static final long serialVersionUID = 1L;
 
 		private int iDistance=90;
@@ -63,6 +67,15 @@ public class TrafficLight {
 
 		Light() {}
 
+		public void launch() {
+			f.add(l1);
+			f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+			f.pack();
+			f.setSize(400,400);
+			f.setResizable(false);
+			f.setLocationRelativeTo(null);
+			f.setVisible(true);
+		}
 
 		@Override
 		public void paintComponent(Graphics g) {

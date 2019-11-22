@@ -9,7 +9,7 @@ public class IO2_SevenSegmentDisplay {
 	private static Converter conv = new Converter();
 	static String inst = "10101011";
 	private static SevenSegments ss = new SevenSegments();
-
+	private final JFrame f = new JFrame("Seven Segment Display");
 	public static void main(String[] args) throws InterruptedException {
 		
 		JFrame frame = initFrame();
@@ -51,13 +51,12 @@ public class IO2_SevenSegmentDisplay {
 		return frame;
 	}
 	
+
+	
 	 static class SevenSegments extends JPanel {
 		
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 1L;
-		
+		private final JFrame f = new JFrame("Seven Segment Display");
 		
 		private int ten = 10;
 		private int fifty = 50;
@@ -249,6 +248,15 @@ public class IO2_SevenSegmentDisplay {
 			g.setColor(this.Greeng2);
 			g.fillRect(apx, apy + (60 * 2), fifty, ten);
 			
+		}
+		public void launch() {
+			f.add(ss);
+			f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+			f.pack();
+			f.setSize(400,400);
+			f.setResizable(false);
+			f.setLocationRelativeTo(null);
+			f.setVisible(true);
 		}
 		
 	}

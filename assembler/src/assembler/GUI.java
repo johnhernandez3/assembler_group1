@@ -374,9 +374,10 @@ public class GUI extends javax.swing.JFrame {
 		trafficLight.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JFrame frame2 = initializeFrame();
 				Light l1 = new Light();
-				frame2.add(l1);
+				l1.launch();
+				
+				
 			
 				
 			
@@ -386,12 +387,8 @@ public class GUI extends javax.swing.JFrame {
 		segmentDisplay.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JFrame frame3 = initializeFrame();
 				SevenSegments ss = new SevenSegments();
-				frame3.add(ss);
-				
-				
-			
+				ss.launch();
 			}
 		});
 		
