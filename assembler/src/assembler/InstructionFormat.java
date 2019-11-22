@@ -5,12 +5,13 @@ import java.util.ArrayList;
 public class InstructionFormat {
 	
 	private InstructionSet opcodes = new InstructionSet();
-	private Register regloc = new Register();
+	private Register regloc;
 	private ArrayList<Instruction> instructions;
 	private Converter conv = new Converter();
 	
-	public InstructionFormat() {
+	public InstructionFormat(GUI gui) {
 		this.instructions = new ArrayList<>();
+		this.regloc = new Register(gui);
 	}
 	
 	public ArrayList<Instruction> getInstructions() {
@@ -96,123 +97,123 @@ public class InstructionFormat {
 		return conv.binToHex(str);
 	}
 
-	private void F1switch(String a, String b, String c, String d) {
-		switch(a) {
-			case "add":
-				regloc.add(b, c, d);
-				break;
-			case "sub":
-				regloc.sub(b, c, d);
-				break;
-			case "and":
-				regloc.and(b, c, d);
-				break;
-			case "or":
-				regloc.or(b, c, d);
-				break;
-			case "xor":
-				regloc.xor(b, c, d);
-				break;
-			case "shiftr":
-				regloc.shiftr(b, c, d);
-				break;
-			case "shiftl":
-				regloc.shiftl(b, c, d);
-				break;
-			case "rotar":
-				regloc.rotar(b, c, d);
-				break;
-			case "rotal":
-				regloc.rotal(b, c, d);
-				break;
-			default:
-				break;
-		}
-	}
-
-	private void F2switch(String a, String b, String c) {
-		switch(a) {
-			case "load":
-				regloc.load(b, c);
-				break;
-			case "loadim":// needs work
-				regloc.load(b, c);
-			case "pop":
-				regloc.pop(b);// work needed
-				break;
-			case "store":
-				regloc.store(b, c);
-				break;
-			case "loadrind":
-				regloc.loadrind(b, c);
-				break;
-			case "storerind":
-				regloc.storerind(b, c);
-				break;
-			case "not":
-				regloc.not(b, c);
-				break;
-			case "addim":
-				regloc.addim(b, c);
-				break;
-			case "subim":
-				regloc.subim(b, c);
-				break;
-			case "neg":
-				regloc.neg(b, c);
-				break;
-			case "grt":
-				regloc.grt(b, c);
-				break;
-			case "grteq":
-				regloc.grteq(b, c);
-				break;
-			case "eq":
-				regloc.eq(b, c);
-				break;
-			case "neq":
-				regloc.neq(b, c);
-				break;
-			default:
-				break;
-		}
-	}
-	
-	private void F3switch(String a, String b) {
-		switch(a) {
-			case "pop":
-				regloc.pop(b);
-				break;
-			case "push":
-				regloc.push(b);
-				break;
-			case "jmprind":
-				regloc.jmprind(b);
-				break;
-			case "jmpaddr":
-				regloc.jmpaddr(b);
-				break;
-			case "jcondrind":
-				//needs work
-				regloc.jcondrind(true, b);
-				break;
-			case "jcondaddr":
-				//needs work
-				regloc.jcondaddr(true, b);
-				break;
-			case "loop":
-				//needs work
-				regloc.loop(b, b);
-				break;
-			case "call":
-				regloc.call(b);
-			case "ret":
-				regloc.ret();
-				break;
-			default:
-				break;
-		}
-	}
+//	private void F1switch(String a, String b, String c, String d) {
+//		switch(a) {
+//			case "add":
+//				regloc.add(b, c, d);
+//				break;
+//			case "sub":
+//				regloc.sub(b, c, d);
+//				break;
+//			case "and":
+//				regloc.and(b, c, d);
+//				break;
+//			case "or":
+//				regloc.or(b, c, d);
+//				break;
+//			case "xor":
+//				regloc.xor(b, c, d);
+//				break;
+//			case "shiftr":
+//				regloc.shiftr(b, c, d);
+//				break;
+//			case "shiftl":
+//				regloc.shiftl(b, c, d);
+//				break;
+//			case "rotar":
+//				regloc.rotar(b, c, d);
+//				break;
+//			case "rotal":
+//				regloc.rotal(b, c, d);
+//				break;
+//			default:
+//				break;
+//		}
+//	}
+//
+//	private void F2switch(String a, String b, String c) {
+//		switch(a) {
+//			case "load":
+//				regloc.load(b, c);
+//				break;
+//			case "loadim":// needs work
+//				regloc.load(b, c);
+//			case "pop":
+//				regloc.pop(b);// work needed
+//				break;
+//			case "store":
+//				regloc.store(b, c);
+//				break;
+//			case "loadrind":
+//				regloc.loadrind(b, c);
+//				break;
+//			case "storerind":
+//				regloc.storerind(b, c);
+//				break;
+//			case "not":
+//				regloc.not(b, c);
+//				break;
+////			case "addim":
+////				regloc.addim(b, c);
+////				break;
+////			case "subim":
+////				regloc.subim(b, c);
+////				break;
+//			case "neg":
+//				regloc.neg(b, c);
+//				break;
+//			case "grt":
+//				regloc.grt(b, c);
+//				break;
+//			case "grteq":
+//				regloc.grteq(b, c);
+//				break;
+//			case "eq":
+//				regloc.eq(b, c);
+//				break;
+//			case "neq":
+//				regloc.neq(b, c);
+//				break;
+//			default:
+//				break;
+//		}
+//	}
+//	
+//	private void F3switch(String a, String b) {
+//		switch(a) {
+//			case "pop":
+//				regloc.pop(b);
+//				break;
+//			case "push":
+//				regloc.push(b);
+//				break;
+//			case "jmprind":
+//				regloc.jmprind(b);
+//				break;
+//			case "jmpaddr":
+//				regloc.jmpaddr(b);
+//				break;
+//			case "jcondrind":
+//				//needs work
+//				regloc.jcondrind(true, b);
+//				break;
+//			case "jcondaddr":
+//				//needs work
+//				regloc.jcondaddr(true, b);
+//				break;
+//			case "loop":
+//				//needs work
+//				regloc.loop(b, b);
+//				break;
+//			case "call":
+//				regloc.call(b);
+//			case "ret":
+//				regloc.ret();
+//				break;
+//			default:
+//				break;
+//		}
+//	}
 
 	
 }

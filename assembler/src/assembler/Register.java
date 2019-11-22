@@ -7,36 +7,36 @@ public class Register {
 //	Initialize opcode, register map and map register values, initializes r0 with 00(bytes)
 //	private InstructionSet opcodes = new InstructionSet();
 	private Converter conv = new Converter();
-	private String[] mem = new String[2048];
 	private GUI gui;
 	
 	private HashMap<String, String> regs = new HashMap<String, String>();
 	private HashMap<String, String> regloc = new HashMap<String, String>();
 
-	public String sp, pc;
+	public String sp = "00"; 
+	public String pc = "00";
+	public boolean cond = false;
 
-	public Register() {
-		sp = "00"; pc = "00";
-		regs.put("r0", "00");
-		regs.put("r1", "");
-		regs.put("r2", "");
-		regs.put("r3", "");
-		regs.put("r4", "");
-		regs.put("r5", "");
-		regs.put("r6", "");
-		regs.put("r7", "");
-		regloc.put("r0", "000");
-		regloc.put("r1", "001");
-		regloc.put("r2", "010");
-		regloc.put("r3", "011");
-		regloc.put("r4", "100");
-		regloc.put("r5", "101");
-		regloc.put("r6", "110");
-		regloc.put("r7", "111");
-	}
+//	public Register() {
+//		sp = "00"; pc = "00";
+//		regs.put("r0", "00");
+//		regs.put("r1", "");
+//		regs.put("r2", "");
+//		regs.put("r3", "");
+//		regs.put("r4", "");
+//		regs.put("r5", "");
+//		regs.put("r6", "");
+//		regs.put("r7", "");
+//		regloc.put("r0", "000");
+//		regloc.put("r1", "001");
+//		regloc.put("r2", "010");
+//		regloc.put("r3", "011");
+//		regloc.put("r4", "100");
+//		regloc.put("r5", "101");
+//		regloc.put("r6", "110");
+//		regloc.put("r7", "111");
+//	}
 	
 	public Register(GUI gui) {
-		sp = "00"; pc = "00";
 		regs.put("r0", "00");
 		regs.put("r1", "");
 		regs.put("r2", "");
@@ -92,16 +92,16 @@ public class Register {
 	}
 	
 //	Set Regs
-	public String load(String a, String b) { //F2 y loadim
-		if(zeroerr(a)) return null;
-		regs.put(a, b);
-		checkr7(a);
-		return a;
+	public void load(String reg, String addr) { //F2 y loadim
+		if(zeroerr(reg))
+			// log error
+		regs.put(reg, addr);
+		checkr7(reg);
 	}
 	
 	public String pop(String a) { //F2
 		if(zeroerr(a)) return null;
-		regs.put(a, mem[Integer.parseInt(sp)]);
+		regs.put(a, gui.memory.getMemoryDirection(Integer.parseInt(sp, 16)).getContent());
 		sp = Integer.toString(Integer.parseInt(sp) + 1);
 		checkr7(a);
 		return a;
@@ -109,7 +109,7 @@ public class Register {
 	
 	public String store(String a, String b) { //F2
 		if(zeroerr(b)) return null;
-		regs.put(mem[Integer.parseInt(sp)], b);
+		regs.put(gui.memory.getMemoryDirection(Integer.parseInt(sp, 16)).getContent(), b);
 		checkr7(a);
 		return b;
 	}
@@ -117,7 +117,7 @@ public class Register {
 	public String push(String a) {
 		if(zeroerr(a)) return null;
 		sp = Integer.toString(Integer.parseInt(sp) - 1);
-		regs.put(mem[Integer.parseInt(sp)], a);
+		regs.put(gui.memory.getMemoryDirection(Integer.parseInt(sp, 16)).getContent(), a);
 		return a;
 	}
 	
@@ -140,146 +140,121 @@ public class Register {
 //	Arithmetic Logic
 	public String add(String a, String b, String c) {
 		if(triplezerr(a, b, c))	return null;
-		String tok2 = regs.get(b), tok3 = regs.get(c);
+		String tok2 = "", tok3 = "";
+		if (c.contains("#")) {
+			tok2 = regs.get(b);
+			tok3 = c.replaceAll("#", "");
+		} else {
+			tok2 = regs.get(b);
+			tok3 = regs.get(c);
+		}
 		int add1 = Integer.parseInt(tok2, 16);
 		int add2 = Integer.parseInt(tok3, 16);
-		regs.put(a, String.format("%02x", add1 + add2));
+		int result = add1 + add2;
+		regs.put(a, String.format("%02X", (0xFF & result)));
 		checkr7(a);
 		return regs.get(a);
 	}
 	
 	public String sub(String a, String b, String c) {
 		if(triplezerr(a, b, c))	return null;
-		String tok2 = regs.get(b), tok3 = regs.get(c);
+		String tok2 = "", tok3 = "";
+		if (c.contains("#")) {
+			tok2 = regs.get(b);
+			tok3 = c.replaceAll("#", "");
+		} else {
+			tok2 = regs.get(b);
+			tok3 = regs.get(c);
+		}
 		int add1 = Integer.parseInt(tok2, 16);
 		int add2 = Integer.parseInt(tok3, 16);
-		regs.put(a, String.format("%02x", add1 - add2));
+		int result = add1 - add2;
+		regs.put(a, String.format("%02X", (0xFF & result)));
 		checkr7(a);
 		return regs.get(a);
-	}
-	
-//	Needs error handler for addr
-	public String addim(String a, String b) {
-		if(zeroerr(a)) return null;
-		regs.put(a, Integer.toHexString(Integer.parseInt(regs.get(a), 16) + Integer.parseInt(b, 16)));
-		checkr7(a);
-		return a;
-	}
-	
-	public String subim(String a, String b) {
-		if(zeroerr(a)) return null;
-		regs.put(a, Integer.toHexString(Integer.parseInt(regs.get(a), 16) - Integer.parseInt(b, 16)));
-		checkr7(a);
-		return a;
 	}
 	
 //	End Arithmetic Logic
 	
 //	Logic Operators
 	public String and(String a, String b, String c) {
-		if(triplezerr(a, b, c)) return null; String str = "";
-		String d = String.format("%04d", (Integer.parseInt(regs.get(c), 16)));
-		String e = String.format("%04d", (Integer.parseInt(regs.get(b), 16)));
-		for(int i = 0; i < d.length(); i++) {
-			if(d.substring(i, i + 1).equals("1") && 
-					e.substring(i, i + 1).equals("1")) {
-				str += "1";
-			}
-			else {
-				str += "0";
-			}
-		}
-		regs.put(a, String.format("%02x", Integer.parseInt(str, 2)));
+		if(triplezerr(a, b, c)) return null;
+		int B = Integer.parseInt(regs.get(b), 16);
+		int C = Integer.parseInt(regs.get(c), 16);
+		int result = (B & C);
+		regs.put(a, String.format("%02X", (0xFF & result)));
 		checkr7(a);
-		return a;
+		return regs.get(a);
 	}
 	
 	public String or(String a, String b, String c) {
-		if(triplezerr(a, b, c)) return null; String str = "";
-		String d = String.format("%04d", (Integer.parseInt(regs.get(c), 16)));
-		String e = String.format("%04d", (Integer.parseInt(regs.get(b), 16)));
-		for(int i = 0; i < d.length(); i++) {
-			if(d.substring(i, i + 1).equals("0") && 
-					e.substring(i, i + 1).equals("0")) {
-				str += "1";
-			}
-			else {
-				str += "0";
-			}
-		}
-		regs.put(a, String.format("%02x", Integer.parseInt(str, 2)));
+		if(triplezerr(a, b, c)) return null;
+		int B = Integer.parseInt(regs.get(b), 16);
+		int C = Integer.parseInt(regs.get(c), 16);
+		int result = (B | C);
+		regs.put(a, String.format("%02X", (0xFF & result)));
 		checkr7(a);
 		return regs.get(a);
 	}
 	
 	public String xor(String a, String b, String c) {
-		if(triplezerr(a, b, c)) return null; String str = "";
-		String d = String.format("%04d", (Integer.parseInt(regs.get(c), 16)));
-		String e = String.format("%04d", (Integer.parseInt(regs.get(b), 16)));
-		for(int i = 0; i < d.length(); i++) {
-			if((d.substring(i, i + 1).equals("1") && e.substring(i, i + 1).equals("1")) ||
-			(d.substring(i, i + 1).equals("0") && e.substring(i, i + 1).equals("0"))) {
-				str += "0";
-			}
-			else {
-				str += "1";
-			}
-		}
-		regs.put(a, String.format("%02x", Integer.parseInt(str, 2)));
+		if(triplezerr(a, b, c)) return null;
+		int B = Integer.parseInt(regs.get(b), 16);
+		int C = Integer.parseInt(regs.get(c), 16);
+		int result = (B ^ C);
+		regs.put(a, String.format("%02X", (0xFF & result)));
 		checkr7(a);
 		return regs.get(a);
 	}
 	
 	public String not(String a, String b) {
 		if(doublezerr(a, b)) return null;
-		regs.put(b, conv.hextoBin(regs.get(b)));
-		char[] ch = regs.get(b).toCharArray();
-		String s = new String("");
-		for(int i = 0; i < ch.length; i++) {
-			if(ch[i] == '0') {
-				s += '1';
-			}
-			else if(ch[i] == '1') {
-				s += '0';
-			}
-		}
-		regs.put(a, String.format("%02x", Integer.parseInt(s, 2)));
+		int B = Integer.parseInt(regs.get(b), 16);
+		int result = (~B);
+		regs.put(a, String.format("%02X", (0xFF & result)));
 		checkr7(a);
 		return regs.get(a);
 	}
 	
 	public String neg(String a, String b) {
 		if(doublezerr(a, b)) return null;
-		String s = String.format("%x", ~(Integer.parseInt(regs.get(b), 16)));
-		regs.put(a, s.substring(s.length() - 2, s.length()));
+		int B = Integer.parseInt(regs.get(b), 16);
+		int result = (-1 * B);
+		regs.put(a, String.format("%02X", (0xFF & result)));
 		checkr7(a);
-		return a;
+		return regs.get(a);
 	}
 	
 	public String shiftr(String a, String b, String c) {
 		if(triplezerr(a, b, c)) return null;
-		regs.put(a, String.format("%04x", Integer.parseInt(regs.get(b), 16)>>> Integer.parseInt(regs.get(c), 16)));
+		regs.put(a, String.format("%02X", (0xFF & (Integer.parseInt(regs.get(b), 16) >>> Integer.parseInt(regs.get(c), 16)))));
 		checkr7(a);
 		return a;
 	}
 	
 	public String shiftl(String a, String b, String c) {
 		if(triplezerr(a, b, c)) return null;
-		regs.put(a, String.format("%04x", Integer.parseInt(regs.get(b), 16)<< Integer.parseInt(regs.get(c), 16)));
+		regs.put(a, String.format("%02X", (0xFF & (Integer.parseInt(regs.get(b), 16) << Integer.parseInt(regs.get(c), 16)))));
 		checkr7(a);
 		return a;
 	}
 	
 	public String rotar(String a, String b, String c) {
 		if(triplezerr(a, b, c)) return null;
-		regs.put(a, Integer.toHexString(Integer.rotateRight(Integer.parseInt(regs.get(b), 16), Integer.parseInt(regs.get(c), 16))));
+		int B = Integer.parseInt(regs.get(b), 16);
+		int C = Integer.parseInt(regs.get(c), 16);
+		int result = Integer.rotateRight(B, C);
+		regs.put(a, String.format("%02X", (0xFF & result)));
 		checkr7(a);
 		return a;
 	}
 	
 	public String rotal(String a, String b, String c) {
 		if(triplezerr(a, b, c)) return null;
-		regs.put(a, Integer.toHexString(Integer.rotateLeft(Integer.parseInt(regs.get(b), 16), Integer.parseInt(regs.get(c), 16))));
+		int B = Integer.parseInt(regs.get(b), 16);
+		int C = Integer.parseInt(regs.get(c), 16);
+		int result = Integer.rotateLeft(B, C);
+		regs.put(a, String.format("%02X", (0xFF & result)));
 		checkr7(a);
 		return a;
 	}
@@ -298,7 +273,7 @@ public class Register {
 		return a;
 	}
 	
-	public String jcondrind(boolean b, String a) {
+	public String jcondrin(boolean b, String a) {
 		if(zeroerr(a)) return null;
 		if(b) pc = regs.get(a);
 		return a;
@@ -338,13 +313,14 @@ public class Register {
 	
 	public void call(String a) {
 		sp = Integer.toString(Integer.parseInt(sp) - 2);
-		mem[Integer.parseInt(sp)] = pc;
+		gui.memory.getMemoryDirection(Integer.parseInt(sp, 16)).setContent(pc);
 		pc = a;
 	}
 	
 	public void ret() {
-		pc = mem[Integer.parseInt(sp)];
-		sp = Integer.toString(Integer.parseInt(sp) + 2);
+		int stackPointer = Integer.parseInt(sp, 16);
+		pc = gui.memory.getMemoryDirection(stackPointer).getContent();
+		sp = Integer.toString(stackPointer + 2);
 	}
 	
 //	End Flow

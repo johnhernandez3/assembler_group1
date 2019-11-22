@@ -11,7 +11,7 @@ public class Runner {
 	
 	// This will manage the runs through tokens we need to do to store constants and values and write the object code
 	private InstructionSet opcodes = new InstructionSet();
-	private InstructionFormat instructionFormat = new InstructionFormat();
+	private InstructionFormat instructionFormat;
 	private Register register;
 	private Converter converter = new Converter();
 	private ArrayList<Token> tokens;
@@ -43,12 +43,14 @@ public class Runner {
 		this.gui = new GUI();
 		this.register = gui.reg;
 		this.mem = gui.memory;
+		this.instructionFormat = new InstructionFormat(gui);
 	}
 
 	public Runner(GUI gui) {
 		this.gui = gui;
 		this.register = gui.reg;
 		this.mem = gui.memory;
+		this.instructionFormat = new InstructionFormat(gui);
 	}
 	
 	public Instruction run(ArrayList<Token> tokens) {
@@ -96,6 +98,7 @@ public class Runner {
 							} else {
 								load.addToken(addressToken);
 							}
+							// TODO: check what type is address to get the correct content for all cases
 							String content = this.mem.getMemoryDirection(Integer.parseInt(addressToken.getValue())).getContent();
 							this.register.getregs().put(registerToken.getValue(), content);
 							this.gui.updateRegisterTable();
@@ -117,6 +120,9 @@ public class Runner {
 							} else {
 								loadim.addToken(constantToken);
 							}
+							// TODO: check constant type to get the correct content for all cases
+							this.register.getregs().put(registerToken1.getValue(), constantToken.getValue().replaceAll("#", ""));
+							this.gui.updateRegisterTable();
 							instructions.add(loadim);
 							return loadim;
 						case "pop":
@@ -129,6 +135,11 @@ public class Runner {
 							} else {
 								pop.addToken(registerToken2);
 							}
+							// TODO: check if the register is r0 to throw error if it is
+							this.register.getregs().put(registerToken2.getValue(), this.mem.getMemoryDirection(Integer.parseInt(this.register.sp, 16)).getContent());
+							// TODO: increment SP by 1 (SP = SP + 1)
+							// TODO: update SP in GUI
+							this.gui.updateRegisterTable();
 							instructions.add(pop);
 							return pop;
 						case "store":
@@ -147,13 +158,9 @@ public class Runner {
 							} else {
 								store.addToken(addressToken1);
 							}
-//							Memory mem = new Memory();
- 							this.mem.directions[Integer.parseInt(addressToken1.getValue())].setContent(this.register.getregs().get(registerToken3.getValue()));
-// 							Object[][] memoryData = mem.memData();
-// 							DefaultTableModel model = new DefaultTableModel(memoryData, gui.columnNames);
-// 							gui.memoryTable.setModel(model);
+							// TODO: check what type is address to get the correct content for all cases
+ 							this.mem.getMemoryDirection(Integer.parseInt(addressToken1.getValue())).setContent(this.register.getregs().get(registerToken3.getValue()));
  							gui.updateMemoryTable();
- 							System.out.println(mem.getMemoryDirection(Integer.parseInt(addressToken1.value)).toString());
  							instructions.add(store);
  							return store;
 						case "push":
@@ -166,6 +173,10 @@ public class Runner {
 							} else {
 								push.addToken(registerToken4);
 							}
+							// TODO: decrement SP by 1 (SP = SP - 1)
+							// TODO: update SP in GUI
+							this.mem.getMemoryDirection(Integer.parseInt(this.register.sp, 16)).setContent(this.register.getregs().get(registerToken4.getValue()));
+							gui.updateMemoryTable();
 							instructions.add(push);
 							return push;
 						case "loadrind":
@@ -184,6 +195,8 @@ public class Runner {
 							} else {
 								loadrind.addToken(registerToken6);
 							}
+							this.register.getregs().put(registerToken5.getValue(), this.mem.getMemoryDirection(Integer.parseInt(this.register.getregs().get(registerToken6.getValue()), 16)).getContent());
+							gui.updateRegisterTable();
 							instructions.add(loadrind);
 							return loadrind;
 						case "storerind":
@@ -202,6 +215,8 @@ public class Runner {
 							} else {
 								storerind.addToken(registerToken8);
 							}
+							this.register.getregs().put(registerToken8.getValue(), this.mem.getMemoryDirection(Integer.parseInt(this.register.getregs().get(registerToken7.getValue()), 16)).getContent());
+							gui.updateRegisterTable();
 							instructions.add(storerind);
 							return storerind;
 						case "add":
@@ -226,6 +241,8 @@ public class Runner {
 							} else {
 								add.addToken(registerToken11);
 							}
+							this.register.add(registerToken9.getValue(), registerToken10.getValue(), registerToken11.getValue());
+							gui.updateRegisterTable();
 							instructions.add(add);
 							return add;
 						case "sub":
@@ -250,6 +267,8 @@ public class Runner {
 							} else {
 								sub.addToken(registerToken14);
 							}
+							this.register.sub(registerToken12.getValue(), registerToken13.getValue(), registerToken14.getValue());
+							gui.updateRegisterTable();
 							instructions.add(sub);
 							return sub;
 						case "addim":
@@ -268,6 +287,8 @@ public class Runner {
 							} else {
 								addim.addToken(constantToken1);
 							}
+							this.register.add(registerToken15.getValue(), registerToken15.getValue(), constantToken1.getValue());
+							gui.updateRegisterTable();
 							instructions.add(addim);
 							return addim;
 						case "subim":
@@ -286,6 +307,8 @@ public class Runner {
 							} else {
 								subim.addToken(constantToken2);
 							}
+							this.register.sub(registerToken16.getValue(), registerToken16.getValue(), constantToken2.getValue());
+							gui.updateRegisterTable();
 							instructions.add(subim);
 							return subim;
 						case "and":
@@ -310,6 +333,8 @@ public class Runner {
 							} else {
 								and.addToken(registerToken19);
 							}
+							this.register.and(registerToken17.getValue(), registerToken18.getValue(), registerToken19.getValue());
+							gui.updateRegisterTable();
 							instructions.add(and);
 							return and;
 						case "or":
@@ -334,6 +359,8 @@ public class Runner {
 							} else {
 								or.addToken(registerToken22);
 							}
+							this.register.or(registerToken20.getValue(), registerToken21.getValue(), registerToken22.getValue());
+							gui.updateRegisterTable();
 							instructions.add(or);
 							return or;
 						case "xor":
@@ -358,6 +385,8 @@ public class Runner {
 							} else {
 								xor.addToken(registerToken25);
 							}
+							this.register.xor(registerToken23.getValue(), registerToken24.getValue(), registerToken25.getValue());
+							gui.updateRegisterTable();
 							instructions.add(xor);
 							return xor;
 						case "not":
@@ -376,6 +405,8 @@ public class Runner {
 							} else {
 								not.addToken(registerToken27);
 							}
+							this.register.not(registerToken26.getValue(), registerToken27.getValue());
+							gui.updateRegisterTable();
 							instructions.add(not);
 							return not;
 						case "neg":
@@ -394,6 +425,8 @@ public class Runner {
 							} else {
 								neg.addToken(registerToken29);
 							}
+							this.register.neg(registerToken28.getValue(), registerToken29.getValue());
+							gui.updateRegisterTable();
 							instructions.add(neg);
 							return neg;
 						case "shiftr":
@@ -418,6 +451,8 @@ public class Runner {
 							} else {
 								shiftr.addToken(registerToken32);
 							}
+							this.register.shiftr(registerToken30.getValue(), registerToken31.getValue(), registerToken32.getValue());
+							gui.updateRegisterTable();
 							instructions.add(shiftr);
 							return shiftr;
 						case "shiftl":
@@ -442,6 +477,8 @@ public class Runner {
 							} else {
 								shiftl.addToken(registerToken35);
 							}
+							this.register.shiftl(registerToken33.getValue(), registerToken34.getValue(), registerToken35.getValue());
+							gui.updateRegisterTable();
 							instructions.add(shiftl);
 							return shiftl;
 						case "rotar":
@@ -466,6 +503,8 @@ public class Runner {
 							} else {
 								rotar.addToken(registerToken38);
 							}
+							this.register.rotar(registerToken36.getValue(), registerToken37.getValue(), registerToken38.getValue());
+							gui.updateRegisterTable();
 							instructions.add(rotar);
 							return rotar;
 						case "rotal":
@@ -490,6 +529,8 @@ public class Runner {
 							} else {
 								rotal.addToken(registerToken41);
 							}
+							this.register.rotal(registerToken39.getValue(), registerToken40.getValue(), registerToken41.getValue());
+							gui.updateRegisterTable();
 							instructions.add(rotal);
 							return rotal;
 						case "jmprind":
@@ -502,6 +543,8 @@ public class Runner {
 							} else {
 								jmprind.addToken(registerToken42);
 							}
+							this.register.jmprind(registerToken42.getValue());
+							gui.updateRegisterTable();
 							instructions.add(jmprind);
 							return jmprind;
 						case "jmpaddr":
@@ -514,6 +557,9 @@ public class Runner {
 							} else {
 								jmpaddr.addToken(addressToken2);
 							}
+							// TODO: check address type
+							this.register.jmpaddr(addressToken2.getValue());
+							gui.updateRegisterTable();
 							instructions.add(jmpaddr);
 							return jmpaddr;
 						case "jcondrin":
@@ -526,6 +572,8 @@ public class Runner {
 							} else {
 								jcondrin.addToken(registerToken43);
 							}
+							this.register.jcondrin(this.register.cond, registerToken43.getValue());
+							gui.updateRegisterTable();
 							instructions.add(jcondrin);
 							return jcondrin;
 						case "jcondaddr":
@@ -538,6 +586,9 @@ public class Runner {
 							} else {
 								jcondaddr.addToken(addressToken3);
 							}
+							// TODO: check address type
+							this.register.jcondaddr(this.register.cond, addressToken3.getValue());
+							gui.updateRegisterTable();
 							instructions.add(jcondaddr);
 							return jcondaddr;
 						case "loop":
@@ -556,6 +607,9 @@ public class Runner {
 							} else {
 								loop.addToken(addressToken4);
 							}
+							// TODO: check address type
+							this.register.loop(registerToken44.getValue(), addressToken4.getValue());
+							gui.updateRegisterTable();
 							instructions.add(loop);
 							return loop;
 						case "grt":
@@ -574,6 +628,8 @@ public class Runner {
 							} else {
 								grt.addToken(registerToken46);
 							}
+							this.register.cond = this.register.grt(registerToken45.getValue(), registerToken46.getValue());
+							gui.updateRegisterTable();
 							instructions.add(grt);
 							return grt;
 						case "grteq":
@@ -592,6 +648,8 @@ public class Runner {
 							} else {
 								grteq.addToken(registerToken48);
 							}
+							this.register.cond = this.register.grt(registerToken47.getValue(), registerToken48.getValue());
+							gui.updateRegisterTable();
 							instructions.add(grteq);
 							return grteq;
 						case "eq":
@@ -610,6 +668,8 @@ public class Runner {
 							} else {
 								eq.addToken(registerToken50);
 							}
+							this.register.cond = this.register.grt(registerToken49.getValue(), registerToken50.getValue());
+							gui.updateRegisterTable();
 							instructions.add(eq);
 							return eq;
 						case "neq":
@@ -628,6 +688,8 @@ public class Runner {
 							} else {
 								neq.addToken(registerToken52);
 							}
+							this.register.cond = this.register.grt(registerToken51.getValue(), registerToken52.getValue());
+							gui.updateRegisterTable();
 							instructions.add(neq);
 							return neq;
 						case "nop":
@@ -646,12 +708,18 @@ public class Runner {
 							} else {
 								call.addToken(addressToken5);
 							}
+							// TODO: check address type
+							this.register.call(addressToken5.getValue());
+							gui.updateMemoryTable();
+							gui.updateRegisterTable();
 							instructions.add(call);
 							return call;
 						case "return":
 							opcodes = new InstructionSet();
 							Instruction r = opcodes.getInstruction(currentToken.getValue());
 							r.addToken(currentToken);
+							this.register.ret();
+							gui.updateRegisterTable();
 							instructions.add(r);
 							return r;
 						default:

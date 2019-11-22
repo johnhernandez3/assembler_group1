@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
 public class Parser {
 	
 	InstructionSet instructionSet = new InstructionSet();
-	InstructionFormat instructionFormat = new InstructionFormat();
 	Tokenizer tokenizer = new Tokenizer();
 	ArrayList<Token> tokens = new ArrayList<>();
 	private ArrayList<TokenRegex> tokenPatterns;
