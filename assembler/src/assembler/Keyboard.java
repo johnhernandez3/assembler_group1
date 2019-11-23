@@ -6,6 +6,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -68,8 +69,10 @@ public class Keyboard extends JPanel {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						JButton btn = (JButton) e.getSource();
-						onButtonPress(btn.getText());
-						
+						ArrayList<String> s = new ArrayList<String>();
+						s.add(btn.getText());
+						onButtonPress(s.get(0));
+						s.remove(0);
 					}
 					
 				});
