@@ -229,7 +229,7 @@ public class Runner {
 								loadim.addToken(constantToken);
 							}
 							// TODO: check constant type to get the correct content for all cases
-							this.register.getregs().put(registerToken1.getValue(), constantToken.getValue());
+							this.register.getregs().put(registerToken1.getValue(), constantToken.getValue().replaceAll("#", ""));
 							this.gui.updateRegisterTable();
 							instructions.add(loadim);
 							return loadim;
