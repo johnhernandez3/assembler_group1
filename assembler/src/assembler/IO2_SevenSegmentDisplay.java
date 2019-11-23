@@ -50,9 +50,7 @@ public class IO2_SevenSegmentDisplay {
 		frame.setVisible(true);
 		return frame;
 	}
-	
 
-	
 	 static class SevenSegments extends JPanel {
 		
 		private static final long serialVersionUID = 1L;

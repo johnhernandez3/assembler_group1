@@ -32,10 +32,9 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
-
 import assembler.IO2_SevenSegmentDisplay.SevenSegments;
-import assembler.TrafficLight.Light;
 import assembler.IO3;
+
 public class GUI extends javax.swing.JFrame {
 
 	/******************************************
@@ -82,6 +81,7 @@ public class GUI extends javax.swing.JFrame {
 	public JTable valuesTable = new JTable(valuesData, valuesColumns);
 	public JTable constantsTable = new JTable(constantsData, constantsColumns);
 	public JTable table = new JTable(this.reg.regsData(), registerColumns);
+	public Converter conv = new Converter();
 	
 	public JPanel stackPointerPanel = new JPanel();
 	public JLabel spLabel = new JLabel(this.reg.sp);
@@ -424,20 +424,39 @@ public class GUI extends javax.swing.JFrame {
 		trafficLight.addActionListener(new ActionListener(){
 			
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e)  {
 				String memLocation = JOptionPane.showInputDialog(null,"Enter Memory Location:");
-				Light l1 = new Light();
-				l1.launch();
+				int memLoc = Integer.parseInt(memLocation);
+				if(memory.validate(memLoc) == true){
+					String memContent = memory.getMemoryDirection(memLoc).getContent();
+					TrafficLight l1 = new TrafficLight();
+					l1.launch();
+					if (l1.getLastTwoBin(conv.hextoBin(memContent)).equals("00")) {
+						l1.lightUp(conv.hextoBin(memContent));
 
+					} else if (l1.getLastTwoBin(conv.hextoBin(memContent)).equals("11")) {
+						l1.lightUp(conv.hextoBin(memContent));
+						l1.intermitent(conv.hextoBin(memContent));
+					}
+				}
+				else{
+					System.out.println("I am here");
+				}
 			}
 		});
-		
 		segmentDisplay.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String memLocation = JOptionPane.showInputDialog(null,"Enter Memory Location:");
-				SevenSegments ss = new SevenSegments();
-				ss.launch();
+				int memLoc = Integer.parseInt(memLocation);
+				if(memory.validate(memLoc) == true){
+					String memContent = memory.getMemoryDirection(memLoc).getContent();
+					SevenSegments ss = new SevenSegments();
+					//ss.turnOnSegment(bitOn(conv.hextoBin(memContent)));
+					ss.launch();
+				}
+				
+			
 			}
 		});
 		
@@ -450,14 +469,14 @@ public class GUI extends javax.swing.JFrame {
 			}
 		});
 		
-//		ASCII.addActionListener(new ActionListener() {
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				String memLocation = JOptionPane.showInputDialog(null,"Enter Memory Location:");
-//				ASCII convert = new AsciiConversion();
-//				convert.launch();
-//			}
-//		});
+		ASCII.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String memLocation = JOptionPane.showInputDialog(null,"Enter Memory Location:");
+				IO3.ASCII convert = new IO3.ASCII();
+				convert.launch();
+			}
+		});
 		
 		
 		/******************************************

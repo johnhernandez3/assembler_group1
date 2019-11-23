@@ -18,7 +18,7 @@ public class Keyboard extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	//JFrame && JPanel Declared
-	private final JFrame f = new JFrame("Keyboard");
+	private final JFrame f = new JFrame("Keyboard IO");
 	private final JPanel keyboard = new JPanel();
 	private JButton b;
 	Converter c = new Converter();
