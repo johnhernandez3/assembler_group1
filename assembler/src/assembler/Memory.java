@@ -54,7 +54,7 @@ public class Memory implements MemoryInterface {
 
 	//Memory Constructor
 	public Memory() {
-		directions = (MemoryLocation[]) this.initializeMem();
+		directions = this.initializeMem();
 		next = 0;
 		currDirection = directions[next];
 	}
@@ -153,6 +153,18 @@ public class Memory implements MemoryInterface {
 
 		}
 		return str;
+	}
+
+	public int getNextAvailableMemoryDirection() {
+		int result = next;
+		for (MemoryLocation d : this.directions) {
+			if (d.getContent().isEmpty()) {
+				return result;
+			} else {
+				result++;
+			}
+		}
+		return result;
 	}
 
 //	public String GetLastEvenbit() { 

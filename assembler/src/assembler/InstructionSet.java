@@ -67,7 +67,6 @@ public class InstructionSet {
 	 ** 
 	 **/
 	public String BinaryReturn(String str) {
-		if(str.equals("org")) return "";
 		return map.get(str).getOpcode();
 	}
 

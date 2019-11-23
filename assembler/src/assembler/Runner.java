@@ -11,45 +11,96 @@ public class Runner {
 	private InstructionSet opcodes = new InstructionSet();
 	private InstructionFormat instructionFormat;
 	private Register register;
-	private Converter converter = new Converter();
-	private ArrayList<Token> tokens;
 	private GUI gui;
 	private Memory mem;
 	
-	public Map<String, String> values = new HashMap<>();
-	public Map<String, String> constants = new HashMap<>();
+	public class Value {
+		
+		public String name;
+		public String content;
+		public int direction;
+		
+		public Value(String name, String content, int direction) {
+			this.name = name;
+			this.content = content;
+			this.direction = direction;
+		}
+		
+		public String getName() {
+			return name;
+		}
+
+		public String getContent() {
+			return content;
+		}
+		
+		public int getDirection() {
+			return direction;
+		}
+		
+		@Override
+		public String toString() {
+			return String.format("Name: %s, Content: %s, Direction: %s", name, content, direction);
+		}
+	}
+	public class Constant {
+		
+		public String name;
+		public String content;
+		
+		public Constant(String name, String content) {
+			this.name = name;
+			this.content = content;
+		}
+		
+		public String getName() {
+			return name;
+		}
+
+		public String getContent() {
+			return content;
+		}
+		
+		@Override
+		public String toString() {
+			return String.format("Name: %s, Content: %s", name, content);
+		}
+	}
 	
-	public Map<String, String> getConstants() {
+	public ArrayList<Value> values = new ArrayList<>();
+	public ArrayList<Constant> constants = new ArrayList<>();
+	
+	public ArrayList<Constant> getConstants() {
 		return constants;
 	}
 	
 	public Object[][] valuesData() {
-		Object[][] data = new Object[8][2];
+		Object[][] data = new Object[2048][2];
 		
 		int l = 0;
-		for (String d : this.values.keySet()) {
-			data[l][0] = d;
+		for (Value d : this.values) {
+			data[l][0] = d.name;
 			l++;
 		}
 		l = 0;
-		for (String c : this.values.values()) {
-			data[l][1] = c;
+		for (Value c : this.values) {
+			data[l][1] = c.content;
 			l++;
 		}
 		return data;
 	}
 	
 	public Object[][] constantsData() {
-		Object[][] data = new Object[8][2];
+		Object[][] data = new Object[2048][2];
 		
 		int l = 0;
-		for (String d : this.constants.keySet()) {
-			data[l][0] = d;
+		for (Constant d : this.constants) {
+			data[l][0] = d.name;
 			l++;
 		}
 		l = 0;
-		for (String c : this.constants.values()) {
-			data[l][1] = c;
+		for (Constant c : this.constants) {
+			data[l][1] = c.content;
 			l++;
 		}
 		return data;
@@ -102,30 +153,40 @@ public class Runner {
 						if (valueToken.type != TokenType.VALUE) {
 							gui.log("Not a valid value!");
 						} else {
-							System.out.println("running put in constants");
-							constants.put(nameToken.value, valueToken.value);
+							constants.add(new Constant(nameToken.value, valueToken.value.toUpperCase()));
 							gui.updateConstantsTable();
+							return null;
 						}
 					}
 				case NAME:
 					 // store values here
 					keywordRegex = "^org$|^jmp$|^const$|^db$|^loadim$|^loadrind$|^load$|^pop$|^storerind$|^push$|^store$|^addim$|^subim$|^add$|^sub$|^and$|^or$|^xor$|^not$|^neg$|^shiftr$|^shiftl$|^rotar$|^rotal$|^jmprind$|^jmpaddr$|^jcondrin$|^jcondaddr$|^loop$|^grteq$|^grt$|^eq$|^neq$|^nop$|^call$|^return$";
 					if (currentToken.getType() != TokenType.NAME) {
-						gui.log("Not a viable name!");
-					}else if (currentToken.getValue().matches(keywordRegex)) {
+						gui.log("Not a name token!" + currentToken.getType());
+					} else if (currentToken.getValue().matches(keywordRegex)) {
 						gui.log("Name is a keyword!");
 					}
 					Token dbToken = iter.next();
 					if (dbToken.type != TokenType.DB) {
 						gui.log("Not a db token!");
+						// STOP ERROR HERE
 					}
 					Token valueToken = iter.next();
 					if (valueToken.type != TokenType.VALUE) {
 						gui.log("Not a valid value!");
 					} else {
-						System.out.println("running put in constants");
-						values.put(currentToken.value, valueToken.value);
+						int nextMemDirection = gui.memory.getNextAvailableMemoryDirection();
+						values.add(new Value(currentToken.value, valueToken.value.toUpperCase(), nextMemDirection));
+						gui.memory.getMemoryDirection(nextMemDirection).setContent(valueToken.value.toUpperCase());
+						while (iter.hasNext()) {
+							valueToken = iter.next();
+							nextMemDirection = gui.memory.getNextAvailableMemoryDirection();
+							values.add(new Value(currentToken.value, valueToken.value.toUpperCase(), nextMemDirection));
+							gui.memory.getMemoryDirection(nextMemDirection).setContent(valueToken.value.toUpperCase());
+						}
 						gui.updateValuesTable();
+						gui.updateMemoryTable();
+						return null;
 					}
 				case OPCODE:
 					switch (currentToken.getValue()) {
@@ -206,7 +267,7 @@ public class Runner {
 								store.addToken(addressToken1);
 							}
 							// TODO: check what type is address to get the correct content for all cases
- 							this.mem.getMemoryDirection(Integer.parseInt(addressToken1.getValue(), 16)).setContent(this.register.getregs().get(registerToken3.getValue()));
+ 							this.mem.getMemoryDirection(Integer.parseInt(addressToken1.getValue())).setContent(this.register.getregs().get(registerToken3.getValue()));
  							gui.updateMemoryTable();
  							instructions.add(store);
  							return store;
@@ -783,9 +844,8 @@ public class Runner {
 	
 	public String executeLine(Instruction instruction) {
 		String result = "";
-		if (instruction == null) return "No OPCODE. Not an instruction";
+		if (instruction == null) return "";
 		Instruction i = instruction;
-//		System.out.println(i.toString() + "\n" + "Num Of Tokens: " + i.getTokens().size());
 		if(i.getTokens().size() == 4) {
  			result = instructionFormat.Fswitch(i.getTokens().get(0).getValue(), i.getTokens().get(1).getValue(), 
  					i.getTokens().get(2).getValue(), i.getTokens().get(3).getValue(), i.getFormat());

@@ -250,13 +250,15 @@ public class GUI extends javax.swing.JFrame {
 						runner.setCurrentInstruction(currentLine-1);
 						currentLine = runner.getCurrentInstruction();
 						String objectCode = runner.executeLine(runner.run(p.parseLine(currentLine))).toUpperCase();
-						try {
-							objectCodeDoc.insertString(objectCodeDoc.getLength(), objectCode + "\n", attrWHITE);
-						} catch (BadLocationException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
+						if (!objectCode.isEmpty()) {
+							try {
+								objectCodeDoc.insertString(objectCodeDoc.getLength(), objectCode + "\n", attrWHITE);
+							} catch (BadLocationException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							log(converter.decimalToHex(currentLine).toUpperCase() + ": " + objectCode + ": " + p.getLine(currentLine) + "\n");
 						}
-						log(converter.decimalToHex(currentLine).toUpperCase() + ": " + objectCode + ": " + p.getLine(currentLine) + "\n");
 					}
 				}
 			}
@@ -282,13 +284,15 @@ public class GUI extends javax.swing.JFrame {
 						Converter converter = new Converter();
 						currentLine = runner.getCurrentInstruction();
 						String objectCode = runner.executeLine(runner.run(p.parseLine(currentLine))).toUpperCase();
-						try {
-							objectCodeDoc.insertString(objectCodeDoc.getLength(), objectCode + "\n", attrWHITE);
-						} catch (BadLocationException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
+						if (!objectCode.isEmpty()) {
+							try {
+								objectCodeDoc.insertString(objectCodeDoc.getLength(), objectCode + "\n", attrWHITE);
+							} catch (BadLocationException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							log(converter.decimalToHex(currentLine).toUpperCase() + ": " + objectCode + ": " + p.getLine(currentLine) + "\n");
 						}
-						log(converter.decimalToHex(currentLine).toUpperCase() + ": " + objectCode + ": " + p.getLine(currentLine) + "\n");
 						runner.setCurrentInstruction(currentLine+1);
 					}
 				}
@@ -317,13 +321,15 @@ public class GUI extends javax.swing.JFrame {
 					} else {
 						Converter converter = new Converter();
 						String objectCode = runner.executeLine(runner.run(p.parseLine(currentLine))).toUpperCase();
-						try {
-							objectCodeDoc.insertString(objectCodeDoc.getLength(), objectCode + "\n", attrWHITE);
-						} catch (BadLocationException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
+						if (!objectCode.isEmpty()) {
+							try {
+								objectCodeDoc.insertString(objectCodeDoc.getLength(), objectCode + "\n", attrWHITE);
+							} catch (BadLocationException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							log(converter.decimalToHex(currentLine).toUpperCase() + ": " + objectCode + ": " + p.getLine(currentLine) + "\n");
 						}
-						log(converter.decimalToHex(currentLine).toUpperCase() + ": " + objectCode + ": " + p.getLine(currentLine) + "\n");
 						runner.setCurrentInstruction(currentLine+1);
 					}
 				}
@@ -501,6 +507,7 @@ public class GUI extends javax.swing.JFrame {
 		
 		JScrollPane valuesScrollPane = new JScrollPane(valuesTable);
 		valuesScrollPane.setBounds(800, 480, 240, 400);
+		valuesTable.setEnabled(false);
 		valuesScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		valuesScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		valuesScrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Values"));
@@ -511,6 +518,7 @@ public class GUI extends javax.swing.JFrame {
 		
 		JScrollPane constantsScrollPane = new JScrollPane(constantsTable);
 		constantsScrollPane.setBounds(1040, 480, 240, 400);
+		constantsTable.setEnabled(false);
 		constantsScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		constantsScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		constantsScrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Constants"));
