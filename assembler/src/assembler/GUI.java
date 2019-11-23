@@ -455,7 +455,7 @@ public class GUI extends javax.swing.JFrame {
 					//ss.turnOnSegment(bitOn(conv.hextoBin(memContent)));
 					ss.launch();
 				}
-				
+				//Comment 
 			
 			}
 		});
