@@ -1,9 +1,7 @@
 package assembler;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 public class Runner {
 	
@@ -17,21 +15,15 @@ public class Runner {
 	public class Value {
 		
 		public String name;
-		public String content;
 		public int direction;
 		
-		public Value(String name, String content, int direction) {
+		public Value(String name, int direction) {
 			this.name = name;
-			this.content = content;
 			this.direction = direction;
 		}
 		
 		public String getName() {
 			return name;
-		}
-
-		public String getContent() {
-			return content;
 		}
 		
 		public int getDirection() {
@@ -40,7 +32,7 @@ public class Runner {
 		
 		@Override
 		public String toString() {
-			return String.format("Name: %s, Content: %s, Direction: %s", name, content, direction);
+			return String.format("Name: %s, Direction: %s", name, direction);
 		}
 	}
 	public class Constant {
@@ -70,6 +62,20 @@ public class Runner {
 	public ArrayList<Value> values = new ArrayList<>();
 	public ArrayList<Constant> constants = new ArrayList<>();
 	
+	public int getValueDirection(String name) {
+		for (Value v : this.values) {
+			if (v.getName().equals(name)) return v.getDirection();
+		}
+		return -1;
+	}
+	
+	public String getConstantContent(String name) {
+		for (Constant c : this.constants) {
+			if (c.getName().equals(name)) return c.getContent();
+		}
+		return "";
+	}
+	
 	public ArrayList<Constant> getConstants() {
 		return constants;
 	}
@@ -84,7 +90,7 @@ public class Runner {
 		}
 		l = 0;
 		for (Value c : this.values) {
-			data[l][1] = c.content;
+			data[l][1] = c.direction;
 			l++;
 		}
 		return data;
@@ -140,6 +146,19 @@ public class Runner {
 		while (iter.hasNext()) {
 			Token currentToken = iter.next();
 			switch (currentToken.getType()) {
+				case ORIGIN:
+					Token originAddressToken = iter.next();
+					if (originAddressToken.getType() != TokenType.ADDRESS) {
+						gui.log("Origin address error");
+						return null;
+					} else if (originAddressToken.getType() == TokenType.NAME) {
+						int memLocation = this.getValueDirection(originAddressToken.getValue());
+						gui.memory.setNextDirection(memLocation);
+						return null;
+					} else {
+						gui.memory.setNextDirection(Integer.parseInt(originAddressToken.getValue()));
+						return null;
+					}
 				case CONST:
 					// store constants here
 					Token nameToken = iter.next();
@@ -176,13 +195,37 @@ public class Runner {
 						gui.log("Not a valid value!");
 					} else {
 						int nextMemDirection = gui.memory.getNextAvailableMemoryDirection();
-						values.add(new Value(currentToken.value, valueToken.value.toUpperCase(), nextMemDirection));
+						System.out.println(nextMemDirection);
+						values.add(new Value(currentToken.value, nextMemDirection));
 						gui.memory.getMemoryDirection(nextMemDirection).setContent(valueToken.value.toUpperCase());
+						gui.memory.next = nextMemDirection+1;
 						while (iter.hasNext()) {
 							valueToken = iter.next();
 							nextMemDirection = gui.memory.getNextAvailableMemoryDirection();
-							values.add(new Value(currentToken.value, valueToken.value.toUpperCase(), nextMemDirection));
+							values.add(new Value(currentToken.value, nextMemDirection));
 							gui.memory.getMemoryDirection(nextMemDirection).setContent(valueToken.value.toUpperCase());
+							gui.memory.next = nextMemDirection+1;
+						}
+						gui.updateValuesTable();
+						gui.updateMemoryTable();
+						return null;
+					}
+				case DB:
+					Token valueToken1 = iter.next();
+					if (valueToken1.type != TokenType.VALUE) {
+						gui.log("Not a valid value!");
+					} else {
+						int nextMemDirection = gui.memory.getNextAvailableMemoryDirection();
+						System.out.println(nextMemDirection);
+						values.add(new Value("", nextMemDirection));
+						gui.memory.getMemoryDirection(nextMemDirection).setContent(valueToken1.value.toUpperCase());
+						gui.memory.next = nextMemDirection+1;
+						while (iter.hasNext()) {
+							valueToken1 = iter.next();
+							nextMemDirection = gui.memory.getNextAvailableMemoryDirection();
+							values.add(new Value("", nextMemDirection));
+							gui.memory.getMemoryDirection(nextMemDirection).setContent(valueToken1.value.toUpperCase());
+							gui.memory.next = nextMemDirection+1;
 						}
 						gui.updateValuesTable();
 						gui.updateMemoryTable();
@@ -201,13 +244,19 @@ public class Runner {
 								load.addToken(registerToken);
 							}
 							Token addressToken = iter.next();
-							if (addressToken.getType() != TokenType.ADDRESS && addressToken.getType() != TokenType.NAME && addressToken.getType() != TokenType.VALUE) {
+							if (addressToken.getType() != TokenType.ADDRESS && addressToken.getType() != TokenType.NAME) {
 								addresslog();
 							} else {
 								load.addToken(addressToken);
 							}
+							int memDirection = -1;
+							if (addressToken.getType() == TokenType.NAME) {
+								memDirection = this.getValueDirection(addressToken.getValue());
+							} else if (addressToken.getType() == TokenType.ADDRESS) {
+								memDirection = Integer.parseInt(addressToken.getValue());
+							}
 							// TODO: check what type is address to get the correct content for all cases
-							String content = this.mem.getMemoryDirection(Integer.parseInt(addressToken.getValue())).getContent();
+							String content = this.mem.getMemoryDirection(memDirection).getContent();
 							this.register.getregs().put(registerToken.getValue(), content);
 							this.gui.updateRegisterTable();
 							instructions.add(load);

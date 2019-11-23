@@ -75,7 +75,7 @@ public class GUI extends javax.swing.JFrame {
 	public Object[][] constantsData = runner.constantsData();
 	public String[] columnNames = { "Direction", "Content" };
 	public String[] registerColumns = { "Register", "Content" };
-	public String[] valuesColumns = { "Name", "Content" };
+	public String[] valuesColumns = { "Name", "Direction" };
 	public String[] constantsColumns = { "Name", "Content" };
 	public JTable memoryTable = new JTable(memoryData, columnNames);
 	public JTable valuesTable = new JTable(valuesData, valuesColumns);
@@ -280,10 +280,10 @@ public class GUI extends javax.swing.JFrame {
 						e1.printStackTrace();
 					}
 					p = new Parser(fileContent);
+					int current = 0;
 					for (String s : p.getLines()) {
 						Converter converter = new Converter();
-						currentLine = runner.getCurrentInstruction();
-						String objectCode = runner.executeLine(runner.run(p.parseLine(currentLine))).toUpperCase();
+						String objectCode = runner.executeLine(runner.run(p.parseLine(current))).toUpperCase();
 						if (!objectCode.isEmpty()) {
 							try {
 								objectCodeDoc.insertString(objectCodeDoc.getLength(), objectCode + "\n", attrWHITE);
@@ -293,7 +293,7 @@ public class GUI extends javax.swing.JFrame {
 							}
 							log(converter.decimalToHex(currentLine).toUpperCase() + ": " + objectCode + ": " + p.getLine(currentLine) + "\n");
 						}
-						runner.setCurrentInstruction(currentLine+1);
+						current++;
 					}
 				}
 			}
@@ -525,7 +525,7 @@ public class GUI extends javax.swing.JFrame {
 		 ***************************************** */
 		
 		JScrollPane valuesScrollPane = new JScrollPane(valuesTable);
-		valuesScrollPane.setBounds(800, 480, 240, 400);
+		valuesScrollPane.setBounds(800, 480, 240, 175);
 		valuesTable.setEnabled(false);
 		valuesScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		valuesScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -536,7 +536,7 @@ public class GUI extends javax.swing.JFrame {
 		 ***************************************** */
 		
 		JScrollPane constantsScrollPane = new JScrollPane(constantsTable);
-		constantsScrollPane.setBounds(1040, 480, 240, 400);
+		constantsScrollPane.setBounds(1040, 480, 240, 175);
 		constantsTable.setEnabled(false);
 		constantsScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		constantsScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -558,6 +558,7 @@ public class GUI extends javax.swing.JFrame {
 		
 		JScrollPane objectCodeScrollPane = new JScrollPane(objectCodePane);
 		objectCodeScrollPane.setBounds(0, 160, 302, 456-136);
+		objectCodePane.setEditable(false);
 		objectCodeScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		objectCodeScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		objectCodeScrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Object Code"));
@@ -567,7 +568,8 @@ public class GUI extends javax.swing.JFrame {
 		 ***************************************** */
 		
 		JScrollPane consoleScrollPane = new JScrollPane(console);
-		consoleScrollPane.setBounds(0, 480, 800, 400);
+		consoleScrollPane.setBounds(0, 480, 800, 175);
+		console.setEditable(false);
 		consoleScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		consoleScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		consoleScrollPane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Console"));
@@ -642,7 +644,7 @@ public class GUI extends javax.swing.JFrame {
 		f.add(pcPointerPanel);
 		f.add(condPanel);
 		f.add(memoryScrollPane2);
-		f.setSize(1280, 1000);
+		f.setSize(1280, 720);
 		f.setLayout(null);
 		f.setVisible(true);
 

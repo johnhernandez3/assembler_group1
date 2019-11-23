@@ -156,15 +156,7 @@ public class Memory implements MemoryInterface {
 	}
 
 	public int getNextAvailableMemoryDirection() {
-		int result = next;
-		for (MemoryLocation d : this.directions) {
-			if (d.getContent().isEmpty()) {
-				return result;
-			} else {
-				result++;
-			}
-		}
-		return result;
+		return next;
 	}
 
 //	public String GetLastEvenbit() { 
