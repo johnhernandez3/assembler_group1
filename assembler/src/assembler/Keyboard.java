@@ -12,6 +12,9 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import assembler.Memory.MemoryLocation;
+import sun.misc.Queue;
+
 public class Keyboard extends JPanel {
 	/**
 	 * 
@@ -22,6 +25,64 @@ public class Keyboard extends JPanel {
 	private final JPanel keyboard = new JPanel();
 	private JButton b;
 	Converter c = new Converter();
+	
+	/*************************************
+	 * 			Buffer
+	 *************************************/
+	
+	public class Buffer {
+		private int front, rear , capacity;
+		private MemoryLocation buffer [];
+		
+		public Buffer (){
+			capacity = 2;
+			front = rear = 0;
+			buffer = new MemoryLocation[2];
+			
+		}
+		
+		public void enqueueBuffer(MemoryLocation memLoc){
+			if(capacity == rear){
+				System.out.println("Buffer is Full");
+				return;
+			}
+			else{
+				buffer[rear] = memLoc;
+				rear++;
+			}
+			return;
+		}
+		
+		public void dequeueBuffer(){
+			if(front == rear){
+				System.out.println("Buffer is Empty");
+				return;
+			}
+			else{
+				for (int i = 0; i < rear -1; i++) {
+					buffer[i] = buffer[i+1];
+				}
+				if (rear < capacity) {
+					buffer[rear] = null;
+				}
+				rear --;
+			}
+			return;
+		}
+		
+		public void displayBuffer(){
+			int i ;
+			if (front == rear) {
+				System.out.println("Buffer is Empty");
+				return;
+			}
+			for (i = front; i < rear; i++) {
+				System.out.println(buffer[i]);
+			}
+		}
+		
+	}
+	
 
 	//Declare Two Dim Array to hold keys
 	private static final String[][] key = {
@@ -34,12 +95,14 @@ public class Keyboard extends JPanel {
 	 * 										Keyboard
 	 *******************************************************************************************************/
 	//Focuses on Keyboard appearance
+	
 	public Keyboard() {
 
 		keyboard.setLayout(new GridBagLayout());
 		Insets zeroInset = new Insets(0, 0, 0, 0);
 		Font monospace = new Font(Font.MONOSPACED, Font.PLAIN, 12);
 
+		
 		JPanel pRow;
 		//JButton b;
 
