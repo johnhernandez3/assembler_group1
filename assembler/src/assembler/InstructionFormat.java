@@ -80,15 +80,15 @@ public class InstructionFormat {
 				str = "1111100000000000";
 			case 1:
 //				F1switch(a, b, c, d);
-				str = Formatted1(a, b, c, d);
+				str = Formatted1(a.toLowerCase(), b.toLowerCase(), c.toLowerCase(), d.toLowerCase());
 				break;
 			case 2:
 //				F2switch(a, b, c);
-				str = Formatted2(a, b, c);
+				str = Formatted2(a.toLowerCase(), b.toLowerCase(), c.toLowerCase());
 				break;
 			case 3:
 //				F3switch(a, b);
-				str = Formatted3(a, b);
+				str = Formatted3(a.toLowerCase(), b.toLowerCase());
 				break;
 			default:
 				break;
