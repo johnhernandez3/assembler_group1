@@ -27,10 +27,16 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 import assembler.IO2_SevenSegmentDisplay.SevenSegments;
 import assembler.IO3;
@@ -82,7 +88,9 @@ public class GUI extends javax.swing.JFrame {
 	public JTable constantsTable = new JTable(constantsData, constantsColumns);
 	public JTable table = new JTable(this.reg.regsData(), registerColumns);
 	public Converter conv = new Converter();
-	
+	public HashMap<String, Color> map = new HashMap<String, Color>();
+	public DocumentListener listener;
+	public InstructionSet opcodes = new InstructionSet();
 	public JPanel stackPointerPanel = new JPanel();
 	public JLabel spLabel = new JLabel(this.reg.sp);
 	public JPanel pcPointerPanel = new JPanel();
@@ -176,6 +184,67 @@ public class GUI extends javax.swing.JFrame {
 		attrWHITE = new SimpleAttributeSet();
 		menu = new JMenuBar();
 		runner = new Runner(this);
+		
+		for (String keyword : opcodes.getMap().keySet()) {
+			map.put(keyword, Color.ORANGE);
+			map.put(keyword.toUpperCase(), Color.ORANGE);
+		}
+		
+		listener = new DocumentListener() {
+	    	
+	    	private void highlight(StyledDocument styledDocument) throws BadLocationException {
+	    		StyledDocument document = textEditor.getStyledDocument();
+	            String text = document.getText(0, document.getLength());
+
+	            int startIndex;
+	            int start;
+
+	            StyleContext context = StyleContext.getDefaultStyleContext();
+
+	            Style styleDefault = context.getStyle(StyleContext.DEFAULT_STYLE);
+	            styledDocument.setCharacterAttributes(0, text.length(), styleDefault, true);
+
+	            for (String keyword : map.keySet()) {
+	                startIndex = 0;
+	                start = text.indexOf(keyword, startIndex);
+	                while (start >= 0) {
+	                	AttributeSet attr = context.addAttribute(context.getEmptySet(), StyleConstants.Foreground, map.get(keyword));
+	                    styledDocument.setCharacterAttributes(start, keyword.length(), attr, true);
+	                    startIndex += keyword.length();
+	                    start = text.indexOf(keyword, startIndex);
+	                }
+	            }
+	        }
+	    	
+	    	private void changeText() {
+                Runnable doChange = new Runnable() {
+                    @Override
+                    public void run() {
+                    	try {
+							highlight(textEditor.getStyledDocument());
+						} catch (BadLocationException e) {
+							e.printStackTrace();
+						}
+                    }
+                };
+                SwingUtilities.invokeLater(doChange);
+            }
+	    	
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				changeText();
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				changeText();
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {}
+	    };
+	    
+	    textEditor.getDocument().addDocumentListener(listener);
 		
 		/******************************************
 		 * 	File Upload
