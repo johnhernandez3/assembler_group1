@@ -71,8 +71,10 @@ public class GUI extends javax.swing.JFrame {
 	private JButton executeNext;
 	private JMenuItem openFileOpt;
 	private JMenuItem saveFileOpt;
-	private Runner runner = new Runner(this);;
+	private Runner runner = new Runner(this);
 	public Register reg = new Register(this);
+	public GUI g = this;
+	public Buffer buffer = new Buffer();
 	public InstructionFormat instructions = new InstructionFormat(this);
 	public HashMap<String,String> regs = reg.getregs();
 	public Memory memory = new Memory();
@@ -521,7 +523,7 @@ public class GUI extends javax.swing.JFrame {
 				if(memory.validate(memLoc) == true){
 					String memContent = memory.getMemoryDirection(memLoc).getContent();
 					SevenSegments ss = new SevenSegments();
-					//ss.turnOnSegment(bitOn(conv.hextoBin(memContent)));
+//					ss.turnOnSegment(ss.bitOn(conv.hextoBin(memContent)));
 					ss.launch();
 				}
 				//Comment 
@@ -533,7 +535,7 @@ public class GUI extends javax.swing.JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String memLocation = JOptionPane.showInputDialog(null,"Enter Memory Location:");
-				Keyboard ui = new Keyboard();
+				Keyboard ui = new Keyboard(g, Integer.parseInt(memLocation), buffer);
 				ui.launch();
 			}
 		});

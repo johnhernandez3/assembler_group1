@@ -26,63 +26,6 @@ public class Keyboard extends JPanel {
 	private JButton b;
 	Converter c = new Converter();
 	
-	/*************************************
-	 * 			Buffer
-	 *************************************/
-	
-	public class Buffer {
-		private int front, rear , capacity;
-		private MemoryLocation buffer [];
-		
-		public Buffer (){
-			capacity = 2;
-			front = rear = 0;
-			buffer = new MemoryLocation[2];
-			
-		}
-		
-		public void enqueueBuffer(MemoryLocation memLoc){
-			if(capacity == rear){
-				System.out.println("Buffer is Full");
-				return;
-			}
-			else{
-				buffer[rear] = memLoc;
-				rear++;
-			}
-			return;
-		}
-		
-		public void dequeueBuffer(){
-			if(front == rear){
-				System.out.println("Buffer is Empty");
-				return;
-			}
-			else{
-				for (int i = 0; i < rear -1; i++) {
-					buffer[i] = buffer[i+1];
-				}
-				if (rear < capacity) {
-					buffer[rear] = null;
-				}
-				rear --;
-			}
-			return;
-		}
-		
-		public void displayBuffer(){
-			int i ;
-			if (front == rear) {
-				System.out.println("Buffer is Empty");
-				return;
-			}
-			for (i = front; i < rear; i++) {
-				System.out.println(buffer[i]);
-			}
-		}
-		
-	}
-	
 
 	//Declare Two Dim Array to hold keys
 	private static final String[][] key = {
@@ -96,12 +39,11 @@ public class Keyboard extends JPanel {
 	 *******************************************************************************************************/
 	//Focuses on Keyboard appearance
 	
-	public Keyboard() {
+	public Keyboard(GUI gui, int memLocation, Buffer buffer) {
 
 		keyboard.setLayout(new GridBagLayout());
 		Insets zeroInset = new Insets(0, 0, 0, 0);
 		Font monospace = new Font(Font.MONOSPACED, Font.PLAIN, 12);
-
 		
 		JPanel pRow;
 		//JButton b;
@@ -134,7 +76,17 @@ public class Keyboard extends JPanel {
 						JButton btn = (JButton) e.getSource();
 						ArrayList<String> s = new ArrayList<String>();
 						s.add(btn.getText());
-						onButtonPress(s.get(0));
+						String hex = s.get(0);
+						String memContent = gui.memory.getMemoryDirection(memLocation).getContent();
+						if (buffer.buffer.size() == 4) {
+							gui.log("Keyboard buffer is full!\n");
+						} else if (memContent.length() < 2) {
+							gui.memory.getMemoryDirection(memLocation).setContent(memContent + hex);
+						} else {
+							buffer.enqueueBuffer(hex);
+						}
+						gui.updateMemoryTable();
+						onButtonPress(hex);
 						s.remove(0);
 					}
 					
@@ -178,9 +130,9 @@ public class Keyboard extends JPanel {
 	/**********************************************************************************************************************
 	 * 										Main
 	 ********************************************************************************************************************/
-	public static void main(String[] args) {
-		Keyboard ui = new Keyboard();
-		ui.launch();
-		
-	}
+//	public static void main(String[] args) {
+//		Keyboard ui = new Keyboard();
+//		ui.launch();
+//		
+//	}
 }

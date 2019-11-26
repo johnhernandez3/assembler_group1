@@ -244,7 +244,7 @@ public class Runner {
 								load.addToken(registerToken);
 							}
 							Token addressToken = iter.next();
-							if (addressToken.getType() != TokenType.ADDRESS && addressToken.getType() != TokenType.NAME) {
+							if (addressToken.getType() != TokenType.ADDRESS && addressToken.getType() != TokenType.NAME && addressToken.getType() != TokenType.VALUE) {
 								addresslog();
 							} else {
 								load.addToken(addressToken);
@@ -254,11 +254,17 @@ public class Runner {
 								memDirection = this.getValueDirection(addressToken.getValue());
 							} else if (addressToken.getType() == TokenType.ADDRESS) {
 								memDirection = Integer.parseInt(addressToken.getValue());
+							} else {
+								memDirection = Integer.parseInt(addressToken.getValue());
 							}
 							// TODO: check what type is address to get the correct content for all cases
-							String content = this.mem.getMemoryDirection(memDirection).getContent();
+							String content = gui.memory.getMemoryDirection(memDirection).getContent();
 							this.register.getregs().put(registerToken.getValue(), content);
 							this.gui.updateRegisterTable();
+							if (gui.buffer.buffer.size() >= 2) {
+								gui.memory.getMemoryDirection(memDirection).setContent(gui.buffer.dequeueBuffer() + gui.buffer.dequeueBuffer());
+								gui.updateMemoryTable();
+							}
 							instructions.add(load);
 							return load;
 						case "loadim":
