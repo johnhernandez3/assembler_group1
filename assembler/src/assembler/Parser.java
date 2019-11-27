@@ -56,6 +56,7 @@ public class Parser {
 			// WARNING: trimming every line might cause problems with syntax error handling
 			String s = scanner.nextLine().trim();
 			this.lines.add(s);
+//			System.out.println(s);
 //			System.out.println("Line " + c + ": " + s);
 //			c++;
 		}
@@ -104,7 +105,7 @@ public class Parser {
 		for (Token t : tokenList) {
 			if (t.type != TokenType.COMMENT) {
 				for (TokenRegex regex : tokenPatterns) {
-					Matcher match = match(regex.pattern, t.getValue());
+					Matcher match = match(regex.pattern, t.getValue().toLowerCase());
 					if (match != null) {
 						if (tokenList.size() > 1) {
 							if (this.getPrevTokenType(t, tokenList) == TokenType.JMP || this.getPrevTokenType(t, tokenList) == TokenType.ORIGIN) {

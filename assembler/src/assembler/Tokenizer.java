@@ -10,17 +10,26 @@ public class Tokenizer {
 	
 	public ArrayList<Token> getTokens(String source) {
 		ArrayList<Token> allTokens = new ArrayList<>();
+		String sourceLine = source;
 		int commentStart = source.indexOf("//");
 		int commentEnd = source.length();
-		if (-1 != commentStart) {
-			allTokens.add(new Token(TokenType.COMMENT, source.substring(commentStart, commentEnd).trim()));
-			source = source.substring(commentEnd);
-		}
-		String[] tokens = source.split(",|\\s");
-		for (String token : tokens) {
-			if (!token.equals("")) {
-				allTokens.add(new Token(TokenType.TOKEN, token.trim()));
+		if (commentStart != 0) {
+			String[] tokens = sourceLine.split(",|\\s");
+			for (String token : tokens) {
+				if (token.contains("//")) {
+					break;
+				}
+				if (!token.equals("")) {
+					allTokens.add(new Token(TokenType.TOKEN, token.trim()));
+				}
 			}
+			return allTokens;
+		}
+		if (-1 != commentStart) {
+			System.out.println("commentStart: " + commentStart);
+			allTokens.add(new Token(TokenType.COMMENT, source.substring(commentStart, commentEnd).trim()));
+			return allTokens;
+//			source = source.substring(commentEnd);
 		}
 		return allTokens;
 	}

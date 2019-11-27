@@ -724,7 +724,7 @@ public class GUI extends javax.swing.JFrame {
 	
 	public void log(String s) {
 		try {
-			console.getStyledDocument().insertString(console.getStyledDocument().getLength(), s, attrWHITE);
+			console.getStyledDocument().insertString(console.getStyledDocument().getLength(), s + "\n", attrWHITE);
 		} catch (BadLocationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

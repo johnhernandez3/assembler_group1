@@ -145,21 +145,28 @@ public class Runner {
 		Iterator<Token> iter = tokens.iterator();
 		while (iter.hasNext()) {
 			Token currentToken = iter.next();
+			System.out.println(tokens);
 			switch (currentToken.getType()) {
+				case COMMENT:
+					gui.log("Comment: " + currentToken.getValue());
+					break;
 				case ORIGIN:
 					Token originAddressToken = iter.next();
+					System.out.println(originAddressToken.getType());
 					if (originAddressToken.getType() != TokenType.ADDRESS) {
 						gui.log("Origin address error");
-						gui.updateMemoryTable();
 						return null;
 					} else if (originAddressToken.getType() == TokenType.NAME) {
 						int memLocation = this.getValueDirection(originAddressToken.getValue());
 						gui.memory.setNextDirection(memLocation);
 						gui.updateMemoryTable();
+						gui.log("Origin set at " + memLocation + ".");
 						return null;
 					} else {
-						gui.memory.setNextDirection(Integer.parseInt(originAddressToken.getValue()));
+						int memLocation = Integer.parseInt(originAddressToken.getValue());
+						gui.memory.setNextDirection(memLocation);
 						gui.updateMemoryTable();
+						gui.log("Origin set at " + memLocation + ".");
 						return null;
 					}
 				case CONST:
@@ -238,31 +245,31 @@ public class Runner {
 					switch (currentToken.getValue().toLowerCase()) {
 						case "load":
 							opcodes = new InstructionSet();
-							Instruction load = opcodes.getInstruction(currentToken.getValue());
+							Instruction load = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							load.addToken(currentToken);
 							Token registerToken = iter.next();
 							if (registerToken.getType() != TokenType.REGISTER) {
-								reglog();
+								gui.log("SYNTAX ERROR IN LINE " + (gui.currentLine + 1));
+								return null;
 							} else {
 								load.addToken(registerToken);
 							}
 							Token addressToken = iter.next();
 							if (addressToken.getType() != TokenType.ADDRESS && addressToken.getType() != TokenType.NAME && addressToken.getType() != TokenType.VALUE) {
-								addresslog();
+								gui.log("SYNTAX ERROR IN LINE " + (gui.currentLine + 1));
+								return null;
 							} else {
 								load.addToken(addressToken);
 							}
 							int memDirection = -1;
 							if (addressToken.getType() == TokenType.NAME) {
 								memDirection = this.getValueDirection(addressToken.getValue());
-							} else if (addressToken.getType() == TokenType.ADDRESS) {
-								memDirection = Integer.parseInt(addressToken.getValue());
 							} else {
 								memDirection = Integer.parseInt(addressToken.getValue());
 							}
 							// TODO: check what type is address to get the correct content for all cases
 							String content = gui.memory.getMemoryDirection(memDirection).getContent();
-							this.register.getregs().put(registerToken.getValue(), content);
+							this.register.getregs().put(registerToken.getValue().toLowerCase(), content);
 							this.gui.updateRegisterTable();
 							if (gui.buffer.buffer.size() >= 2) {
 								gui.memory.getMemoryDirection(memDirection).setContent(gui.buffer.dequeueBuffer() + gui.buffer.dequeueBuffer());
@@ -272,7 +279,7 @@ public class Runner {
 							return load;
 						case "loadim":
 							opcodes = new InstructionSet();
-							Instruction loadim = opcodes.getInstruction(currentToken.getValue());
+							Instruction loadim = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							loadim.addToken(currentToken);
 							Token registerToken1 = iter.next();
 							if (registerToken1.getType() != TokenType.REGISTER) {
@@ -287,13 +294,13 @@ public class Runner {
 								loadim.addToken(constantToken);
 							}
 							// TODO: check constant type to get the correct content for all cases
-							this.register.getregs().put(registerToken1.getValue(), constantToken.getValue().replaceAll("#", ""));
+							this.register.getregs().put(registerToken1.getValue().toLowerCase(), constantToken.getValue().replaceAll("#", ""));
 							this.gui.updateRegisterTable();
 							instructions.add(loadim);
 							return loadim;
 						case "pop":
 							opcodes = new InstructionSet();
-							Instruction pop = opcodes.getInstruction(currentToken.getValue());
+							Instruction pop = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							pop.addToken(currentToken);
 							Token registerToken2 = iter.next();
 							if (registerToken2.getType() != TokenType.REGISTER) {
@@ -302,7 +309,7 @@ public class Runner {
 								pop.addToken(registerToken2);
 							}
 							// TODO: check if the register is r0 to throw error if it is
-							this.register.getregs().put(registerToken2.getValue(), this.mem.getMemoryDirection(Integer.parseInt(this.register.sp, 16)).getContent());
+							this.register.getregs().put(registerToken2.getValue().toLowerCase(), this.mem.getMemoryDirection(Integer.parseInt(this.register.sp, 16)).getContent());
 							// TODO: increment SP by 1 (SP = SP + 1)
 							// TODO: update SP in GUI
 							this.gui.updateRegisterTable();
@@ -310,7 +317,7 @@ public class Runner {
 							return pop;
 						case "store":
 							opcodes = new InstructionSet();
-							Instruction store = opcodes.getInstruction(currentToken.getValue());
+							Instruction store = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							store.addToken(currentToken);
 							Token registerToken3 = iter.next();
 							if (registerToken3.getType() != TokenType.REGISTER) {
@@ -325,13 +332,13 @@ public class Runner {
 								store.addToken(addressToken1);
 							}
 							// TODO: check what type is address to get the correct content for all cases
- 							this.mem.getMemoryDirection(Integer.parseInt(addressToken1.getValue())).setContent(this.register.getregs().get(registerToken3.getValue()));
+ 							this.mem.getMemoryDirection(Integer.parseInt(addressToken1.getValue())).setContent(this.register.getregs().get(registerToken3.getValue().toLowerCase()));
  							gui.updateMemoryTable();
  							instructions.add(store);
  							return store;
 						case "push":
 							opcodes = new InstructionSet();
-							Instruction push = opcodes.getInstruction(currentToken.getValue());
+							Instruction push = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							push.addToken(currentToken);
 							Token registerToken4 = iter.next();
 							if (registerToken4.getType() != TokenType.REGISTER) {
@@ -341,13 +348,13 @@ public class Runner {
 							}
 							// TODO: decrement SP by 1 (SP = SP - 1)
 							// TODO: update SP in GUI
-							this.mem.getMemoryDirection(Integer.parseInt(this.register.sp, 16)).setContent(this.register.getregs().get(registerToken4.getValue()));
+							this.mem.getMemoryDirection(Integer.parseInt(this.register.sp, 16)).setContent(this.register.getregs().get(registerToken4.getValue().toLowerCase()));
 							gui.updateMemoryTable();
 							instructions.add(push);
 							return push;
 						case "loadrind":
 							opcodes = new InstructionSet();
-							Instruction loadrind = opcodes.getInstruction(currentToken.getValue());
+							Instruction loadrind = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							loadrind.addToken(currentToken);
 							Token registerToken5 = iter.next();
 							if (registerToken5.getType() != TokenType.REGISTER) {
@@ -361,13 +368,13 @@ public class Runner {
 							} else {
 								loadrind.addToken(registerToken6);
 							}
-							this.register.getregs().put(registerToken5.getValue(), this.mem.getMemoryDirection(Integer.parseInt(this.register.getregs().get(registerToken6.getValue()), 16)).getContent());
+							this.register.getregs().put(registerToken5.getValue().toLowerCase(), this.mem.getMemoryDirection(Integer.parseInt(this.register.getregs().get(registerToken6.getValue().toLowerCase()), 16)).getContent());
 							gui.updateRegisterTable();
 							instructions.add(loadrind);
 							return loadrind;
 						case "storerind":
 							opcodes = new InstructionSet();
-							Instruction storerind = opcodes.getInstruction(currentToken.getValue());
+							Instruction storerind = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							storerind.addToken(currentToken);
 							Token registerToken7 = iter.next();
 							if (registerToken7.getType() != TokenType.REGISTER) {
@@ -381,13 +388,13 @@ public class Runner {
 							} else {
 								storerind.addToken(registerToken8);
 							}
-							this.register.getregs().put(registerToken8.getValue(), this.mem.getMemoryDirection(Integer.parseInt(this.register.getregs().get(registerToken7.getValue()), 16)).getContent());
+							this.register.getregs().put(registerToken8.getValue().toLowerCase(), this.mem.getMemoryDirection(Integer.parseInt(this.register.getregs().get(registerToken7.getValue().toLowerCase()), 16)).getContent());
 							gui.updateRegisterTable();
 							instructions.add(storerind);
 							return storerind;
 						case "add":
 							opcodes = new InstructionSet();
-							Instruction add = opcodes.getInstruction(currentToken.getValue());
+							Instruction add = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							add.addToken(currentToken);
 							Token registerToken9 = iter.next();
 							if (registerToken9.getType() != TokenType.REGISTER) {
@@ -407,13 +414,13 @@ public class Runner {
 							} else {
 								add.addToken(registerToken11);
 							}
-							this.register.add(registerToken9.getValue(), registerToken10.getValue(), registerToken11.getValue());
+							this.register.add(registerToken9.getValue().toLowerCase(), registerToken10.getValue().toLowerCase(), registerToken11.getValue().toLowerCase());
 							gui.updateRegisterTable();
 							instructions.add(add);
 							return add;
 						case "sub":
 							opcodes = new InstructionSet();
-							Instruction sub = opcodes.getInstruction(currentToken.getValue());
+							Instruction sub = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							sub.addToken(currentToken);
 							Token registerToken12 = iter.next();
 							if (registerToken12.getType() != TokenType.REGISTER) {
@@ -433,13 +440,13 @@ public class Runner {
 							} else {
 								sub.addToken(registerToken14);
 							}
-							this.register.sub(registerToken12.getValue(), registerToken13.getValue(), registerToken14.getValue());
+							this.register.sub(registerToken12.getValue().toLowerCase(), registerToken13.getValue().toLowerCase(), registerToken14.getValue().toLowerCase());
 							gui.updateRegisterTable();
 							instructions.add(sub);
 							return sub;
 						case "addim":
 							opcodes = new InstructionSet();
-							Instruction addim = opcodes.getInstruction(currentToken.getValue());
+							Instruction addim = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							addim.addToken(currentToken);
 							Token registerToken15 = iter.next();
 							if (registerToken15.getType() != TokenType.REGISTER) {
@@ -453,13 +460,13 @@ public class Runner {
 							} else {
 								addim.addToken(constantToken1);
 							}
-							this.register.add(registerToken15.getValue(), registerToken15.getValue(), constantToken1.getValue());
+							this.register.add(registerToken15.getValue().toLowerCase(), registerToken15.getValue().toLowerCase(), constantToken1.getValue());
 							gui.updateRegisterTable();
 							instructions.add(addim);
 							return addim;
 						case "subim":
 							opcodes = new InstructionSet();
-							Instruction subim = opcodes.getInstruction(currentToken.getValue());
+							Instruction subim = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							subim.addToken(currentToken);
 							Token registerToken16 = iter.next();
 							if (registerToken16.getType() != TokenType.REGISTER) {
@@ -473,13 +480,13 @@ public class Runner {
 							} else {
 								subim.addToken(constantToken2);
 							}
-							this.register.sub(registerToken16.getValue(), registerToken16.getValue(), constantToken2.getValue());
+							this.register.sub(registerToken16.getValue().toLowerCase(), registerToken16.getValue().toLowerCase(), constantToken2.getValue());
 							gui.updateRegisterTable();
 							instructions.add(subim);
 							return subim;
 						case "and":
 							opcodes = new InstructionSet();
-							Instruction and = opcodes.getInstruction(currentToken.getValue());
+							Instruction and = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							and.addToken(currentToken);
 							Token registerToken17 = iter.next();
 							if (registerToken17.getType() != TokenType.REGISTER) {
@@ -499,13 +506,13 @@ public class Runner {
 							} else {
 								and.addToken(registerToken19);
 							}
-							this.register.and(registerToken17.getValue(), registerToken18.getValue(), registerToken19.getValue());
+							this.register.and(registerToken17.getValue().toLowerCase(), registerToken18.getValue().toLowerCase(), registerToken19.getValue().toLowerCase());
 							gui.updateRegisterTable();
 							instructions.add(and);
 							return and;
 						case "or":
 							opcodes = new InstructionSet();
-							Instruction or = opcodes.getInstruction(currentToken.getValue());
+							Instruction or = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							or.addToken(currentToken);
 							Token registerToken20 = iter.next();
 							if (registerToken20.getType() != TokenType.REGISTER) {
@@ -525,13 +532,13 @@ public class Runner {
 							} else {
 								or.addToken(registerToken22);
 							}
-							this.register.or(registerToken20.getValue(), registerToken21.getValue(), registerToken22.getValue());
+							this.register.or(registerToken20.getValue().toLowerCase(), registerToken21.getValue().toLowerCase(), registerToken22.getValue().toLowerCase());
 							gui.updateRegisterTable();
 							instructions.add(or);
 							return or;
 						case "xor":
 							opcodes = new InstructionSet();
-							Instruction xor = opcodes.getInstruction(currentToken.getValue());
+							Instruction xor = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							xor.addToken(currentToken);
 							Token registerToken23 = iter.next();
 							if (registerToken23.getType() != TokenType.REGISTER) {
@@ -551,13 +558,13 @@ public class Runner {
 							} else {
 								xor.addToken(registerToken25);
 							}
-							this.register.xor(registerToken23.getValue(), registerToken24.getValue(), registerToken25.getValue());
+							this.register.xor(registerToken23.getValue().toLowerCase(), registerToken24.getValue().toLowerCase(), registerToken25.getValue().toLowerCase());
 							gui.updateRegisterTable();
 							instructions.add(xor);
 							return xor;
 						case "not":
 							opcodes = new InstructionSet();
-							Instruction not = opcodes.getInstruction(currentToken.getValue());
+							Instruction not = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							not.addToken(currentToken);
 							Token registerToken26 = iter.next();
 							if (registerToken26.getType() != TokenType.REGISTER) {
@@ -571,13 +578,13 @@ public class Runner {
 							} else {
 								not.addToken(registerToken27);
 							}
-							this.register.not(registerToken26.getValue(), registerToken27.getValue());
+							this.register.not(registerToken26.getValue().toLowerCase(), registerToken27.getValue().toLowerCase());
 							gui.updateRegisterTable();
 							instructions.add(not);
 							return not;
 						case "neg":
 							opcodes = new InstructionSet();
-							Instruction neg = opcodes.getInstruction(currentToken.getValue());
+							Instruction neg = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							neg.addToken(currentToken);
 							Token registerToken28 = iter.next();
 							if (registerToken28.getType() != TokenType.REGISTER) {
@@ -591,13 +598,13 @@ public class Runner {
 							} else {
 								neg.addToken(registerToken29);
 							}
-							this.register.neg(registerToken28.getValue(), registerToken29.getValue());
+							this.register.neg(registerToken28.getValue().toLowerCase(), registerToken29.getValue().toLowerCase());
 							gui.updateRegisterTable();
 							instructions.add(neg);
 							return neg;
 						case "shiftr":
 							opcodes = new InstructionSet();
-							Instruction shiftr = opcodes.getInstruction(currentToken.getValue());
+							Instruction shiftr = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							shiftr.addToken(currentToken);
 							Token registerToken30 = iter.next();
 							if (registerToken30.getType() != TokenType.REGISTER) {
@@ -617,13 +624,13 @@ public class Runner {
 							} else {
 								shiftr.addToken(registerToken32);
 							}
-							this.register.shiftr(registerToken30.getValue(), registerToken31.getValue(), registerToken32.getValue());
+							this.register.shiftr(registerToken30.getValue().toLowerCase(), registerToken31.getValue().toLowerCase(), registerToken32.getValue().toLowerCase());
 							gui.updateRegisterTable();
 							instructions.add(shiftr);
 							return shiftr;
 						case "shiftl":
 							opcodes = new InstructionSet();
-							Instruction shiftl = opcodes.getInstruction(currentToken.getValue());
+							Instruction shiftl = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							shiftl.addToken(currentToken);
 							Token registerToken33 = iter.next();
 							if (registerToken33.getType() != TokenType.REGISTER) {
@@ -643,13 +650,13 @@ public class Runner {
 							} else {
 								shiftl.addToken(registerToken35);
 							}
-							this.register.shiftl(registerToken33.getValue(), registerToken34.getValue(), registerToken35.getValue());
+							this.register.shiftl(registerToken33.getValue().toLowerCase(), registerToken34.getValue().toLowerCase(), registerToken35.getValue().toLowerCase());
 							gui.updateRegisterTable();
 							instructions.add(shiftl);
 							return shiftl;
 						case "rotar":
 							opcodes = new InstructionSet();
-							Instruction rotar = opcodes.getInstruction(currentToken.getValue());
+							Instruction rotar = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							rotar.addToken(currentToken);
 							Token registerToken36 = iter.next();
 							if (registerToken36.getType() != TokenType.REGISTER) {
@@ -669,13 +676,13 @@ public class Runner {
 							} else {
 								rotar.addToken(registerToken38);
 							}
-							this.register.rotar(registerToken36.getValue(), registerToken37.getValue(), registerToken38.getValue());
+							this.register.rotar(registerToken36.getValue().toLowerCase(), registerToken37.getValue().toLowerCase(), registerToken38.getValue().toLowerCase());
 							gui.updateRegisterTable();
 							instructions.add(rotar);
 							return rotar;
 						case "rotal":
 							opcodes = new InstructionSet();
-							Instruction rotal = opcodes.getInstruction(currentToken.getValue());
+							Instruction rotal = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							rotal.addToken(currentToken);
 							Token registerToken39 = iter.next();
 							if (registerToken39.getType() != TokenType.REGISTER) {
@@ -695,13 +702,13 @@ public class Runner {
 							} else {
 								rotal.addToken(registerToken41);
 							}
-							this.register.rotal(registerToken39.getValue(), registerToken40.getValue(), registerToken41.getValue());
+							this.register.rotal(registerToken39.getValue().toLowerCase(), registerToken40.getValue().toLowerCase(), registerToken41.getValue().toLowerCase());
 							gui.updateRegisterTable();
 							instructions.add(rotal);
 							return rotal;
 						case "jmprind":
 							opcodes = new InstructionSet();
-							Instruction jmprind = opcodes.getInstruction(currentToken.getValue());
+							Instruction jmprind = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							jmprind.addToken(currentToken);
 							Token registerToken42 = iter.next();
 							if (registerToken42.getType() != TokenType.REGISTER) {
@@ -709,13 +716,13 @@ public class Runner {
 							} else {
 								jmprind.addToken(registerToken42);
 							}
-							this.register.jmprind(registerToken42.getValue());
+							this.register.jmprind(registerToken42.getValue().toLowerCase());
 							gui.updateRegisterTable();
 							instructions.add(jmprind);
 							return jmprind;
 						case "jmpaddr":
 							opcodes = new InstructionSet();
-							Instruction jmpaddr = opcodes.getInstruction(currentToken.getValue());
+							Instruction jmpaddr = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							jmpaddr.addToken(currentToken);
 							Token addressToken2 = iter.next();
 							if (addressToken2.getType() != TokenType.ADDRESS && addressToken2.getType() != TokenType.NAME && addressToken2.getType() != TokenType.VALUE) {
@@ -730,7 +737,7 @@ public class Runner {
 							return jmpaddr;
 						case "jcondrin":
 							opcodes = new InstructionSet();
-							Instruction jcondrin = opcodes.getInstruction(currentToken.getValue());
+							Instruction jcondrin = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							jcondrin.addToken(currentToken);
 							Token registerToken43 = iter.next();
 							if (registerToken43.getType() != TokenType.REGISTER) {
@@ -738,13 +745,13 @@ public class Runner {
 							} else {
 								jcondrin.addToken(registerToken43);
 							}
-							this.register.jcondrin(this.register.cond, registerToken43.getValue());
+							this.register.jcondrin(this.register.cond, registerToken43.getValue().toLowerCase());
 							gui.updateRegisterTable();
 							instructions.add(jcondrin);
 							return jcondrin;
 						case "jcondaddr":
 							opcodes = new InstructionSet();
-							Instruction jcondaddr = opcodes.getInstruction(currentToken.getValue());
+							Instruction jcondaddr = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							jcondaddr.addToken(currentToken);
 							Token addressToken3 = iter.next();
 							if (addressToken3.getType() != TokenType.ADDRESS && addressToken3.getType() != TokenType.NAME && addressToken3.getType() != TokenType.VALUE) {
@@ -759,7 +766,7 @@ public class Runner {
 							return jcondaddr;
 						case "loop":
 							opcodes = new InstructionSet();
-							Instruction loop = opcodes.getInstruction(currentToken.getValue());
+							Instruction loop = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							loop.addToken(currentToken);
 							Token registerToken44 = iter.next();
 							if (registerToken44.getType() != TokenType.REGISTER) {
@@ -774,13 +781,13 @@ public class Runner {
 								loop.addToken(addressToken4);
 							}
 							// TODO: check address type
-							this.register.loop(registerToken44.getValue(), addressToken4.getValue());
+							this.register.loop(registerToken44.getValue().toLowerCase(), addressToken4.getValue());
 							gui.updateRegisterTable();
 							instructions.add(loop);
 							return loop;
 						case "grt":
 							opcodes = new InstructionSet();
-							Instruction grt = opcodes.getInstruction(currentToken.getValue());
+							Instruction grt = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							grt.addToken(currentToken);
 							Token registerToken45 = iter.next();
 							if (registerToken45.getType() != TokenType.REGISTER) {
@@ -794,13 +801,13 @@ public class Runner {
 							} else {
 								grt.addToken(registerToken46);
 							}
-							this.register.cond = this.register.grt(registerToken45.getValue(), registerToken46.getValue());
+							this.register.cond = this.register.grt(registerToken45.getValue().toLowerCase(), registerToken46.getValue().toLowerCase());
 							gui.updateRegisterTable();
 							instructions.add(grt);
 							return grt;
 						case "grteq":
 							opcodes = new InstructionSet();
-							Instruction grteq = opcodes.getInstruction(currentToken.getValue());
+							Instruction grteq = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							grteq.addToken(currentToken);
 							Token registerToken47 = iter.next();
 							if (registerToken47.getType() != TokenType.REGISTER) {
@@ -814,13 +821,13 @@ public class Runner {
 							} else {
 								grteq.addToken(registerToken48);
 							}
-							this.register.cond = this.register.grteq(registerToken47.getValue(), registerToken48.getValue());
+							this.register.cond = this.register.grteq(registerToken47.getValue().toLowerCase(), registerToken48.getValue().toLowerCase());
 							gui.updateRegisterTable();
 							instructions.add(grteq);
 							return grteq;
 						case "eq":
 							opcodes = new InstructionSet();
-							Instruction eq = opcodes.getInstruction(currentToken.getValue());
+							Instruction eq = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							eq.addToken(currentToken);
 							Token registerToken49 = iter.next();
 							if (registerToken49.getType() != TokenType.REGISTER) {
@@ -834,13 +841,13 @@ public class Runner {
 							} else {
 								eq.addToken(registerToken50);
 							}
-							this.register.cond = this.register.eq(registerToken49.getValue(), registerToken50.getValue());
+							this.register.cond = this.register.eq(registerToken49.getValue().toLowerCase(), registerToken50.getValue().toLowerCase());
 							gui.updateRegisterTable();
 							instructions.add(eq);
 							return eq;
 						case "neq":
 							opcodes = new InstructionSet();
-							Instruction neq = opcodes.getInstruction(currentToken.getValue());
+							Instruction neq = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							neq.addToken(currentToken);
 							Token registerToken51 = iter.next();
 							if (registerToken51.getType() != TokenType.REGISTER) {
@@ -854,19 +861,19 @@ public class Runner {
 							} else {
 								neq.addToken(registerToken52);
 							}
-							this.register.cond = this.register.neq(registerToken51.getValue(), registerToken52.getValue());
+							this.register.cond = this.register.neq(registerToken51.getValue().toLowerCase(), registerToken52.getValue().toLowerCase());
 							gui.updateRegisterTable();
 							instructions.add(neq);
 							return neq;
 						case "nop":
 							opcodes = new InstructionSet();
-							Instruction nop = opcodes.getInstruction(currentToken.getValue());
+							Instruction nop = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							nop.addToken(currentToken);
 							instructions.add(nop);
 							return nop;
 						case "call":
 							opcodes = new InstructionSet();
-							Instruction call = opcodes.getInstruction(currentToken.getValue());
+							Instruction call = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							call.addToken(currentToken);
 							Token addressToken5 = iter.next();
 							if (addressToken5.getType() != TokenType.ADDRESS && addressToken5.getType() != TokenType.NAME && addressToken5.getType() != TokenType.VALUE) {
@@ -882,18 +889,18 @@ public class Runner {
 							return call;
 						case "return":
 							opcodes = new InstructionSet();
-							Instruction r = opcodes.getInstruction(currentToken.getValue());
+							Instruction r = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							r.addToken(currentToken);
 							this.register.ret();
 							gui.updateRegisterTable();
 							instructions.add(r);
 							return r;
 						default:
-							oplog();
+//							oplog();
 							break;
 					}
 				default:
-					gui.log("Not valid tokens!");
+//					gui.log("Not valid tokens!");
 					break;
 			}
 		}
@@ -929,7 +936,7 @@ public class Runner {
 	
 //	Small helper methods
 	public void reglog() {
-		gui.log("Not a valid register!\n");
+		gui.log("Not a valid register!");
 	}
 	
 	public void addresslog() {
