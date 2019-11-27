@@ -356,6 +356,9 @@ public class GUI extends javax.swing.JFrame {
 						e1.printStackTrace();
 					}
 					p = new Parser(fileContent);
+					for (int i = 0; i < p.getLines().size(); i++) {
+						runner.firstRun(p.parseLine(i), i);
+					}
 					int current = 0;
 					for (String s : p.getLines()) {
 						Converter converter = new Converter();

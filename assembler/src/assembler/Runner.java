@@ -509,6 +509,14 @@ public class Runner {
 								store.addToken(addressToken1);
 							}
 							// TODO: check what type is address to get the correct content for all cases
+							if (addressToken1.getType() == TokenType.NAME) {
+								int direction = this.getValueDirection(addressToken1.getValue());
+								this.mem.getMemoryDirection(direction).setContent(this.register.getregs().get(registerToken3.getValue().toLowerCase()));
+	 							gui.updateMemoryTable();
+	 							instructions.add(store);
+	 							return store;
+	 							
+							}
  							this.mem.getMemoryDirection(Integer.parseInt(addressToken1.getValue())).setContent(this.register.getregs().get(registerToken3.getValue().toLowerCase()));
  							gui.updateMemoryTable();
  							instructions.add(store);
