@@ -29,8 +29,8 @@ public class Converter {
 		
 		String result = "";
 //		System.out.println("str: " + str);
-		for (int i = 0; i < str.length(); i++) {
-			int h = hex.indexOf(str.charAt(i));
+		for (int i = 0; i < str.length(); i++) { 
+			int h = hex.indexOf(str.charAt(i));	
 			if (h < 10) {
 				String binary09 = ("0000" + Integer.toBinaryString(h)).substring(Integer.toBinaryString(h).length());
 //				System.out.println("binary09: " + binary09 + "hex: " + h);
@@ -73,5 +73,14 @@ public class Converter {
 		String result = "";
 		result = ("000" + Integer.toHexString(decimal)).substring(Integer.toHexString(decimal).length());
 		return result;
+	}
+	
+	//Cristian please help confirmed this is safe
+	
+	public String hexToBin2(String hex){
+		String bin = Integer.toBinaryString(Integer.parseInt(hex, 16));
+		String s1 = String.format("%8s", bin).replace(' ', '0');
+		return s1;
+		
 	}
 }

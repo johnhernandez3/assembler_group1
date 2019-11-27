@@ -7,6 +7,7 @@ import java.util.ArrayList;
  *************************************/
 
 public class Buffer {
+	Converter conv = new Converter();
 	private int front, rear , capacity;
 	public ArrayList<String> buffer;
 	
@@ -23,7 +24,7 @@ public class Buffer {
 			return;
 		}
 		else{
-			buffer.add(memLoc);
+			buffer.add(conv.hexToBin2(memLoc));
 			System.out.println("Added to buffer: " + memLoc);
 //			rear++;
 		}

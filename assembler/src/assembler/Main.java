@@ -9,9 +9,10 @@ public class Main {
 	public static String input;
 	
 	public static void main(String[] args) {
-	   
+	   Converter conv = new Converter();
 	    GUI gui = new GUI();
 	    gui.buildGUI();
+	   // System.out.println(conv.hexToBin2("A"));
 	    
 //	    scanner = new Scanner(System.in);
 //		
