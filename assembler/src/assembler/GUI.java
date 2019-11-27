@@ -522,10 +522,10 @@ public class GUI extends javax.swing.JFrame {
 				int memLoc = Integer.parseInt(memLocation);
 				if(memory.validate(memLoc) == true){
 					String memContent = memory.getMemoryDirection(memLoc).getContent();
-					SevenSegments ss = new SevenSegments();
+					SevenSegments ss = new SevenSegments(g);
 					IO2_SevenSegmentDisplay io = new IO2_SevenSegmentDisplay();
-					ss.turnOnSegment(io.bitOn(conv.hextoBin(memContent)));
 					ss.launch();
+					ss.turnOnSegment(io.bitOn(conv.hextoBin(memContent)));
 				}
 				//Comment 
 			

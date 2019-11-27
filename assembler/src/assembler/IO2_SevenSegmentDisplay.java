@@ -7,8 +7,8 @@ import java.awt.*;
 public class IO2_SevenSegmentDisplay {
 	
 	private static Converter conv = new Converter();
-	static String inst = "10101011";
-	private static SevenSegments ss = new SevenSegments();
+//	static String inst = "10101011";
+//	private static SevenSegments ss = new SevenSegments();
 	private final JFrame f = new JFrame("Seven Segment Display");
 //	public static void main(String[] args) throws InterruptedException {
 //		
@@ -20,9 +20,9 @@ public class IO2_SevenSegmentDisplay {
 ////		ss.turnOnSegment(bitOn(inst));
 //	}
 	
-	public SevenSegments getSevenSegments() {
-		return ss;
-	}
+//	public SevenSegments getSevenSegments() {
+//		return ss;
+//	}
 	
 	public static void bitDivid(String s) throws InterruptedException {
 		String str = conv.hextoBin(s);
@@ -79,8 +79,9 @@ public class IO2_SevenSegmentDisplay {
 		Color Greene2;
 		Color Greenf2;
 		Color Greeng2;
+		GUI gui;
 		
-		SevenSegments() {
+		SevenSegments(GUI gui) {
 			this.Greena = Color.BLACK;
 			this.Greenb = Color.BLACK;
 			this.Greenc = Color.BLACK;
@@ -95,6 +96,7 @@ public class IO2_SevenSegmentDisplay {
 			this.Greene2 = Color.BLACK;
 			this.Greenf2 = Color.BLACK;
 			this.Greeng2 = Color.BLACK;
+			this.gui = gui;
 		}
 		
 		@Override
@@ -114,8 +116,8 @@ public class IO2_SevenSegmentDisplay {
 					this.segmentLight2(i);
 				}
 			}
-			revalidate();
 			repaint();
+			revalidate();
 		}
 
 		private void segmentLight(int i) {
@@ -249,7 +251,7 @@ public class IO2_SevenSegmentDisplay {
 			
 		}
 		public void launch() {
-			f.add(ss);
+			f.add(this);
 			f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 			f.pack();
 			f.setSize(250,300);
