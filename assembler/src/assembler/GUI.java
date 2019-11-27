@@ -556,7 +556,12 @@ public class GUI extends javax.swing.JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String memLocation = JOptionPane.showInputDialog(null,"Enter Memory Location:");
 				IO3.ASCII convert = new IO3.ASCII();
-				convert.launch();
+				int memLoc = Integer.parseInt(memLocation);
+				if(memory.validate(memLoc) == true) {
+					String memContent = memory.getMemoryDirection(memLoc).getContent();
+					
+					convert.launch();
+				}
 			}
 		});
 		
