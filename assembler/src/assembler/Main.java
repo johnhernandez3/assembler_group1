@@ -12,6 +12,7 @@ public class Main {
 	   Converter conv = new Converter();
 	    GUI gui = new GUI();
 	    gui.buildGUI();
+	    
 	   // System.out.println(conv.hexToBin2("A"));
 	    
 //	    scanner = new Scanner(System.in);

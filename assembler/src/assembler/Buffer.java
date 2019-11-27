@@ -47,8 +47,9 @@ public class Buffer {
 //		}
 		String result = "";
 		result = buffer.remove(0);
+		String newResult = '1' + result.substring(1, 8);
 //		System.out.println("dequeued: " + result);
-		return result;
+		return newResult;
 	}
 	
 	public void displayBuffer(){
