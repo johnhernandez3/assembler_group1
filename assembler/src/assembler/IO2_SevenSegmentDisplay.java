@@ -10,15 +10,15 @@ public class IO2_SevenSegmentDisplay {
 	static String inst = "10101011";
 	private static SevenSegments ss = new SevenSegments();
 	private final JFrame f = new JFrame("Seven Segment Display");
-	public static void main(String[] args) throws InterruptedException {
-		
-		JFrame frame = initFrame();
-		SevenSegments ss = new SevenSegments();
-		
-		frame.add(ss);
-		
-		ss.turnOnSegment(bitOn(inst));
-	}
+//	public static void main(String[] args) throws InterruptedException {
+//		
+//		JFrame frame = initFrame();
+//		SevenSegments ss = new SevenSegments();
+//		
+//		frame.add(ss);
+//		
+////		ss.turnOnSegment(bitOn(inst));
+//	}
 	
 	public SevenSegments getSevenSegments() {
 		return ss;
@@ -26,11 +26,11 @@ public class IO2_SevenSegmentDisplay {
 	
 	public static void bitDivid(String s) throws InterruptedException {
 		String str = conv.hextoBin(s);
-		ss.turnOnSegment(bitOn(str));
+//		ss.turnOnSegment(bitOn(str));
 	}
 	
-	private static boolean[] bitOn(String s) {
-		boolean[] bool = new boolean[8];
+	public boolean[] bitOn(String s) {
+		boolean[] bool = new boolean[s.length()];
 		for(int i = 0; i < s.length(); i++) {
 			if(s.charAt(i) == '1') {
 				bool[i] = true;
@@ -103,7 +103,7 @@ public class IO2_SevenSegmentDisplay {
 			segmentLights2(g);
 		}
 
-		public void turnOnSegment(boolean[] bool) throws InterruptedException {
+		public void turnOnSegment(boolean[] bool) {
 			for(int i = 0; i < bool.length - 1; i++) {
 				if(!bool[bool.length - 1]) {
 					if(bool[i])
@@ -115,6 +115,7 @@ public class IO2_SevenSegmentDisplay {
 				}
 			}
 			revalidate();
+			repaint();
 		}
 
 		private void segmentLight(int i) {

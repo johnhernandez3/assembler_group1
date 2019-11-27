@@ -362,7 +362,7 @@ public class GUI extends javax.swing.JFrame {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
-							log(converter.decimalToHex(currentLine).toUpperCase() + ": " + objectCode + ": " + p.getLine(currentLine) + "\n");
+							log(converter.decimalToHex(currentLine).toUpperCase() + ": " + objectCode + ": " + s + "\n");
 						}
 						current++;
 					}
@@ -523,7 +523,8 @@ public class GUI extends javax.swing.JFrame {
 				if(memory.validate(memLoc) == true){
 					String memContent = memory.getMemoryDirection(memLoc).getContent();
 					SevenSegments ss = new SevenSegments();
-//					ss.turnOnSegment(ss.bitOn(conv.hextoBin(memContent)));
+					IO2_SevenSegmentDisplay io = new IO2_SevenSegmentDisplay();
+					ss.turnOnSegment(io.bitOn(conv.hextoBin(memContent)));
 					ss.launch();
 				}
 				//Comment 

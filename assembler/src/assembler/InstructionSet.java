@@ -67,7 +67,7 @@ public class InstructionSet {
 	 ** 
 	 **/
 	public String BinaryReturn(String str) {
-		return map.get(str).getOpcode();
+		return map.get(str.toLowerCase()).getOpcode();
 	}
 
 }

@@ -150,13 +150,16 @@ public class Runner {
 					Token originAddressToken = iter.next();
 					if (originAddressToken.getType() != TokenType.ADDRESS) {
 						gui.log("Origin address error");
+						gui.updateMemoryTable();
 						return null;
 					} else if (originAddressToken.getType() == TokenType.NAME) {
 						int memLocation = this.getValueDirection(originAddressToken.getValue());
 						gui.memory.setNextDirection(memLocation);
+						gui.updateMemoryTable();
 						return null;
 					} else {
 						gui.memory.setNextDirection(Integer.parseInt(originAddressToken.getValue()));
+						gui.updateMemoryTable();
 						return null;
 					}
 				case CONST:
@@ -232,7 +235,7 @@ public class Runner {
 						return null;
 					}
 				case OPCODE:
-					switch (currentToken.getValue()) {
+					switch (currentToken.getValue().toLowerCase()) {
 						case "load":
 							opcodes = new InstructionSet();
 							Instruction load = opcodes.getInstruction(currentToken.getValue());
@@ -926,7 +929,7 @@ public class Runner {
 	
 //	Small helper methods
 	public void reglog() {
-		gui.log("Not a valid register!");
+		gui.log("Not a valid register!\n");
 	}
 	
 	public void addresslog() {
