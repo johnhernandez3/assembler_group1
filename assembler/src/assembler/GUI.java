@@ -313,6 +313,9 @@ public class GUI extends javax.swing.JFrame {
 						e1.printStackTrace();
 					}
 					p = new Parser(fileContent);
+					for (int i = 0; i < p.getLines().size(); i++) {
+						runner.firstRun(p.parseLine(i), i);
+					}
 					currentLine = runner.getCurrentInstruction();
 					if (currentLine == 0) {
 						log("WARNING: There is no prev instruction.\n");
@@ -329,6 +332,8 @@ public class GUI extends javax.swing.JFrame {
 								e1.printStackTrace();
 							}
 							log(converter.decimalToHex(currentLine).toUpperCase() + ": " + objectCode + ": " + p.getLine(currentLine) + "\n");
+						} else {
+							log(p.getLine(currentLine));
 						}
 					}
 				}
@@ -386,6 +391,9 @@ public class GUI extends javax.swing.JFrame {
 						e1.printStackTrace();
 					}
 					p = new Parser(fileContent);
+					for (int i = 0; i < p.getLines().size(); i++) {
+						runner.firstRun(p.parseLine(i), i);
+					}
 					currentLine = runner.getCurrentInstruction();
 					if (currentLine > (p.getLines().size() - 1)) {
 						log("WARNING: There is no next instruction.\n");
@@ -400,6 +408,8 @@ public class GUI extends javax.swing.JFrame {
 								e1.printStackTrace();
 							}
 							log(converter.decimalToHex(currentLine).toUpperCase() + ": " + objectCode + ": " + p.getLine(currentLine) + "\n");
+						} else {
+							log(p.getLine(currentLine));
 						}
 						runner.setCurrentInstruction(currentLine+1);
 					}
@@ -724,7 +734,7 @@ public class GUI extends javax.swing.JFrame {
 	
 	public void log(String s) {
 		try {
-			console.getStyledDocument().insertString(console.getStyledDocument().getLength(), s + "\n", attrWHITE);
+			console.getStyledDocument().insertString(console.getStyledDocument().getLength(), s + "\n\n", attrWHITE);
 		} catch (BadLocationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

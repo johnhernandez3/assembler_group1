@@ -48,7 +48,7 @@ public class Parser {
 		if (sourceCode == null) {
 			throw new NullPointerException("File Content is empty.");
 		}
-		this.sourceCode = sourceCode;
+		this.sourceCode = sourceCode.replaceAll("\\s+$", "");
 		this.lines = new ArrayList<>();
 		Scanner scanner = new Scanner(this.sourceCode);
 //		int c = 1;
@@ -76,8 +76,12 @@ public class Parser {
 	}
 	
 	public ArrayList<Token> getAllParsedTokens() {
-		this.tokens = tokenizer.getTokens(this.sourceCode);
-		this.classifyTokens(this.tokens);
+		for (int i = 0; i < this.lines.size(); i++) {
+			ArrayList<Token> lineTokens = this.parseLine(i);
+			for (Token t : lineTokens) {
+				this.tokens.add(t);
+			}
+		}
 		return this.tokens;
 	}
 	

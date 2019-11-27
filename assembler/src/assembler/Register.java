@@ -139,7 +139,7 @@ public class Register {
 	
 //	Arithmetic Logic
 	public String add(String a, String b, String c) {
-		if(triplezerr(a, b, c))	return null;
+//		if(triplezerr(a, b, c))	return null;
 		String tok2 = "", tok3 = "";
 		if (c.contains("#")) {
 			tok2 = regs.get(b);
