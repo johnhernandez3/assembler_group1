@@ -61,7 +61,7 @@ public class Register {
 		
 		int l = 0;
 		for (String d : this.regs.keySet()) {
-			data[l][0] = d;
+			data[l][0] = d.toUpperCase();
 			l++;
 		}
 		l = 0;

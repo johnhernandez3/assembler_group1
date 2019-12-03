@@ -64,12 +64,7 @@ public class Memory implements MemoryInterface {
 		String direction, content = "";
 		MemoryLocation[] result = new MemoryLocation[2048];
 		for (int i = 0; i < 2048; i++) {
-			if (i < 10) {
-				direction = "0" + i;
-			} else {
-				direction = i + "";
-			}
-			result[i] = new MemoryLocation(direction, content);
+			result[i] = new MemoryLocation(Integer.toHexString(i).toUpperCase(), content);
 		}
 		return result;
 	}
@@ -85,7 +80,9 @@ public class Memory implements MemoryInterface {
 	public void setNextDirection(int i) {
 		this.validate(i);
 		for (int j = next; j < i; j++) {
-			this.directions[j].setContent("00");
+			if (this.directions[j].getContent().isEmpty()) {
+				this.directions[j].setContent("00");
+			}
 		}
 		next = i;
 		currDirection = this.directions[i];

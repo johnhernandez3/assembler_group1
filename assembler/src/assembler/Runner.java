@@ -108,6 +108,13 @@ public class Runner {
 		return -1;
 	}
 	
+	public boolean containsValueDirection(int direction) {
+		for (Value v : this.values) {
+			if (v.getDirection() == direction) return true;
+		}
+		return false;
+	}
+	
 	public int getValueDirection(String name) {
 		for (Value v : this.values) {
 			if (v.getName().equals(name)) return v.getDirection();
@@ -191,12 +198,15 @@ public class Runner {
 //		while (iter.hasNext()) {
 			if (!tokens.isEmpty()) {
 				Token currentToken = tokens.get(0);
-				System.out.println(tokens);
+//				System.out.println(labels);
 				switch (currentToken.getType()) {
 					case LABEL:
 						Label l = new Label(currentToken.getValue().replaceAll(":", ""), gui.memory.getNextAvailableMemoryDirection(), currentLine);
 //						System.out.println(l);
-						labels.add(l);
+						if (this.getLabelDirection(currentToken.getValue().replaceAll(":", "")) == -1) {
+//							gui.log("LABEL ERROR: Label already exists.");
+							labels.add(l);
+						}
 						break;
 					case COMMENT:
 //						gui.log("Comment: " + currentToken.getValue());
@@ -233,10 +243,11 @@ public class Runner {
 							if (valueToken.type != TokenType.VALUE) {
 //								gui.log("Not a valid value!");
 							} else {
-								if (!constants.contains((Object)nameToken.getValue())) {
-									constants.add(new Constant(nameToken.value, valueToken.value.toUpperCase()));
-									gui.updateConstantsTable();
+								Constant c = new Constant(nameToken.value, valueToken.value.toUpperCase());
+								if (this.getConstantContent(nameToken.value).equals("")) {
+									constants.add(c);
 								}
+								gui.updateConstantsTable();
 								return null;
 							}
 						}
@@ -262,7 +273,7 @@ public class Runner {
 						} else {
 							int nextMemDirection = gui.memory.getNextAvailableMemoryDirection();
 //							System.out.println(nextMemDirection);
-							if (!values.contains((Object)currentToken.value)) {
+							if (!this.containsValueDirection(nextMemDirection)) {
 								values.add(new Value(currentToken.value, nextMemDirection));
 								gui.memory.getMemoryDirection(nextMemDirection).setContent(valueToken.value.toUpperCase());
 								gui.memory.next = nextMemDirection+1;
@@ -270,7 +281,7 @@ public class Runner {
 							for (int i = 3; i < tokens.size(); i++) {
 								valueToken = tokens.get(i);
 								nextMemDirection = gui.memory.getNextAvailableMemoryDirection();
-								if (!values.contains((Object)currentToken.value)) {
+								if (!this.containsValueDirection(nextMemDirection)) {
 									values.add(new Value(currentToken.value, nextMemDirection));
 									gui.memory.getMemoryDirection(nextMemDirection).setContent(valueToken.value.toUpperCase());
 									gui.memory.next = nextMemDirection+1;
@@ -311,109 +322,14 @@ public class Runner {
 	}
 	
 	public Instruction run(ArrayList<Token> tokens) {
-		// store constants and values
-//		this.firstRun(tokens);
 		Iterator<Token> iter = tokens.iterator();
 		while (iter.hasNext()) {
 			Token currentToken = iter.next();
 //			System.out.println(tokens);
 			switch (currentToken.getType()) {
-//				case COMMENT:
-//					gui.log("Comment: " + currentToken.getValue());
-//					break;
-//				case ORIGIN:
-//					Token originAddressToken = iter.next();
-//					System.out.println(originAddressToken.getType());
-//					if (originAddressToken.getType() != TokenType.ADDRESS) {
-//						gui.log("Origin address error");
-//						return null;
-//					} else if (originAddressToken.getType() == TokenType.NAME) {
-//						int memLocation = this.getValueDirection(originAddressToken.getValue());
-//						gui.memory.setNextDirection(memLocation);
-//						gui.updateMemoryTable();
-//						gui.log("Origin set at " + memLocation + ".");
-//						return null;
-//					} else {
-//						int memLocation = Integer.parseInt(originAddressToken.getValue());
-//						gui.memory.setNextDirection(memLocation);
-//						gui.updateMemoryTable();
-//						gui.log("Origin set at " + memLocation + ".");
-//						return null;
-//					}
-//				case CONST:
-//					// store constants here
-//					Token nameToken = iter.next();
-//					String keywordRegex = "^org$|^jmp$|^const$|^db$|^loadim$|^loadrind$|^load$|^pop$|^storerind$|^push$|^store$|^addim$|^subim$|^add$|^sub$|^and$|^or$|^xor$|^not$|^neg$|^shiftr$|^shiftl$|^rotar$|^rotal$|^jmprind$|^jmpaddr$|^jcondrin$|^jcondaddr$|^loop$|^grteq$|^grt$|^eq$|^neq$|^nop$|^call$|^return$";
-//					if (nameToken.getType() != TokenType.NAME) {
-//						gui.log("Not a viable name!");
-//					} else if (nameToken.getValue().matches(keywordRegex)) {
-//						gui.log("Not a viable keyword!");
-//					} else {
-//						Token valueToken = iter.next();
-//						if (valueToken.type != TokenType.VALUE) {
-//							gui.log("Not a valid value!");
-//						} else {
-//							constants.add(new Constant(nameToken.value, valueToken.value.toUpperCase()));
-//							gui.updateConstantsTable();
-//							return null;
-//						}
-//					}
 				case NAME:
 					gui.log("ERROR: Instruction not found or incorrect label format.");
 					return null;
-//					 // store values here
-//					keywordRegex = "^org$|^jmp$|^const$|^db$|^loadim$|^loadrind$|^load$|^pop$|^storerind$|^push$|^store$|^addim$|^subim$|^add$|^sub$|^and$|^or$|^xor$|^not$|^neg$|^shiftr$|^shiftl$|^rotar$|^rotal$|^jmprind$|^jmpaddr$|^jcondrin$|^jcondaddr$|^loop$|^grteq$|^grt$|^eq$|^neq$|^nop$|^call$|^return$";
-//					if (currentToken.getType() != TokenType.NAME) {
-//						gui.log("Not a name token!" + currentToken.getType());
-//					} else if (currentToken.getValue().matches(keywordRegex)) {
-//						gui.log("Name is a keyword!");
-//					}
-//					Token dbToken = iter.next();
-//					if (dbToken.type != TokenType.DB) {
-//						gui.log("Not a db token!");
-//						// STOP ERROR HERE
-//					}
-//					Token valueToken = iter.next();
-//					if (valueToken.type != TokenType.VALUE) {
-//						gui.log("Not a valid value!");
-//					} else {
-//						int nextMemDirection = gui.memory.getNextAvailableMemoryDirection();
-//						System.out.println(nextMemDirection);
-//						values.add(new Value(currentToken.value, nextMemDirection));
-//						gui.memory.getMemoryDirection(nextMemDirection).setContent(valueToken.value.toUpperCase());
-//						gui.memory.next = nextMemDirection+1;
-//						while (iter.hasNext()) {
-//							valueToken = iter.next();
-//							nextMemDirection = gui.memory.getNextAvailableMemoryDirection();
-//							values.add(new Value(currentToken.value, nextMemDirection));
-//							gui.memory.getMemoryDirection(nextMemDirection).setContent(valueToken.value.toUpperCase());
-//							gui.memory.next = nextMemDirection+1;
-//						}
-//						gui.updateValuesTable();
-//						gui.updateMemoryTable();
-//						return null;
-//					}
-//				case DB:
-//					Token valueToken1 = iter.next();
-//					if (valueToken1.type != TokenType.VALUE) {
-//						gui.log("Not a valid value!");
-//					} else {
-//						int nextMemDirection = gui.memory.getNextAvailableMemoryDirection();
-//						System.out.println(nextMemDirection);
-//						values.add(new Value("", nextMemDirection));
-//						gui.memory.getMemoryDirection(nextMemDirection).setContent(valueToken1.value.toUpperCase());
-//						gui.memory.next = nextMemDirection+1;
-//						while (iter.hasNext()) {
-//							valueToken1 = iter.next();
-//							nextMemDirection = gui.memory.getNextAvailableMemoryDirection();
-//							values.add(new Value("", nextMemDirection));
-//							gui.memory.getMemoryDirection(nextMemDirection).setContent(valueToken1.value.toUpperCase());
-//							gui.memory.next = nextMemDirection+1;
-//						}
-//						gui.updateValuesTable();
-//						gui.updateMemoryTable();
-//						return null;
-//					}
 				case OPCODE:
 					switch (currentToken.getValue().toLowerCase()) {
 						case "load":
@@ -446,7 +362,7 @@ public class Runner {
 							this.gui.updateRegisterTable();
 							if (gui.buffer.buffer.size() >= 2) {
 								gui.memory.getMemoryDirection(memDirection).setContent(gui.buffer.dequeueBuffer() + gui.buffer.dequeueBuffer());
-								gui.updateMemoryTable();
+//								gui.updateMemoryTable();
 							}
 							instructions.add(load);
 							return load;
@@ -472,7 +388,7 @@ public class Runner {
 								return null;
 							}
 							this.register.getregs().put(registerToken1.getValue().toLowerCase(), constantToken.getValue().replaceAll("#", ""));
-							this.gui.updateRegisterTable();
+//							this.gui.updateRegisterTable();
 							instructions.add(loadim);
 							return loadim;
 						case "pop":
@@ -489,36 +405,37 @@ public class Runner {
 							this.register.getregs().put(registerToken2.getValue().toLowerCase(), this.mem.getMemoryDirection(Integer.parseInt(this.register.sp, 16)).getContent());
 							// TODO: increment SP by 1 (SP = SP + 1)
 							// TODO: update SP in GUI
-							this.gui.updateRegisterTable();
+//							this.gui.updateRegisterTable();
 							instructions.add(pop);
 							return pop;
 						case "store":
 							opcodes = new InstructionSet();
 							Instruction store = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							store.addToken(currentToken);
-							Token registerToken3 = iter.next();
-							if (registerToken3.getType() != TokenType.REGISTER) {
-								reglog();
-							} else {
-								store.addToken(registerToken3);
-							}
 							Token addressToken1 = iter.next();
 							if (addressToken1.getType() != TokenType.ADDRESS && addressToken1.getType() != TokenType.NAME && addressToken1.getType() != TokenType.VALUE) {
 								addresslog();
 							} else {
 								store.addToken(addressToken1);
 							}
+							Token registerToken3 = iter.next();
+							if (registerToken3.getType() != TokenType.REGISTER) {
+								reglog();
+							} else {
+								store.addToken(registerToken3);
+							}
 							// TODO: check what type is address to get the correct content for all cases
 							if (addressToken1.getType() == TokenType.NAME) {
 								int direction = this.getValueDirection(addressToken1.getValue());
-								this.mem.getMemoryDirection(direction).setContent(this.register.getregs().get(registerToken3.getValue().toLowerCase()));
-	 							gui.updateMemoryTable();
+								store.getTokens().get(1).setValue(direction + "");
+								gui.memory.getMemoryDirection(direction).setContent(this.register.getregs().get(registerToken3.getValue().toLowerCase()));
+//	 							gui.updateMemoryTable();
 	 							instructions.add(store);
-	 							return store;
+	 							return null;
 	 							
 							}
  							this.mem.getMemoryDirection(Integer.parseInt(addressToken1.getValue())).setContent(this.register.getregs().get(registerToken3.getValue().toLowerCase()));
- 							gui.updateMemoryTable();
+// 							gui.updateMemoryTable();
  							instructions.add(store);
  							return store;
 						case "push":
@@ -534,7 +451,7 @@ public class Runner {
 							// TODO: decrement SP by 1 (SP = SP - 1)
 							// TODO: update SP in GUI
 							this.mem.getMemoryDirection(Integer.parseInt(this.register.sp, 16)).setContent(this.register.getregs().get(registerToken4.getValue().toLowerCase()));
-							gui.updateMemoryTable();
+//							gui.updateMemoryTable();
 							instructions.add(push);
 							return push;
 						case "loadrind":
@@ -554,7 +471,7 @@ public class Runner {
 								loadrind.addToken(registerToken6);
 							}
 							this.register.getregs().put(registerToken5.getValue().toLowerCase(), this.mem.getMemoryDirection(Integer.parseInt(this.register.getregs().get(registerToken6.getValue().toLowerCase()), 16)).getContent());
-							gui.updateRegisterTable();
+//							gui.updateRegisterTable();
 							instructions.add(loadrind);
 							return loadrind;
 						case "storerind":
@@ -574,7 +491,7 @@ public class Runner {
 								storerind.addToken(registerToken8);
 							}
 							this.register.getregs().put(registerToken8.getValue().toLowerCase(), this.mem.getMemoryDirection(Integer.parseInt(this.register.getregs().get(registerToken7.getValue().toLowerCase()), 16)).getContent());
-							gui.updateRegisterTable();
+//							gui.updateRegisterTable();
 							instructions.add(storerind);
 							return storerind;
 						case "add":
@@ -600,7 +517,7 @@ public class Runner {
 								add.addToken(registerToken11);
 							}
 							this.register.add(registerToken9.getValue().toLowerCase(), registerToken10.getValue().toLowerCase(), registerToken11.getValue().toLowerCase());
-							gui.updateRegisterTable();
+//							gui.updateRegisterTable();
 							instructions.add(add);
 							return add;
 						case "sub":
@@ -626,7 +543,7 @@ public class Runner {
 								sub.addToken(registerToken14);
 							}
 							this.register.sub(registerToken12.getValue().toLowerCase(), registerToken13.getValue().toLowerCase(), registerToken14.getValue().toLowerCase());
-							gui.updateRegisterTable();
+//							gui.updateRegisterTable();
 							instructions.add(sub);
 							return sub;
 						case "addim":
@@ -646,7 +563,7 @@ public class Runner {
 								addim.addToken(constantToken1);
 							}
 							this.register.add(registerToken15.getValue().toLowerCase(), registerToken15.getValue().toLowerCase(), constantToken1.getValue());
-							gui.updateRegisterTable();
+//							gui.updateRegisterTable();
 							instructions.add(addim);
 							return addim;
 						case "subim":
@@ -666,7 +583,7 @@ public class Runner {
 								subim.addToken(constantToken2);
 							}
 							this.register.sub(registerToken16.getValue().toLowerCase(), registerToken16.getValue().toLowerCase(), constantToken2.getValue());
-							gui.updateRegisterTable();
+//							gui.updateRegisterTable();
 							instructions.add(subim);
 							return subim;
 						case "and":
@@ -692,7 +609,7 @@ public class Runner {
 								and.addToken(registerToken19);
 							}
 							this.register.and(registerToken17.getValue().toLowerCase(), registerToken18.getValue().toLowerCase(), registerToken19.getValue().toLowerCase());
-							gui.updateRegisterTable();
+//							gui.updateRegisterTable();
 							instructions.add(and);
 							return and;
 						case "or":
@@ -718,7 +635,7 @@ public class Runner {
 								or.addToken(registerToken22);
 							}
 							this.register.or(registerToken20.getValue().toLowerCase(), registerToken21.getValue().toLowerCase(), registerToken22.getValue().toLowerCase());
-							gui.updateRegisterTable();
+//							gui.updateRegisterTable();
 							instructions.add(or);
 							return or;
 						case "xor":
@@ -744,7 +661,7 @@ public class Runner {
 								xor.addToken(registerToken25);
 							}
 							this.register.xor(registerToken23.getValue().toLowerCase(), registerToken24.getValue().toLowerCase(), registerToken25.getValue().toLowerCase());
-							gui.updateRegisterTable();
+//							gui.updateRegisterTable();
 							instructions.add(xor);
 							return xor;
 						case "not":
@@ -764,7 +681,7 @@ public class Runner {
 								not.addToken(registerToken27);
 							}
 							this.register.not(registerToken26.getValue().toLowerCase(), registerToken27.getValue().toLowerCase());
-							gui.updateRegisterTable();
+//							gui.updateRegisterTable();
 							instructions.add(not);
 							return not;
 						case "neg":
@@ -784,7 +701,7 @@ public class Runner {
 								neg.addToken(registerToken29);
 							}
 							this.register.neg(registerToken28.getValue().toLowerCase(), registerToken29.getValue().toLowerCase());
-							gui.updateRegisterTable();
+//							gui.updateRegisterTable();
 							instructions.add(neg);
 							return neg;
 						case "shiftr":
@@ -810,7 +727,7 @@ public class Runner {
 								shiftr.addToken(registerToken32);
 							}
 							this.register.shiftr(registerToken30.getValue().toLowerCase(), registerToken31.getValue().toLowerCase(), registerToken32.getValue().toLowerCase());
-							gui.updateRegisterTable();
+//							gui.updateRegisterTable();
 							instructions.add(shiftr);
 							return shiftr;
 						case "shiftl":
@@ -836,7 +753,7 @@ public class Runner {
 								shiftl.addToken(registerToken35);
 							}
 							this.register.shiftl(registerToken33.getValue().toLowerCase(), registerToken34.getValue().toLowerCase(), registerToken35.getValue().toLowerCase());
-							gui.updateRegisterTable();
+//							gui.updateRegisterTable();
 							instructions.add(shiftl);
 							return shiftl;
 						case "rotar":
@@ -862,7 +779,7 @@ public class Runner {
 								rotar.addToken(registerToken38);
 							}
 							this.register.rotar(registerToken36.getValue().toLowerCase(), registerToken37.getValue().toLowerCase(), registerToken38.getValue().toLowerCase());
-							gui.updateRegisterTable();
+//							gui.updateRegisterTable();
 							instructions.add(rotar);
 							return rotar;
 						case "rotal":
@@ -888,7 +805,7 @@ public class Runner {
 								rotal.addToken(registerToken41);
 							}
 							this.register.rotal(registerToken39.getValue().toLowerCase(), registerToken40.getValue().toLowerCase(), registerToken41.getValue().toLowerCase());
-							gui.updateRegisterTable();
+//							gui.updateRegisterTable();
 							instructions.add(rotal);
 							return rotal;
 						case "jmprind":
@@ -902,7 +819,7 @@ public class Runner {
 								jmprind.addToken(registerToken42);
 							}
 							this.register.jmprind(registerToken42.getValue().toLowerCase());
-							gui.updateRegisterTable();
+//							gui.updateRegisterTable();
 							instructions.add(jmprind);
 							return jmprind;
 						case "jmpaddr":
@@ -911,22 +828,23 @@ public class Runner {
 							jmpaddr.addToken(currentToken);
 							Token addressToken2 = iter.next();
 							if (addressToken2.getType() != TokenType.NAME && addressToken2.getType() != TokenType.VALUE) {
-								gui.log("SYNTAX ERROR IN LINE " + (gui.currentLine + 1));
+								gui.log("SYNTAX ERROR IN LINE " + (gui.currentLine));
 							} else {
 								jmpaddr.addToken(addressToken2);
 							}
 							// TODO: check address type
 							if (addressToken2.getType() == TokenType.NAME) {
 								String address = this.getLabelDirection(addressToken2.getValue()) + "";
+								this.register.jmpaddr(address);
+								gui.currentLine = this.getLabelLine(addressToken2.getValue());
 								if (address.equals("-1")) {
-									gui.log("NO ADDRESS ERROR IN LINE " + (gui.currentLine + 1));
+									gui.log("NO ADDRESS ERROR IN LINE " + (gui.currentLine));
 									return null;
 								}
 								addressToken2.setValue(address);
 							}
-							this.register.jmpaddr(addressToken2.getValue());
-							this.currentInstruction = this.getLabelLine(addressToken2.getValue()) + 1;
-							gui.updateRegisterTable();
+//							System.out.println(addressToken2.getValue() + " GUI CurrentLine: " + gui.currentLine);
+//							gui.updateRegisterTable();
 							instructions.add(jmpaddr);
 							return jmpaddr;
 						case "jcondrin":
@@ -940,7 +858,7 @@ public class Runner {
 								jcondrin.addToken(registerToken43);
 							}
 							this.register.jcondrin(this.register.cond, registerToken43.getValue().toLowerCase());
-							gui.updateRegisterTable();
+//							gui.updateRegisterTable();
 							instructions.add(jcondrin);
 							return jcondrin;
 						case "jcondaddr":
@@ -966,7 +884,7 @@ public class Runner {
 								addressToken3.setValue(address);
 							}
 							this.register.jcondaddr(this.register.cond, addressToken3.getValue());
-							gui.updateRegisterTable();
+//							gui.updateRegisterTable();
 							instructions.add(jcondaddr);
 							return jcondaddr;
 						case "loop":
@@ -987,7 +905,7 @@ public class Runner {
 							}
 							// TODO: check address type
 							this.register.loop(registerToken44.getValue().toLowerCase(), addressToken4.getValue());
-							gui.updateRegisterTable();
+//							gui.updateRegisterTable();
 							instructions.add(loop);
 							return loop;
 						case "grt":
@@ -1007,7 +925,7 @@ public class Runner {
 								grt.addToken(registerToken46);
 							}
 							this.register.cond = this.register.grt(registerToken45.getValue().toLowerCase(), registerToken46.getValue().toLowerCase());
-							gui.updateRegisterTable();
+//							gui.updateRegisterTable();
 							instructions.add(grt);
 							return grt;
 						case "grteq":
@@ -1027,7 +945,7 @@ public class Runner {
 								grteq.addToken(registerToken48);
 							}
 							this.register.cond = this.register.grteq(registerToken47.getValue().toLowerCase(), registerToken48.getValue().toLowerCase());
-							gui.updateRegisterTable();
+//							gui.updateRegisterTable();
 							instructions.add(grteq);
 							return grteq;
 						case "eq":
@@ -1047,7 +965,7 @@ public class Runner {
 								eq.addToken(registerToken50);
 							}
 							this.register.cond = this.register.eq(registerToken49.getValue().toLowerCase(), registerToken50.getValue().toLowerCase());
-							gui.updateRegisterTable();
+//							gui.updateRegisterTable();
 							instructions.add(eq);
 							return eq;
 						case "neq":
@@ -1067,7 +985,7 @@ public class Runner {
 								neq.addToken(registerToken52);
 							}
 							this.register.cond = this.register.neq(registerToken51.getValue().toLowerCase(), registerToken52.getValue().toLowerCase());
-							gui.updateRegisterTable();
+//							gui.updateRegisterTable();
 							instructions.add(neq);
 							return neq;
 						case "nop":
@@ -1088,8 +1006,8 @@ public class Runner {
 							}
 							// TODO: check address type
 							this.register.call(addressToken5.getValue());
-							gui.updateMemoryTable();
-							gui.updateRegisterTable();
+//							gui.updateMemoryTable();
+//							gui.updateRegisterTable();
 							instructions.add(call);
 							return call;
 						case "return":
@@ -1097,15 +1015,16 @@ public class Runner {
 							Instruction r = opcodes.getInstruction(currentToken.getValue().toLowerCase());
 							r.addToken(currentToken);
 							this.register.ret();
-							gui.updateRegisterTable();
+//							gui.updateRegisterTable();
 							instructions.add(r);
 							return r;
 						default:
-//							oplog();
 							break;
 					}
 				default:
-//					gui.log("Not valid tokens!");
+					this.register.pc = Integer.toHexString(Integer.parseInt(this.register.pc, 16) + 4);
+					gui.updateRegisterTable();
+					gui.updateMemoryTable();
 					break;
 			}
 		}

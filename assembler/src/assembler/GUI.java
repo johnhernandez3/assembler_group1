@@ -71,8 +71,8 @@ public class GUI extends javax.swing.JFrame {
 	private JButton executeNext;
 	private JMenuItem openFileOpt;
 	private JMenuItem saveFileOpt;
-	private Runner runner = new Runner(this);
 	public Register reg = new Register(this);
+	public Runner runner = new Runner(this);
 	public GUI g = this;
 	public Buffer buffer = new Buffer();
 	public InstructionFormat instructions = new InstructionFormat(this);
@@ -109,8 +109,7 @@ public class GUI extends javax.swing.JFrame {
 	
 	
 	public void updateMemoryTable() {
-		Object[][] memoryData = memory.memData();
-		DefaultTableModel model = new DefaultTableModel(memoryData, columnNames);
+		DefaultTableModel model = new DefaultTableModel(this.memory.memData(), columnNames);
 		memoryTable.setModel(model);
 	}
 	
@@ -185,7 +184,7 @@ public class GUI extends javax.swing.JFrame {
 		console = new JTextPane();
 		attrWHITE = new SimpleAttributeSet();
 		menu = new JMenuBar();
-		runner = new Runner(this);
+//		runner = this.runner;
 		
 		for (String keyword : opcodes.getMap().keySet()) {
 			map.put(keyword, Color.ORANGE);
@@ -398,6 +397,7 @@ public class GUI extends javax.swing.JFrame {
 						runner.firstRun(p.parseLine(i), i);
 					}
 					currentLine = runner.getCurrentInstruction();
+					int currentCodeLine = currentLine;
 					if (currentLine > (p.getLines().size() - 1)) {
 						log("WARNING: There is no next instruction.\n");
 					} else {
@@ -410,7 +410,7 @@ public class GUI extends javax.swing.JFrame {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
-							log(converter.decimalToHex(currentLine).toUpperCase() + ": " + objectCode + ": " + p.getLine(currentLine) + "\n");
+							log(converter.decimalToHex(currentLine).toUpperCase() + ": " + objectCode + ": " + p.getLine(currentCodeLine) + "\n");
 						} else {
 							log(p.getLine(currentLine));
 						}
@@ -675,7 +675,7 @@ public class GUI extends javax.swing.JFrame {
 		table.setFont(new Font("Tahome",Font.ITALIC,14));
 		int row = 0;
 		for (Map.Entry<String,String> entry : regs.entrySet()) {
-			table.setValueAt(entry.getKey(),row,0);
+			table.setValueAt(entry.getKey().toUpperCase(),row,0);
 			table.setValueAt(entry.getValue(),row,1);
 			row++;
 		}
