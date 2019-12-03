@@ -8,18 +8,18 @@ public class IO2_SevenSegmentDisplay {
 	
 	private static Converter conv = new Converter();
 //	static String inst = "10101011";
-//	private static SevenSegments ss = new SevenSegments();
-	private final JFrame f = new JFrame("Seven Segment Display");
+//	private static SevenSegments ss = new SevenSegments(new GUI());
+//	private final JFrame f = new JFrame("Seven Segment Display");
 //	public static void main(String[] args) throws InterruptedException {
 //		
 //		JFrame frame = initFrame();
-//		SevenSegments ss = new SevenSegments();
+//		SevenSegments ss = new SevenSegments(new GUI());
 //		
 //		frame.add(ss);
 //		
-////		ss.turnOnSegment(bitOn(inst));
+//		ss.turnOnSegment(bitOn(inst));
 //	}
-	
+//	
 //	public SevenSegments getSevenSegments() {
 //		return ss;
 //	}
@@ -202,22 +202,22 @@ public class IO2_SevenSegmentDisplay {
 			g.setColor(this.Greena);
 			g.fillRect(apx, apy, fifty, ten);
 			
-			g.setColor(this.Greenb);
+			g.setColor(this.Greenf);
 			g.fillRect(bpx, bpy, ten, fifty);
 			
-			g.setColor(this.Greenc);
+			g.setColor(this.Greenb);
 			g.fillRect(cpx, cpy, ten, fifty);
 			
-			g.setColor(this.Greend);
+			g.setColor(this.Greeng);
 			g.fillRect(apx, apy + 60, fifty, ten);
 			
 			g.setColor(this.Greene);
 			g.fillRect(bpx, bpy + 60, ten, fifty);
 			
-			g.setColor(this.Greenf);
+			g.setColor(this.Greenc);
 			g.fillRect(cpx, cpy + 60, ten, fifty);
 			
-			g.setColor(this.Greeng);
+			g.setColor(this.Greend);
 			g.fillRect(apx, apy + (60 * 2), fifty, ten);
 			
 		}
@@ -231,22 +231,22 @@ public class IO2_SevenSegmentDisplay {
 			g.setColor(this.Greena2);
 			g.fillRect(apx, apy, fifty, ten);
 			
-			g.setColor(this.Greenb2);
+			g.setColor(this.Greenf2);
 			g.fillRect(bpx, bpy, ten, fifty);
 			
-			g.setColor(this.Greenc2);
+			g.setColor(this.Greenb2);
 			g.fillRect(cpx, cpy, ten, fifty);
 			
-			g.setColor(this.Greend2);
+			g.setColor(this.Greeng2);
 			g.fillRect(apx, apy + 60, fifty, ten);
 			
 			g.setColor(this.Greene2);
 			g.fillRect(bpx, bpy + 60, ten, fifty);
 			
-			g.setColor(this.Greenf2);
+			g.setColor(this.Greenc2);
 			g.fillRect(cpx, cpy + 60, ten, fifty);
 			
-			g.setColor(this.Greeng2);
+			g.setColor(this.Greend2);
 			g.fillRect(apx, apy + (60 * 2), fifty, ten);
 			
 		}
