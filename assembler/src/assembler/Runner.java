@@ -198,7 +198,7 @@ public class Runner {
 		while (iter.hasNext()) {
 			if (!tokens.isEmpty()) {
 				Token currentToken = iter.next();
-//				System.out.println(tokens);
+				System.out.println(tokens);
 				switch (currentToken.getType()) {
 					case LABEL:
 						Label l = new Label(currentToken.getValue().replaceAll(":", ""), gui.memory.getNextAvailableMemoryDirection(), currentLine);
