@@ -26,7 +26,7 @@ public class Tokenizer {
 			return allTokens;
 		}
 		if (-1 != commentStart) {
-			System.out.println("commentStart: " + commentStart);
+//			System.out.println("commentStart: " + commentStart);
 			allTokens.add(new Token(TokenType.COMMENT, source.substring(commentStart, commentEnd).trim()));
 			return allTokens;
 //			source = source.substring(commentEnd);

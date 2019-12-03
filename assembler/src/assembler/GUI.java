@@ -129,8 +129,8 @@ public class GUI extends javax.swing.JFrame {
 		Object[][] registerData = reg.regsData();
 		DefaultTableModel model = new DefaultTableModel(registerData, registerColumns);
 		table.setModel(model);
-		this.spLabel.setText(this.reg.sp);
-		this.pcLabel.setText(this.reg.pc);
+		this.spLabel.setText(this.reg.sp.toUpperCase());
+		this.pcLabel.setText(this.reg.pc.toUpperCase());
 		this.condLabel.setText(this.reg.cond ? "1" : "0");
 	}
 	
@@ -393,8 +393,27 @@ public class GUI extends javax.swing.JFrame {
 						e1.printStackTrace();
 					}
 					p = new Parser(fileContent);
-					for (int i = 0; i < p.getLines().size(); i++) {
-						runner.firstRun(p.parseLine(i), i);
+					if (runner.getCurrentInstruction() == 0) {
+						for (int i = 0; i < p.getLines().size(); i++) {
+							runner.initRun(p.parseLine(i), i);
+						}
+						for (int i = 0; i < p.getLines().size(); i++) {
+							String objectCode = runner.executeLine(runner.firstRun(p.parseLine(i), i)).toUpperCase();
+							if (!objectCode.isEmpty()) {
+								try {
+									objectCodeDoc.insertString(objectCodeDoc.getLength(), objectCode + "\n", attrWHITE);
+									memory.getMemoryDirection(memory.getNextAvailableMemoryDirection()).setContent(objectCode.substring(0, 2));
+									memory.getMemoryDirection(memory.getNextAvailableMemoryDirection()).setContent(objectCode.substring(2, 4));
+									updateMemoryTable();
+								} catch (BadLocationException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+//								log(objectCode + ": " + p.getLine(i) + "\n");
+							} else {
+//								log(p.getLine(i));
+							}
+						}
 					}
 					currentLine = runner.getCurrentInstruction();
 					int currentCodeLine = currentLine;
@@ -404,12 +423,12 @@ public class GUI extends javax.swing.JFrame {
 						Converter converter = new Converter();
 						String objectCode = runner.executeLine(runner.run(p.parseLine(currentLine))).toUpperCase();
 						if (!objectCode.isEmpty()) {
-							try {
-								objectCodeDoc.insertString(objectCodeDoc.getLength(), objectCode + "\n", attrWHITE);
-							} catch (BadLocationException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
+//							try {
+//								objectCodeDoc.insertString(objectCodeDoc.getLength(), objectCode + "\n", attrWHITE);
+//							} catch (BadLocationException e1) {
+//								// TODO Auto-generated catch block
+//								e1.printStackTrace();
+//							}
 							log(converter.decimalToHex(currentLine).toUpperCase() + ": " + objectCode + ": " + p.getLine(currentCodeLine) + "\n");
 						} else {
 							log(p.getLine(currentLine));

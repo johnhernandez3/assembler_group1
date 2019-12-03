@@ -32,6 +32,7 @@ public class Memory implements MemoryInterface {
 		}
 
 		public void setContent(String content) {
+			next++;
 			this.content = content;
 		}
 		
@@ -41,16 +42,16 @@ public class Memory implements MemoryInterface {
 		}
 	}
 
-	String address; 
-	ArrayList<String> Mem = new ArrayList<String>();
-	ArrayList<MemoryLocation> memory = new ArrayList<>();
+	public String address; 
+	public ArrayList<String> Mem = new ArrayList<String>();
+	public ArrayList<MemoryLocation> memory = new ArrayList<>();
 
 /****************************************************************************************************************************************************************************************************
  * 																				New Memory
  ****************************************************************************************************************************************************************************************************/
-	int next;
-	MemoryLocation[] directions;
-	MemoryLocation currDirection;
+	public int next;
+	public MemoryLocation[] directions;
+	public MemoryLocation currDirection;
 
 	//Memory Constructor
 	public Memory() {

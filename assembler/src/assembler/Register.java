@@ -93,8 +93,11 @@ public class Register {
 	
 //	Set Regs
 	public void load(String reg, String addr) { //F2 y loadim
-		if(zeroerr(reg))
+//		if(zeroerr(reg))
 			// log error
+		if (reg.contains("7")) {
+			sp = addr.replace("#", "");
+		}
 		regs.put(reg, addr.replace("#", ""));
 		checkr7(reg);
 	}
@@ -116,8 +119,8 @@ public class Register {
 	
 	public String push(String a) {
 		if(zeroerr(a)) return null;
-		sp = Integer.toString(Integer.parseInt(sp) - 1);
-		regs.put(gui.memory.getMemoryDirection(Integer.parseInt(sp, 16)).getContent(), a);
+		sp = Integer.toHexString(Integer.parseInt(sp, 16) - 1);
+		regs.put(a, gui.memory.getMemoryDirection(Integer.parseInt(sp, 16)).getContent());
 		return a;
 	}
 	
