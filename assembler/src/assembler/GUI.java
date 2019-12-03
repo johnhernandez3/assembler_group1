@@ -543,7 +543,8 @@ public class GUI extends javax.swing.JFrame {
 					}
 				}
 				else{
-					System.out.println("I am here");
+					
+					log("Invalid Memory Location");
 				}
 			}
 		});
@@ -559,7 +560,9 @@ public class GUI extends javax.swing.JFrame {
 					ss.launch();
 					ss.turnOnSegment(io.bitOn(conv.hextoBin(memContent)));
 				}
-				//Comment 
+				else{
+					log("Invalid Memory Location");
+				}
 			
 			}
 		});
@@ -568,8 +571,14 @@ public class GUI extends javax.swing.JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String memLocation = JOptionPane.showInputDialog(null,"Enter Memory Location:");
+				int memLoc = Integer.parseInt(memLocation);
+				if(memory.validate(memLoc) == true){
 				Keyboard ui = new Keyboard(g, Integer.parseInt(memLocation), buffer);
 				ui.launch();
+				}
+				else{
+					log("Invalid Memory Location");
+				}
 			}
 		});
 		

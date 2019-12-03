@@ -91,6 +91,7 @@ public class Memory implements MemoryInterface {
 
 	//Helper Method
 	public Boolean validate(int i) {
+		
 		return i >= 0 && i < 2048;
 	}
 	
