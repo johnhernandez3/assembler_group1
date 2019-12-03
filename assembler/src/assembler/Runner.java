@@ -1124,13 +1124,21 @@ public class Runner {
 							if (addressToken1.getType() == TokenType.NAME) {
 								int direction = this.getValueDirection(addressToken1.getValue());
 								store.getTokens().get(1).setValue(direction + "");
-								gui.memory.getMemoryDirection(direction).setContent(this.register.getregs().get(registerToken3.getValue().toLowerCase()));
+								String c = this.register.getregs().get(registerToken3.getValue().toLowerCase());
+								if (c.charAt(0) == '0') {
+									c = c.substring(1);
+								}
+								gui.memory.getMemoryDirection(direction).setContent(c);
 	 							gui.updateMemoryTable();
 	 							instructions.add(store);
 	 							return null;
 	 							
 							}
- 							gui.memory.getMemoryDirection(Integer.parseInt(addressToken1.getValue())).setContent(this.register.getregs().get(registerToken3.getValue().toLowerCase()));
+							String c = this.register.getregs().get(registerToken3.getValue().toLowerCase());
+							if (c.charAt(0) == '0') {
+								c = c.substring(1);
+							}
+ 							gui.memory.getMemoryDirection(Integer.parseInt(addressToken1.getValue())).setContent(c);
  							gui.updateMemoryTable();
  							instructions.add(store);
  							return store;
